@@ -1,0 +1,185 @@
+proof {
+  allowed_collisions pest150;
+  (* on the left side *)
+  out_game "l0.out.cv";
+  (* Let appear this case distinction in the Decap oracle,
+     that is present on the right side *)
+  insert after "OADecap(pk_S"
+    "find ic_1 = ic <= Qcperuser suchthat
+      defined(zz_3[ic], sk'[ic], enc_2[ic])
+      && (enc_2[ic] = cd)
+      && (exp(g, sk'[ic]) = pk_S)
+      then";
+  simplify;
+  out_game "l1.out.cv";
+  out_game "l1occ.out.cv" occ;
+  (* Use correctnes of the KEM: in the Decap oracle, in the case of
+     honest participants, return the key chosen in the Encap oracle. *)
+  replace
+    at_nth 1 3 "return{[0-9]*}({[0-9]*}AuthDecap_Some({[0-9]*}zz_5))"
+    "zz_3[ic_2]";
+  remove_assign useless;
+  simplify;
+  out_game "l2.out.cv";
+  out_game "l2occ.out.cv" occ;
+
+  (* Let appear this case distinction in the Encap oracle.
+     Treating messages between honest keys separately helps
+     when applying GDH. *)
+  insert after "OAEncap(pk_R"
+    "find i1 <= N suchthat
+      defined(sk[i1])
+      && pk_R = exp(g, sk[i1]) then";
+  out_game "l3.out.cv";
+  (* Use unique names for the assignments of the following variables
+     that are currently not unique *)
+  SArename z_2;
+  SArename enc_3;
+  SArename dh_4;
+  SArename zz_4;
+  SArename pkE_4;
+  SArename kemContext_4;
+  SArename key_1;
+  SArename info_1;
+  out_game "l4.out.cv";
+
+  (* Make it possible to reason about the composition of the
+     random oracle inputs, specifically the group elements,
+     which is needed for the usage of the GDH assumption. *)
+  insert after "OH(x1"
+    "let eae_input(
+      salt: extract_salt_t,
+      concatExtract(
+        protocol1: label_protocol_t,
+        suite1: suite_id_t,
+        label1: label_extract_t,
+        concatDH(dh1: G_t, dh2: G_t)),
+      concatExpand(
+        l: two_byte_t,
+        protocol2: label_protocol_t,
+        suite2: suite_id_t,
+        label2: label_expand_t,
+        concatContext(pkE': G_t, pkR': G_t, pkS': G_t))) = x1 in";
+  crypto rom(ExtractAndExpand_inner);
+  out_game "l5.out.cv";
+  crypto gdh(exp) [variables: sk -> a, z_1 -> b .];
+  out_game "l.out.cv" occ;
+
+  (* go to right side *)
+  start_from_other_end;
+  out_game "r0.out.cv";
+  (* Let appear this case distinction in the Encap oracle.
+     Treating messages between honest keys separately helps
+     when applying GDH. *)
+  insert after "OAEncap(pk_R_1"
+    "find i2 <= N suchthat
+      defined(sk_1[i2])
+      && pk_R_1 = exp(g, sk_1[i2]) then";
+  (* Make it possible to reason about the composition of the
+     random oracle inputs, specifically the group elements,
+     which is needed for the usage of the GDH assumption. *)
+  insert after "OH(x1"
+    "let eae_input(
+      salt: extract_salt_t,
+      concatExtract(
+        protocol1: label_protocol_t,
+        suite1: suite_id_t,
+        label1: label_extract_t,
+        concatDH(dh1: G_t, dh2: G_t)),
+      concatExpand(l: two_byte_t,
+        protocol2: label_protocol_t,
+        suite2: suite_id_t,
+        label2: label_expand_t,
+        concatContext(pkE'': G_t, pkR'': G_t, pkS'': G_t))) = x1_1 in";
+  crypto rom(ExtractAndExpand_inner);
+  out_game "r2.out.cv";
+  (* Use unique names for the assignments of the following variables
+     that are currently not unique *)
+  SArename z_5;
+  SArename enc_8;
+  SArename pkE_10;
+  out_game "r3.out.cv";
+  success
+}
+
+include(`common.dhkem.dh.ocv')
+
+proba Adv_GDH.
+proba PDistRerandom.
+expand GDH_RSR_minimal(
+  (* types *)
+  G_t,  (* Group elements *)
+  Z_t,  (* Exponents *)
+  (* variables *)
+  g,    (* a generator of the group *)
+  exp,  (* exponentiation function *)
+  mult, (* multiplication function for exponents *)
+  (* probabilities *)
+  Adv_GDH, (* probability of breaking the GDH assumption *)
+  PDistRerandom (* probability of distinguishing a key that comes from
+       rerandomization from an honestly chosen key *)
+).
+
+include(`common.dhkem.ocv')
+
+param N, Qeperuser, Qcperuser, Qdperuser [size30].
+
+equivalence
+  Ostart() :=
+    key_extr <-R hash_key_t;
+    return();
+    ((
+      foreach i <= N do Osetup() := sk <-R Z_t; return(); (
+        foreach ic <= Qcperuser do (
+	  Ochall(sk': Z_t) :=
+            return(AuthEncap(key_extr, pkgen(sk), skgen(sk')))) |
+        foreach ie <= Qeperuser do (
+	  OAEncap(pk_R: G_t) :=
+            return(AuthEncap(key_extr, pk_R, skgen(sk)))) |
+        foreach id <= Qdperuser do (
+	  OADecap(pk_S: G_t, cd: bitstring) :=
+            return(AuthDecap(key_extr, cd, skgen(sk), pk_S))) |
+	(* The next oracle gives the public key to the adversary *)
+        Opk() := return(pkgen(sk))
+      )) |
+      (* The random oracle ExtractAndExpand_inner *)
+      run ExtractAndExpand_inner_orcl(key_extr)
+    )
+
+  Ostart() :=
+    key_extr <-R hash_key_t;
+    return();
+    ((
+      foreach i <= N do Osetup() := sk <-R Z_t; return(); (
+        foreach ic <= Qcperuser do (
+	  Ochall(sk': Z_t) :=
+            let AuthEncap_tuple(k: eae_output_t, ce: bitstring) = AuthEncap(key_extr, pkgen(sk), skgen(sk')) in (
+              k' <-R eae_output_t;
+              return(AuthEncap_tuple(k', ce))
+            ) else (
+              (* Never happens because AuthEncap always returns AuthEncap_tuple(...) *)
+              return(AuthEncap_None)
+            )) |
+        foreach ie <= Qeperuser do (
+	  OAEncap(pk_R: G_t) :=
+            return(AuthEncap(key_extr, pk_R, skgen(sk)))) |
+        foreach id <= Qdperuser do (
+	  OADecap(pk_S: G_t, cd: bitstring) :=
+	    (* This "find" implements a lookup in the set E of the paper.
+               The set is not built explicitly; we look for values in
+               Ochall queries using arrays -- all variables are implicitly
+               stored in arrays indexed by replication indices above their
+               definition. *)	  
+            find ic1 <= Qcperuser, i1 <= N suchthat
+                defined(ce[ic1, i1], k'[ic1, i1], sk'[ic1, i1], sk[i1])
+                && ce[ic1, i1] = cd
+                && pkgen(sk'[ic1, i1]) = pk_S
+                && pkgen(sk[i1]) = pkgen(sk) then (
+              return(AuthDecap_Some(k'[ic1, i1]))
+            ) else (
+              return(AuthDecap(key_extr, cd, skgen(sk), pk_S))
+            )) |
+        Opk() := return(pkgen(sk))
+      )) |
+      run ExtractAndExpand_inner_orcl(key_extr)
+    )

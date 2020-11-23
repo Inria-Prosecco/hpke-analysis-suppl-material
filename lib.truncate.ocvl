@@ -1,0 +1,17 @@
+(* The types input_t and output_t MUST be fixed. *)
+def truncate(input_t, output_t, truncate_f) {
+
+  param N.
+
+  fun truncate_f(input_t): output_t.
+
+  (* If we truncate a uniformly distributed random value, 
+     we obtain a uniformly distributed random value *)
+  equiv(truncate(truncate_f))
+    foreach i<=N do h <-R input_t;
+      O_trunc() := return(truncate_f(h))
+    <=(0)=>
+    foreach i<=N do k <-R output_t;
+      O_trunc() := return(k).
+}
+

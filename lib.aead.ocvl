@@ -1,0 +1,94 @@
+(* AEAD (authenticated encryption with additional data) with a random nonce.
+   A typical example is AES-GCM.
+
+   In this macro, we model a multikey security notion.
+
+   key: type of keys, must be "bounded" (to be able to generate random numbers from it, and to talk about the runtime of enc without mentioning the length of the key), typically "fixed" and "large".
+   cleartext: type of cleartexts
+   ciphertext: type of ciphertexts
+   add_data: type of additional data that is just authenticated
+   nonce: type of the nonce
+
+   enc: encryption function
+   enc': symbol that replaces enc after game transformation
+   dec: decryption function
+   injbot: natural injection from cleartext to bitstringbot
+   Z: function that returns for each cleartext a cleartext of the same length consisting only of zeroes.
+
+   Penc(t, Nk, Ne, l): probability of breaking the IND-CPA property in time
+   t for Nk keys and Ne encryption queries per key with cleartexts of length at
+   most l
+   Pencctxt(t, Nk, Ne, Ndtot, l, l', ld, ld'): 
+   probability of breaking the INT-CTXT property
+   in time t for Nk keys, Ne encryption queries per key, 
+   Ndtot decryption queries in total with
+   cleartexts of length at most l and ciphertexts of length at most l',
+   additional data for encryption of length at most ld, and 
+   additional data for decryption of length at most ld'.
+
+   The types key, cleartext, ciphertext, add_data, nonce and the
+   probabilities Penc, Pencctxt must be declared before this macro is
+   expanded. The functions enc, dec, injbot, and Z are declared
+   by this macro. They must not be declared elsewhere, and they can be
+   used only after expanding the macro.
+*)
+
+def multikey_AEAD(key, cleartext, ciphertext, add_data, nonce, enc, dec, injbot, Z, Penc, Pencctxt) { 
+
+param Nk, Ne, Nd.
+
+fun enc(cleartext, add_data, key, nonce): ciphertext.
+fun dec(ciphertext, add_data, key, nonce): bitstringbot.
+
+fun enc'(cleartext, add_data, key, nonce): ciphertext.
+
+fun injbot(cleartext):bitstringbot [data].
+equation forall x:cleartext; injbot(x) <> bottom.
+
+(* The function Z returns for each bitstring, a bitstring
+   of the same length, consisting only of zeroes. *)
+fun Z(cleartext):cleartext.
+
+equation forall m:cleartext, d: add_data, k:key, n: nonce; 
+	dec(enc(m, d, k, n), d, k, n) = injbot(m).
+
+(* IND-CPA *)
+
+equiv(ind_cpa(enc))
+       foreach ik <= Nk do
+       k <-R key; n <-R nonce; ( 
+       	       Oenc(x:cleartext, d: add_data) :=
+	       	       return(enc(x, d, k, n)) |
+	       On() := return(n))
+     <=(Penc(time, Nk))=> 
+       foreach ik <= Nk do
+       k <-R key; n <-R nonce; (
+       	       Oenc(x:cleartext, d: add_data) := 
+		       let r: ciphertext = enc'(Z(x), d, k, n) in
+		       return(r) |
+	       On() := return(n)).
+
+(* INT-CTXT *)
+
+equiv(int_ctxt(enc))
+      foreach ik <= Nk do
+      k <-R key; n <-R nonce; (
+      	      Oenc(x:cleartext, d: add_data) :=
+	              return(enc(x, d, k, n)) |
+              On() := return(n) |
+	      foreach id <= Nd do Odec(y:ciphertext, c_d: add_data) [useful_change] :=
+	              return(dec(y,c_d,k, n)))
+     <=(Pencctxt(time, Nk, #Odec))=> [computational] 
+      foreach ik <= Nk do
+      k <-R key [unchanged]; n <-R nonce [unchanged]; (
+      	      Oenc(x:cleartext, d: add_data) :=
+		      let r: ciphertext = enc(x, d, k, n) in
+		      return(r) |
+              On() := return(n) |
+	      foreach id <= Nd do Odec(y:ciphertext, c_d: add_data) :=
+	              if defined(x,d,r) && r = y && d = c_d then
+		          return(injbot(x))
+	              else
+		          return(bottom)).
+
+}

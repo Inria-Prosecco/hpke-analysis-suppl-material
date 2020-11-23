@@ -1,0 +1,115 @@
+proof {
+  out_game "g00.out.cv";
+  remove_assign binder the_sk;
+  remove_assign binder the_pk;
+  crypto insider_cca(AuthEncap) [variables: s->s_1];
+  out_game "g01.out.cv";
+  crypto eliminate_failing(AuthEncap) **;
+  out_game "g02.out.cv";
+  crypto prf(KeySchedule_auth) k'_1;
+  out_game "g03.out.cv";
+  crypto splitter(split) **;
+  out_game "g04.out.cv";
+  crypto int_ctxt(Seal_inner) part1;
+  crypto ind_cpa(Seal_inner) **;
+  out_game "g05.out.cv";
+  success
+}
+
+(** Key Encapsulation Mechanism **)
+type keypairseed_t [bounded,large].
+type kemseed_t [fixed,large].
+type skey_t [bounded,large].
+type pkey_t [bounded,large].
+type kemkey_t [fixed,large].
+type kemciph_t [fixed,large].
+type AuthEncap_res_t [fixed,large].
+proba P_pk_coll.
+proba Adv_Insider_CCA.
+fun kemkey2bitstr(kemkey_t): bitstring [data].
+fun kemciph2bitstr(kemciph_t): bitstring [data].
+expand Insider_CCA_Secure_Authenticated_KEM(keypairseed_t, pkey_t, skey_t, kemseed_t, AuthEncap_res_t, AuthDecap_res_t, kemkey_t, kemciph_t, skgen, pkgen, GenerateKeyPair, AuthEncap, AuthEncap_r, AuthEncap_key_r, AuthEncap_enc_r, AuthEncap_tuple, AuthEncap_None, AuthDecap, AuthDecap_Some, AuthDecap_None, P_pk_coll, Adv_Insider_CCA).
+
+include(`common.hpke.ocv')
+
+(* Define a function for choosing from two attacker-provided plaintexts based
+   on a bit. Also, defines some equations on it so CryptoVerif is able
+   to reason about it. *)
+expand boolean_choice_for_encryption(
+  (* types *)
+  bitstring,  (* type of the values *)
+  (* functions *)
+  Length,       (* the Length function provided by the encryption scheme. *)
+              (* Needed for some equations about the function. *)
+  test	      (* Name of the choice function: *)
+              (* test(bool, bitstring, bitstring): bitstring *)
+).
+
+(* a set E used within the proof,
+   containing 6-tuples of the following type: *)
+table E(
+  pkey_t,    (* sender's public key *)
+  pkey_t,    (* receiver's public key *)
+  kemciph_t, (* KEM ciphertext *)
+  bitstring, (* AEAD ciphertext *)
+  bitstring, (* AEAD additional authenticated data *)
+  bitstring  (* application info string *)
+).
+
+param N.   (* number of honest keypairs/users *)
+param Qeperuser. (* number of calls to the Oaenc() oracle per keypair *)
+param Qdperuser. (* number of calls to the Oadec() oracle per keypair *)
+param Qcperuser.  (* number of calls to the Ochall() oracle per keypair *)
+
+(* This is the proof goal: prove that the adversary cannot guess
+   the boolean b with probability better than 1/2.
+   b is defined as a fresh random boolean inside the Ostart() oracle. *)
+query secret b.
+
+process
+  Ostart() := b <-R bool; return();
+
+  (* The adversary can generate up to N honest keypairs/users by calling
+  (* the Osetup() oracle. The nested oracles Oaenc(), Oadec(), Ochall()
+  (* will be available for each keypair. *)
+  (foreach i <= N do
+   Osetup() :=
+     let (the_sk: skey_t, the_pk: pkey_t) = GenerateKeyPair() in
+     (* The public key of each honest keypair is made available
+     (* to the adversary. *)
+     return(the_pk);
+
+     (
+       (* This defines the Oaenc() oracle with up to Qeperuser calls per keypair *)
+       (foreach iae <= Qeperuser do
+        Oaenc(pk: pkey_t, m: bitstring, aad: bitstring, info: bitstring) :=
+          return(SealAuth(pk, info, aad, m, the_sk))
+       )|
+
+       (* This defines the Oadec() oracle with up to Qdperuser calls per keypair *)
+       (foreach iad <= Qdperuser do
+        Oadec(pk: pkey_t, enc: kemciph_t, c: bitstring, aad: bitstring, info: bitstring) :=
+          get E(=pk, =the_pk, =enc, =c, =aad, =info) in (
+            return(OpenAuth_None)
+          ) else (
+            return(OpenAuth(enc, the_sk, info, aad, c, pk))
+          )
+       )|
+
+       (* This defines the Ochall() oracle with up to Qcperuser calls per keypair *)
+       (foreach ich <= Qcperuser do
+        Ochall(s': keypairseed_t, m0: bitstring, m1: bitstring, aad: bitstring, info: bitstring) :=
+          (* only accept challenge queries for m0 and m1 of same length *)
+          if Length(m0) = Length(m1) then (
+            let SealAuth_Some(enc_star: kemciph_t, c_star: bitstring) =
+                SealAuth(the_pk, info, aad, test(b, m0, m1), skgen(s')) in (
+              insert E(pkgen(s'), the_pk, enc_star, c_star, aad, info);
+              return((enc_star, c_star))
+            (* SealAuth does not fail, but CryptoVerif's language
+            (* requires we indicate the else branch. It will be
+            (* removed with the eliminate_failing step. *)
+            ) else return(bottom)
+          ) else return(bottom) (* ends the condition on m0 and m1 lengths *)
+       ) (* ends the definition of the Ocall() oracle *)
+     ) (* This ends the block of oracles that are defined for each keypair *)
+  ) (* This ends the definition of the Osetup() oracle and its nested oracles *)

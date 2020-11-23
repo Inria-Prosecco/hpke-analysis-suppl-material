@@ -1,0 +1,13 @@
+type G_t [bounded].
+fun Serialize(G_t): bitstring [data].
+type Z_t [bounded,pcoll250,nonuniform].
+proba PCollKey [pest250].
+
+expand DH_proba_collision_minimal(
+  G_t,
+  Z_t,
+  g,
+  exp,
+  mult,
+  PCollKey
+).

@@ -1,0 +1,186 @@
+
+type key_t [large,fixed].
+
+type nonce_t [large,fixed].
+expand Xor(
+  nonce_t,   (* the space on which xor operates *)
+  xor,       (* name of the xor function *)
+  nonce_zero (* the bitstring consisting only of zeroes in nonce_t; also used for seq that starts at zero *)
+).
+
+
+(** KDF **)
+
+type extract_t [fixed,large].
+type keys_t [fixed,large].
+type tuple_t [fixed,large].
+expand random_split_2(
+  keys_t,
+  key_t,
+  nonce_t,
+  tuple_t,
+  concat,
+  split
+).
+
+proba Adv_PRF_KeySchedule.
+expand multikey_PRF(
+  kemkey_t,
+  bitstring, (* info *)
+  keys_t,
+  KeySchedule_auth,
+  Adv_PRF_KeySchedule
+).
+
+
+(* An AEAD encryption algorithm *)
+
+proba Adv_cpa.
+proba Adv_ctxt.
+expand multikey_AEAD(
+  (* types *)
+  key_t,
+  bitstring, (* plaintext *)
+  bitstring, (* ciphertext *)
+  bitstring, (* additional data *)
+  nonce_t,
+  (* functions *)
+  Seal_inner,
+  Open_inner,
+  injbot, (* injection from plaintext to bitstringbot:
+          (* injbot(plaintext): bitstringbot *)
+  Length,   (* returns a plaintext of same length, consisting of zeros:
+          (* Length(plaintext): plaintext *)
+  (* probabilities *)
+  Adv_cpa,
+  Adv_ctxt
+).
+letfun Seal(key: key_t, nonce: nonce_t, aad: bitstring, pt: bitstring) =
+  Seal_inner(pt, aad, key, nonce).
+letfun Open(key: key_t, nonce: nonce_t, aad: bitstring, ct: bitstring) =
+  Open_inner(ct, aad, key, nonce).
+
+
+
+(* Encryption Context *)
+
+type context_t [large,fixed].
+(* key, nonce, seq *)
+fun Context(key_t, nonce_t, nonce_t): context_t [data].
+
+
+expand OptionType_1(KeySchedule_res_t, KeySchedule_Some, KeySchedule_None, context_t).
+
+letfun KeySchedule(shared_secret: kemkey_t, info: bitstring) =
+  let concat(key: key_t, nonce: nonce_t) =
+        split(KeySchedule_auth(shared_secret, info)) in (
+    KeySchedule_Some(Context(key, nonce, nonce_zero))
+  ) else (
+    KeySchedule_None
+  ).
+
+
+(* Authentication using an Asymmetric Key *)
+
+expand OptionType_2(SetupAuthS_res_t, SetupAuthS_Some, SetupAuthS_None, kemciph_t, context_t).
+
+letfun SetupAuthS(pkR: pkey_t, info: bitstring, skS: skey_t) =
+  let AuthEncap_tuple(shared_secret: kemkey_t, enc: kemciph_t) = AuthEncap(pkR, skS) in
+  (
+    let KeySchedule_Some(ctx: context_t) = KeySchedule(shared_secret, info) in
+    (
+      SetupAuthS_Some(enc, ctx)
+    ) else (
+      SetupAuthS_None
+    )
+  ) else (
+    SetupAuthS_None
+  ).
+
+expand OptionType_1(SetupAuthR_res_t, SetupAuthR_Some, SetupAuthR_None, context_t).
+
+letfun SetupAuthR(enc: kemciph_t, skR: skey_t, info: bitstring, pkS: pkey_t) =
+  let AuthDecap_Some(shared_secret: kemkey_t) = AuthDecap(enc, skR, pkS) in
+  (
+    let KeySchedule_Some(ctx: context_t) = KeySchedule(shared_secret, info) in
+    (
+      SetupAuthR_Some(ctx)
+    ) else (
+      SetupAuthR_None
+    )
+  ) else (
+    SetupAuthR_None
+  ).
+
+
+(* Encryption and Decryption *)
+
+letfun Context_Nonce(nonce: nonce_t, seq: nonce_t) =
+  (* We suppose that seq has already the length of the nonce, by
+     assigning it the type nonce_t. *)
+  xor(nonce, seq).
+
+
+expand OptionType_1(Context_Seal_res_t, Context_Seal_Some, Context_Seal_None, bitstring).
+
+letfun Context_Seal(context: context_t, aad: bitstring,
+                    pt: bitstring) =
+  let Context(key: key_t, nonce: nonce_t, seq: nonce_t) = context in
+  (
+    let ct: bitstring = Seal(key, Context_Nonce(nonce, seq), aad, pt) in
+    (* We consider a single message, so we do not need to model the increment of seq *)
+    Context_Seal_Some(ct)
+  ) else (
+    Context_Seal_None
+  ).
+
+expand OptionType_1(Context_Open_res_t, Context_Open_Some, Context_Open_None, bitstring).
+
+letfun Context_Open(context: context_t, aad: bitstring,
+                    ct: bitstring) =
+  let Context(key: key_t, nonce: nonce_t, seq: nonce_t) = context in
+  (
+    let injbot(pt: bitstring) = Open(key, Context_Nonce(nonce, seq),
+                                     aad, ct) in
+    (
+      (* We consider a single message, so we do not need to model the increment of seq *)
+      Context_Open_Some(pt)
+    ) else (
+      Context_Open_None
+    )
+  ) else (
+    Context_Open_None
+  ).
+
+(* Single-Shot APIs *)
+
+expand OptionType_2(SealAuth_res_t, SealAuth_Some, SealAuth_None, kemciph_t, bitstring).
+
+letfun SealAuth(pkR: pkey_t, info: bitstring, aad: bitstring,
+                pt: bitstring, skS: skey_t) =
+  let SetupAuthS_Some(enc: kemciph_t, ctx: context_t) =
+    SetupAuthS(pkR, info, skS) in
+  (
+    let Context_Seal_Some(ct: bitstring) = Context_Seal(ctx, aad, pt) in
+    (
+      SealAuth_Some(enc, ct)
+    ) else (
+      SealAuth_None
+    )
+  ) else (
+    SealAuth_None
+  ).
+
+expand OptionType_1(OpenAuth_res_t, OpenAuth_Some, OpenAuth_None, Context_Open_res_t).
+
+letfun OpenAuth(enc: kemciph_t, skR: skey_t, info_hash: bitstring,
+                aad: bitstring, ct: bitstring, pkS: pkey_t) =
+  let SetupAuthR_Some(ctx: context_t) =
+    SetupAuthR(enc, skR, info_hash, pkS) in
+  (
+    OpenAuth_Some(Context_Open(ctx, aad, ct))
+  ) else (
+    OpenAuth_None
+  ).
+
+

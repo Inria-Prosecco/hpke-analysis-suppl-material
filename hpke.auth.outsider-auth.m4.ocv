@@ -1,0 +1,115 @@
+proof {
+  out_game "g00.out.cv";
+  remove_assign binder the_sk;
+  remove_assign binder the_pk;
+  out_game "g01.out.cv";
+  crypto outsider_cca(AuthEncap) [variables: s->s_1];
+  out_game "g02.out.cv";
+  SArename k_2;
+  out_game "g03.out.cv";
+  crypto outsider_auth(AuthEncap) [variables: s->s_1];
+  out_game "g04.out.cv";
+  crypto eliminate_failing(AuthEncap) **;
+  out_game "g05.out.cv";
+  crypto prf(KeySchedule_auth) k'_1 k'_2 k'_3;
+  out_game "g06.out.cv";
+  crypto splitter(split) **;
+  out_game "g07.out.cv";
+  crypto int_ctxt(Seal_inner) part1_7 part1_6 part1_2 part1_3 part1_5 part1_1 part1;
+  out_game "g08.out.cv";
+  success
+}
+
+(** Key Encapsulation Mechanism **)
+type keypairseed_t [bounded,large].
+type kemseed_t [fixed,large].
+type skey_t [bounded,large].
+type pkey_t [bounded,large].
+type kemkey_t [fixed,large].
+type kemciph_t [fixed,large].
+type AuthEncap_res_t [fixed,large].
+proba P_pk_coll.
+proba Adv_Outsider_CCA.
+proba Adv_Outsider_Auth.
+fun kemkey2bitstr(kemkey_t): bitstring [data].
+fun kemciph2bitstr(kemciph_t): bitstring [data].
+expand Outsider_Secure_Authenticated_KEM(keypairseed_t, pkey_t, skey_t, kemseed_t, AuthEncap_res_t, AuthDecap_res_t, kemkey_t, kemciph_t, skgen, pkgen, GenerateKeyPair, AuthEncap, AuthEncap_r, AuthEncap_key_r, AuthEncap_enc_r, AuthEncap_tuple, AuthEncap_None, AuthDecap, AuthDecap_Some, AuthDecap_None, P_pk_coll, Adv_Outsider_CCA, Adv_Outsider_Auth).
+
+include(`common.hpke.ocv')
+
+(* a set E used within the proof,
+   containing 6-tuples of the following type: *)
+table E(
+  pkey_t,    (* sender's public key *)
+  pkey_t,    (* receiver's public key *)
+  kemciph_t, (* KEM ciphertext *)
+  bitstring, (* AEAD ciphertext *)
+  bitstring, (* AEAD additional authenticated data *)
+  bitstring  (* application info string *)
+).
+
+param N.   (* number of honest keypairs/users *)
+param Qeperuser. (* number of calls to the Oaenc() oracle per keypair *)
+param Qdperuser. (* number of calls to the Oadec() oracle per keypair *)
+
+
+(* The proof goal is to prove that the adversary cannot produce inputs
+   such that the event adv_wins is executed. *)
+event adv_wins.
+query event(adv_wins).
+
+process
+
+  (* The adversary can generate up to N honest keypairs/users by calling
+  (* the Osetup() oracle. The nested oracles Oaenc() and Oadec()
+  (* will be available for each honest keypair. *)
+  (foreach i <= N do
+   Osetup() :=
+     let (the_sk: skey_t, the_pk: pkey_t) = GenerateKeyPair() in
+     (* The public key of each honest keypair is made available
+     (* to the adversary. *)
+     return(the_pk);
+
+     (* This block defines the oracles Oaenc() and Oadec() which
+     (* are available for each honest keypair. *)
+     (
+       (* This defines the Oaenc() oracle with up to Qeperuser calls per keypair *)
+       (foreach iae <= Qeperuser do
+        Oaenc(pk: pkey_t, m: bitstring, aad: bitstring, info: bitstring) :=
+          let SealAuth_Some(enc: kemciph_t, ct: bitstring) =
+              SealAuth(pk, info, aad, m, the_sk) in (
+            insert E(the_pk, pk, enc, ct, aad, info);
+            return(SealAuth_Some(enc, ct))
+          ) else (
+            return(SealAuth_None)
+          )
+       ) |
+
+       (* This defines the Oadec() oracle with up to Qdperuser calls per keypair *)
+       (foreach iad <= Qdperuser do
+        Oadec(pk: pkey_t, enc: kemciph_t, c: bitstring, aad: bitstring, info: bitstring) :=
+          return(OpenAuth(enc, the_sk, info, aad, c, pk))
+       )
+
+     ) (* End of the block defining Oaenc() and Oadec() *)
+  ) (* End of the block defining Osetup() *)
+  |
+
+  (* The adversary can make one call to the challenge oracle. *)
+  Ochall(pk_S: pkey_t, pk_R: pkey_t, enc_star: kemciph_t,
+         ciph_star: bitstring, aad_star: bitstring, info_star: bitstring) :=
+    (* only accept pk_S, pk_R such that they are honest public keys *)
+    find i' <= N, i'' <= N suchthat
+        defined(the_pk[i'], the_pk[i''], the_sk[i'], the_sk[i''])
+        && the_pk[i'] = pk_S
+        && the_pk[i''] = pk_R then (
+      get E(=pk_S, =pk_R, =enc_star, =ciph_star, =aad_star, =info_star) in (
+        return(bottom)
+      ) else (
+        let OpenAuth_Some(Context_Open_Some(pt: bitstring)) =
+            OpenAuth(enc_star, the_sk[i''], info_star, aad_star, ciph_star, pk_S) in (
+          event_abort adv_wins
+        ) else return(bottom)
+      )
+    ) else return(bottom)
+

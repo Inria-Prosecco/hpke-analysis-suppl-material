@@ -1,0 +1,153 @@
+(* For a group of prime order q:
+   PColl1Rand(Z_t) = PColl2Rand(Z_t) = 1/(q-1)
+   PCollKey1 = PCollKey2 = 1/(q-1)
+   PDistRerandom = 0
+
+   For Curve25519:
+   PColl1Rand(Z_t) = PColl2Rand(Z_t) = 2^{-251}
+   PCollKey1 = PCollKey2 = 2 PColl1Rand(Z_t) = 2^{-250}
+   PDistRerandom = 2^{-125}
+
+   For Curve448:
+   PColl1Rand(Z_t) = PColl2Rand(Z_t) = 2^{-445}
+   PCollKey1 = PCollKey2 = 2 PColl1Rand(Z_t) = 2^{-444}
+   PDistRerandom = 2^{-220}
+*)
+
+letfun DH(exponent: Z_t, group_element: G_t) =
+  exp(group_element, exponent).
+letfun pkgen(exponent: Z_t) =
+  exp(g, exponent).
+letfun skgen(exponent: Z_t) =
+  exponent.
+letfun GenerateKeyPair() =
+  z <-R Z_t;
+  (skgen(z), pkgen(z)).
+
+
+(* KDF *)
+
+type hash_key_t [fixed]. (* RO key *)
+type eae_input_t [fixed].
+type eae_output_t [fixed,large].
+type extract_salt_t [fixed]. (* We only use one constant salt value. *)
+type extract_key_t [fixed].
+type expand_info_t [fixed].
+const lbytes_empty: extract_salt_t.
+
+fun eae_input(extract_salt_t, extract_key_t, expand_info_t): eae_input_t [data].
+
+(* The core of ExtractAndExpand, a.k.a. HKDF.
+(* Usage of the RO assumption is for example justified in Lemma 6 of
+Benjamin Lipp, Bruno Blanchet, Karthikeyan Bhargavan,
+A Mechanised Cryptographic Proof of the WireGuard Virtual Private Network Protocol,
+EuroSP2019 *)
+expand ROM_hash_1(
+  (* types *)
+  hash_key_t,
+  eae_input_t,
+  eae_output_t,
+  (* functions *)
+  ExtractAndExpand_inner,
+  (* processes *)
+  ExtractAndExpand_inner_orcl,
+  (* parameters *)
+  Qh  (* number of queries to the oracle by the adversary *)
+).
+
+
+type length_t [fixed].
+type two_byte_t [fixed].
+fun I2OSP2(length_t): two_byte_t [data].
+const Nsecret: length_t.
+
+type label_protocol_t [fixed].
+const RFCXXXX: label_protocol_t.
+
+type label_extract_t [fixed].
+const label_eae_prk: label_extract_t.
+
+type label_expand_t [fixed].
+const label_shared_secret: label_expand_t.
+
+type suite_id_t [fixed].
+const suite_id: suite_id_t.
+
+type GG_t [fixed].
+type GGG_t [fixed].
+
+fun concatDH(G_t, G_t): GG_t [data].
+fun concatContext(G_t, G_t, G_t): GGG_t [data].
+
+(* This can be data because we only use it with a few known constants
+   for the two first parameters, or with fixed-length parameters. *)
+fun concatExtract(label_protocol_t, suite_id_t, label_extract_t, GG_t): extract_key_t [data].
+
+(* concatExpand is only used in LabeledExpand, which is only used
+   in ExtractAndExpand in the KEM:
+     LabeledExpand(eae_prk, label_shared_secret, kem_context, Nsecret)
+   with the following call:
+     concatExpand(I2OSP2(L), RFCXXXX, suite_id, label, info).
+   I2OSP2 is fixed-length (two bytes),
+   RFCXXXX is fixed-length (7 bytes),
+   suite_id is fixed-length,
+   label_shared_secret is fixed-length;
+   info is fixed-length as concatenation of enc||pkR||pkS *)
+fun concatExpand(two_byte_t, label_protocol_t, suite_id_t, label_expand_t, GGG_t): expand_info_t [data].
+
+(* Detailed justification that the following usage of ExtractAndExpand
+   satisfies the assumptions of above-mentioned Lemma 6, given it is
+   implemented by HKDF:
+
+- keyspace and info||i_0 do not collide, because info has two bytes and
+  then RFCXXXX, and RFCXXXX does not collide with itself when moved by
+  two bytes.
+
+For long Nsecret, we also need to consider this:
+- keyspace and hmac_output_space||info||i_j with j>0
+  Length(keyspace) - Length(hmac_output_space||info||i_j)
+  = -2 +Length(label_eae_prk) -Length(label_shared_secret) +Length(dh) -Length(kem_context) -Nh
+  = -2 +7 -13 +Ndh -Nenc -Npk -Npk -Nh
+  = -8 +Ndh -Nenc -Npk -Npk -Nh
+  Assuming that Ndh is pretty close to Npk, we can argue that
+  keyspace and hmac_output_space||info||i_j with j>0
+  have clearly different lengths, and thus, do not collide.
+
+Therefore the following usage of ExtractAndExpand satisfies the
+assumptions of Lemma 6.
+*)
+letfun ExtractAndExpand(key_extr: hash_key_t, dh: GG_t, kem_context: GGG_t) =
+  let key = concatExtract(RFCXXXX, suite_id, label_eae_prk, dh) in
+  let info = concatExpand(I2OSP2(Nsecret), RFCXXXX, suite_id, label_shared_secret, kem_context) in
+  ExtractAndExpand_inner(key_extr, eae_input(lbytes_empty, key, info)).
+
+
+expand OptionType_2(AuthEncap_res_t, AuthEncap_tuple, AuthEncap_None, eae_output_t, bitstring).
+
+letfun AuthEncap(key_extr: hash_key_t, pkR: G_t, skS: Z_t) =
+  let (skE: Z_t, pkE: G_t) = GenerateKeyPair() in
+  (
+    let dh: GG_t = concatDH(DH(skE, pkR), DH(skS, pkR)) in
+    let enc: bitstring = Serialize(pkE) in
+    let pkS = pkgen(skS) in
+    let kemContext: GGG_t = concatContext(pkE, pkR, pkS) in
+    let zz: eae_output_t = ExtractAndExpand(key_extr, dh, kemContext) in
+    AuthEncap_tuple(zz, enc)
+  ) else (
+    AuthEncap_None
+  ).
+
+expand OptionType_1(AuthDecap_res_t, AuthDecap_Some, AuthDecap_None, eae_output_t).
+
+letfun AuthDecap(key_extr: hash_key_t, enc: bitstring, skR: Z_t, pkS: G_t) =
+  let Serialize(pkE: G_t) = enc in
+  (
+    let dh: GG_t = concatDH(DH(skR, pkE), DH(skR, pkS)) in
+    let pkR = pkgen(skR) in
+    let kemContext: GGG_t = concatContext(pkE, pkR, pkS) in
+    let zz: eae_output_t = ExtractAndExpand(key_extr, dh, kemContext) in
+    AuthDecap_Some(zz)
+  ) else (
+    AuthDecap_None
+  ).
+

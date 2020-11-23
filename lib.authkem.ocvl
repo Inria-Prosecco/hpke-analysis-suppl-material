@@ -1,0 +1,276 @@
+(* The following macros define security properties of AKEM, which
+   we use as assumptions in the proof of HPKE.
+
+   They take the following arguments:
+   keypairseed: type of the randomness used to generate key pairs
+   pkey: type of public keys
+   skey: type of secret keys
+   kemseed: type of the randomness used in AuthEncap
+   AuthEncap_res: type of the result of AuthEncap
+   AuthDecap_res: type of the result of AuthDecap
+   key: type of encapsulated keys (cleartexts)
+   ciphertext: type of ciphertexts
+
+   skgen(keypairseed): skey. function that generates secret keys from randomness
+   pkgen(keypairseed): pkey. function that generates public keys from randomness
+   GenerateKeyPair: function that generates a key pair (it generates randomness internally)
+
+   AuthEncap(pkey, skey): AuthEncap_res: encapsulation function; AuthEncap(pk,sk) generates
+   a key k, encrypts it for pk, authenticates it using sk, and returns k and the ciphertext.
+   It generates randomness internally.
+   AuthEncap_r(kemseed, pkey, skey): AuthEncap_res: same as AuthEncap but takes randomness as
+   argument (of type kemseed).
+   AuthEncap_key_r(kemseed, pkey, skey): key: returns only the key component of AuthEncap_r
+   AuthEncap_enc_r(kemseed, pkey, skey): ciphertext: returns only the ciphertext component
+   of AuthEncap_r.
+   AuthEncap_tuple(key, ciphertext): AuthEncap_res builds a pair of key and ciphertext,
+   used as result of AuthEncap and AuthEncap_r. Hence
+     AuthEncap_r(r,pk,sk) = AuthEncap_tuple(AuthEncap_key_r(r,pk,sk), AuthEncap_enc_r(r,pk,sk))
+   AuthEncap_None: AuthEncap_res. Constant that corresponds to a failure of AuthEncap. 
+     In fact not used.
+
+   AuthDecap(ciphertext, skey, pkey): AuthDecap_res. Decapsulation function.
+     AuthDecap(c, sk, pk) verifies that the ciphertext c is authenticated using 
+     public key pk and decrypts it using secret key sk.
+   AuthDecap_Some(key): AuthDecap_res: result of AuthDecap in case of success.
+   AuthDecap_None: AuthDecap_res: result of AuthDecap in case of failure.
+
+   P_pk_coll: maximum probability over pk that pkgen(r) = pk when r is random (pk independent of r).
+
+   The types keypairseed, pkey, skey, kemseed, AuthEncap_res, key, ciphertext
+   and the probability P_pk_coll must be defined before calling these macros.
+   The other arguments are defined by the macro.
+ *)
+
+def Authenticated_KEM(keypairseed, pkey, skey, kemseed, AuthEncap_res, AuthDecap_res, key, ciphertext, skgen, pkgen, GenerateKeyPair, AuthEncap, AuthEncap_r, AuthEncap_key_r, AuthEncap_enc_r, AuthEncap_tuple, AuthEncap_None, AuthDecap, AuthDecap_Some, AuthDecap_None, P_pk_coll) {
+
+  fun skgen(keypairseed): skey.
+  fun pkgen(keypairseed): pkey.
+  letfun GenerateKeyPair() =
+    s <-R keypairseed; (skgen(s), pkgen(s)).
+
+  fun AuthEncap_r(kemseed, pkey, skey): AuthEncap_res.
+  fun AuthEncap_tuple(key, ciphertext): AuthEncap_res [data].
+  const AuthEncap_None: AuthEncap_res.
+  fun AuthEncap_key_r(kemseed, pkey, skey): key.
+  fun AuthEncap_enc_r(kemseed, pkey, skey): ciphertext.
+
+  letfun AuthEncap(pk: pkey, sk: skey) =
+    k <-R kemseed; AuthEncap_r(k, pk, sk).
+
+  expand OptionType_1(AuthDecap_res, AuthDecap_Some, AuthDecap_None, key).
+  fun AuthDecap(ciphertext, skey, pkey): AuthDecap_res.
+
+  param nAuthEncap.
+  equiv(eliminate_failing(AuthEncap))
+    foreach i <= nAuthEncap do
+      OAuthEncap(k: kemseed, pk: pkey, sk: skey) :=
+        return(AuthEncap_r(k, pk, sk)) [all]
+  <=(0)=> [manual,computational]
+    foreach i <= nAuthEncap do
+      OAuthEncap(k: kemseed, pk: pkey, sk: skey) :=
+        return(AuthEncap_tuple(AuthEncap_key_r(k, pk, sk), AuthEncap_enc_r(k, pk, sk))).
+
+  (* Correctness. *)
+  equation forall k: kemseed, s1: keypairseed, s2: keypairseed;
+    AuthDecap(
+      AuthEncap_enc_r(k, pkgen(s1), skgen(s2)),
+      skgen(s1),
+      pkgen(s2)
+    ) = AuthDecap_Some(AuthEncap_key_r(k, pkgen(s1), skgen(s2))).
+
+  (* Collisions of KEM private and public keys. *)
+  collision r1 <-R keypairseed; forall pk2: pkey;
+    return(pkgen(r1) = pk2) <=(P_pk_coll)=> return(false) if pk2 independent-of r1.
+
+}
+
+(* Macro Outsider_CCA_Secure_Authenticated_KEM defines an Outsider-CCA secure AKEM.
+   In addition to the previous arguments, it takes the advantage of the adversary
+   over the Outsider-CCA property, Adv_Outsider_CCA(time, N, Qetot, Qdtot),
+   where time is the runtime of the adversary, N the number of users, and Qetot, Qdtot
+   the total number of queries to the Encap and Decap oracles, respectively. *)
+
+def Outsider_CCA_Secure_Authenticated_KEM(keypairseed, pkey, skey, kemseed, AuthEncap_res, AuthDecap_res, key, ciphertext, skgen, pkgen, GenerateKeyPair, AuthEncap, AuthEncap_r, AuthEncap_key_r, AuthEncap_enc_r, AuthEncap_tuple, AuthEncap_None, AuthDecap, AuthDecap_Some, AuthDecap_None, P_pk_coll, Adv_Outsider_CCA) {
+
+  expand Authenticated_KEM(keypairseed, pkey, skey, kemseed, AuthEncap_res, AuthDecap_res, key, ciphertext, skgen, pkgen, GenerateKeyPair, AuthEncap, AuthEncap_r, AuthEncap_key_r, AuthEncap_enc_r, AuthEncap_tuple, AuthEncap_None, AuthDecap, AuthDecap_Some, AuthDecap_None, P_pk_coll).
+
+  param N, Qeperuser, Qdperuser.
+
+  (* In this security notion, the sender keypair is honest, which means the
+     private key is not known to the adversary. *)
+  equiv(outsider_cca(AuthEncap))
+    foreach i <= N do s <-R keypairseed; (
+      foreach ie <= Qeperuser do ks <-R kemseed; (
+        OAEncap(pk_R: pkey) :=
+          return(AuthEncap_r(ks, pk_R, skgen(s)))) |
+      foreach id <= Qdperuser do (
+        OADecap(pk_S: pkey, enc: ciphertext) :=
+          return(AuthDecap(enc, skgen(s), pk_S))) |
+      (* The next oracle gives the public key to the adversary *)
+      Opk() := return(pkgen(s))
+    )
+  <=(Adv_Outsider_CCA(time, N, #OAEncap, #OADecap))=> [manual,computational]
+    foreach i <= N do s <-R keypairseed [unchanged]; (
+      foreach ie <= Qeperuser do ks <-R kemseed [unchanged]; (
+        OAEncap(pk_R: pkey) :=
+          find i2 <= N suchthat defined(s[i2]) && pk_R = pkgen(s[i2]) then (
+            let AuthEncap_tuple(k: key, ce: ciphertext) = AuthEncap_r(ks, pk_R, skgen(s)) in (
+              k' <-R key;
+              return(AuthEncap_tuple(k', ce))
+            ) else (
+              (* Never happens because AuthEncap always returns AuthEncap_tuple(...) *)
+              return(AuthEncap_None)
+            )
+          ) else (
+            return(AuthEncap_r(ks, pk_R, skgen(s)))
+          )) |
+      foreach id <= Qdperuser do (
+        OADecap(pk_S: pkey, cd: ciphertext) :=
+	  (* This "find" implements a lookup in the set E of the paper.
+             The set is not built explicitly; we look for values in
+             encryption queries using arrays -- all variables are implicitly
+             stored in arrays indexed by replication indices above their
+             definition. *)
+          find ie1 <= Qeperuser, i1 <= N suchthat
+            defined(s[i1], pk_R[ie1, i1], k'[ie1, i1], ce[ie1, i1]) &&
+              pkgen(s) = pk_R[ie1, i1] && pkgen(s[i1]) = pk_S && ce[ie1, i1] = cd then (
+            return(AuthDecap_Some(k'[ie1, i1]))
+          ) else (
+            return(AuthDecap(cd, skgen(s), pk_S))
+          )) |
+      Opk() := return(pkgen(s))
+    ).
+}
+
+(* Macro Outsider_Secure_Authenticated_KEM defines an Outsider-CCA and Outsider-Auth AKEM.
+   In addition to the arguments mentioned at the top of the file, it takes the advantage 
+   of the adversary over the Outsider-CCA property, Adv_Outsider_CCA(time, N, Qetot, Qdtot), and 
+   over the Outsider-Auth property, Adv_Outsider_Auth(time, N, Qetot, Qdtot),
+   where time is the runtime of the adversary, N the number of users, and Qetot, Qdtot
+   the total number of queries to the Encap and Decap oracles, respectively. *)    
+
+def Outsider_Secure_Authenticated_KEM(keypairseed, pkey, skey, kemseed, AuthEncap_res, AuthDecap_res, key, ciphertext, skgen, pkgen, GenerateKeyPair, AuthEncap, AuthEncap_r, AuthEncap_key_r, AuthEncap_enc_r, AuthEncap_tuple, AuthEncap_None, AuthDecap, AuthDecap_Some, AuthDecap_None, P_pk_coll, Adv_Outsider_CCA, Adv_Outsider_Auth) {
+
+  expand Outsider_CCA_Secure_Authenticated_KEM(keypairseed, pkey, skey, kemseed, AuthEncap_res, AuthDecap_res, key, ciphertext, skgen, pkgen, GenerateKeyPair, AuthEncap, AuthEncap_r, AuthEncap_key_r, AuthEncap_enc_r, AuthEncap_tuple, AuthEncap_None, AuthDecap, AuthDecap_Some, AuthDecap_None, P_pk_coll, Adv_Outsider_CCA).
+
+  param N, Qeperuser, Qdperuser.
+
+  equiv(outsider_auth(AuthEncap))
+    foreach i <= N do s <-R keypairseed; (
+      foreach ie <= Qeperuser do ks <-R kemseed; (
+        OAEncap(pk_R: pkey) :=
+          return(AuthEncap_r(ks, pk_R, skgen(s)))) |
+      foreach id <= Qdperuser do (
+        OADecap(pk_S: pkey, enc: ciphertext) :=
+          return(AuthDecap(enc, skgen(s), pk_S))) |
+      (* The next oracle gives the public key to the adversary *)
+      Opk() := return(pkgen(s))
+    )
+  <=(Adv_Outsider_Auth(time, N, #OAEncap, #OADecap))=> [manual,computational]
+    foreach i <= N do s <-R keypairseed [unchanged]; (
+      foreach ie <= Qeperuser do ks <-R kemseed [unchanged]; (
+        OAEncap(pk_R: pkey) :=
+          let AuthEncap_tuple(k: key, ce: ciphertext) = AuthEncap_r(ks, pk_R, skgen(s)) in (
+            return(AuthEncap_tuple(k, ce))
+          ) else (
+	   (* Never happens because AuthEncap always returns AuthEncap_tuple(...) *)
+            return(AuthEncap_None)
+          )) |
+      foreach id <= Qdperuser do (
+        OADecap(pk_S: pkey, cd: ciphertext) :=
+	  (* This "find" implements a lookup in the set E of the paper.
+             The set is not built explicitly; we look for values in
+             Oencap and previous Odecap queries using arrays.
+	     The first branch looks into Oencap queries, and in case of
+	     success, the oracle returns the key k computed there.
+	     The second branch (after "orfind") looks into previous
+	     Odecap queries, and in case of success, the oracle returns 
+	     the previously computed key k'. *)
+          find ie1 <= Qeperuser, i1 <= N suchthat
+              defined(s[i1], pk_R[ie1, i1], k[ie1, i1], ce[ie1, i1]) &&
+              pkgen(s) = pk_R[ie1, i1] && pkgen(s[i1]) = pk_S && ce[ie1, i1] = cd then (
+            return(AuthDecap_Some(k[ie1, i1]))
+          ) orfind id1 <= Qdperuser, i1 <= N suchthat
+              defined(s[i1], pk_S[id1, i1], k'[id1, i1], cd[id1, i1]) &&
+              pkgen(s) = pkgen(s[i1]) && pk_S[id1, i1] = pk_S && cd[id1, i1] = cd then (
+            return(AuthDecap_Some(k'[id1, i1]))
+          ) else (
+	      (* This "find" checks whether pk_S is among the honest public keys pk_i *)
+              find i1 <= N suchthat defined(s[i1]) && pk_S = pkgen(s[i1]) then (
+                let AuthDecap_Some(k0) = AuthDecap(cd, skgen(s), pk_S) in (
+                  k' <-R key;
+                  return(AuthDecap_Some(k'))
+                ) else (
+                  return(AuthDecap_None)
+                )
+              ) else (
+                return(AuthDecap(cd, skgen(s), pk_S))
+              )
+          )) |
+      Opk() := return(pkgen(s))
+    ).
+
+}
+
+(* Macro Insider_CCA_Secure_Authenticated_KEM defines an Insider-CCA AKEM.
+   In addition to the arguments mentioned at the top of the file, it takes the advantage 
+   of the adversary over the Insider-CCA property, Adv_Insider_CCA(time, N, Qetot, Qctot, Qdtot),
+   where time is the runtime of the adversary, N the number of users, and Qetot, Qctot, Qdtot
+   the total number of queries to the Encap, Decap, and Challenge oracles, respectively. *)    
+
+def Insider_CCA_Secure_Authenticated_KEM(keypairseed, pkey, skey, kemseed, AuthEncap_res, AuthDecap_res, key, ciphertext, skgen, pkgen, GenerateKeyPair, AuthEncap, AuthEncap_r, AuthEncap_key_r, AuthEncap_enc_r, AuthEncap_tuple, AuthEncap_None, AuthDecap, AuthDecap_Some, AuthDecap_None, P_pk_coll, Adv_Insider_CCA) {
+
+  expand Authenticated_KEM(keypairseed, pkey, skey, kemseed, AuthEncap_res, AuthDecap_res, key, ciphertext, skgen, pkgen, GenerateKeyPair, AuthEncap, AuthEncap_r, AuthEncap_key_r, AuthEncap_enc_r, AuthEncap_tuple, AuthEncap_None, AuthDecap, AuthDecap_Some, AuthDecap_None, P_pk_coll).
+
+  param N, Qeperuser, Qdperuser, Qcperuser.
+
+  equiv(insider_cca(AuthEncap))
+    foreach i <= N do s <-R keypairseed; (
+      foreach ic <= Qcperuser do ks' <-R kemseed; (
+        Ochall(s': keypairseed) :=
+          return(AuthEncap_r(ks', pkgen(s), skgen(s')))) |
+      foreach ie <= Qeperuser do ks <-R kemseed; (
+        OAEncap(pk_R: pkey) :=
+          return(AuthEncap_r(ks, pk_R, skgen(s)))) |
+      foreach id <= Qdperuser do (
+        OADecap(pk_S: pkey, enc: ciphertext) :=
+          return(AuthDecap(enc, skgen(s), pk_S))) |
+      (* The next oracle gives the public key to the adversary *)
+      Opk() := return(pkgen(s))
+    )
+  <=(Adv_Insider_CCA(time, N, #OAEncap, #Ochall, #OADecap))=> [manual,computational]
+    foreach i <= N do s <-R keypairseed [unchanged]; (
+      foreach ic <= Qcperuser do ks' <-R kemseed; (
+        Ochall(s': keypairseed) :=
+          let AuthEncap_tuple(k: key, ce: ciphertext) = AuthEncap_r(ks', pkgen(s), skgen(s')) in (
+            k' <-R key;
+            return(AuthEncap_tuple(k', ce))
+          ) else (
+	    (* Never happens because AuthEncap always returns AuthEncap_tuple(...) *)
+            return(AuthEncap_None)
+          )) |
+      foreach ie <= Qeperuser do ks <-R kemseed; (
+        OAEncap(pk_R: pkey) :=
+          return(AuthEncap_r(ks, pk_R, skgen(s)))) |
+      foreach id <= Qdperuser do (
+        OADecap(pk_S: pkey, cd: ciphertext) :=
+	  (* This "find" implements a lookup in the set E of the paper.
+             The set is not built explicitly; we look for values in
+             Ochall queries using arrays -- all variables are implicitly
+             stored in arrays indexed by replication indices above their
+             definition. *)	  
+          find ic1 <= Qcperuser, i1 <= N suchthat
+              defined(ce[ic1, i1], k'[ic1, i1], s[i1], s'[ic1, i1])
+              && ce[ic1, i1] = cd
+              && pkgen(s'[ic1, i1]) = pk_S
+              && pkgen(s[i1]) = pkgen(s) then (
+            return(AuthDecap_Some(k'[ic1, i1]))
+          ) else (
+            return(AuthDecap(cd, skgen(s), pk_S))
+          )
+      ) |
+      Opk() := return(pkgen(s))
+    ).
+
+}

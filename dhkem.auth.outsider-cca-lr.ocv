@@ -1,0 +1,333 @@
+proof {
+  allowed_collisions pest150;
+  (* start on the left side *)
+  out_game "l1.out.cv";
+  (* Let appear this case distinction in the Encap oracle,
+     that is present on the right side. *)
+  insert after "OAEncap(pk_R"
+    "find i1 <= N suchthat
+      defined(sk[i1])
+      && pk_R = exp(g, sk[i1]) then";
+  (* Use unique names for the assignments of the following variables
+     that are currently not unique *)
+  SArename z;
+  SArename enc_1;
+  SArename zz_2;
+  SArename pkE_2;
+  SArename pkS;
+  SArename dh_2;
+  SArename kemContext_2;
+  SArename key;
+  SArename info;
+  (* Let appear this case distinction in the Decap oracle,
+     that is present on the right side *)
+  insert after "OADecap(pk_S"
+    "find ie1 <= Qeperuser, i1 <= N suchthat
+      defined(sk[i1], pk_R[ie1, i1], zz_10[ie1, i1], z_5[ie1, i1], enc_8[ie1, i1])
+      && exp(g, sk) = pk_R[ie1, i1]
+      && pk_S = exp(g, sk[i1])
+      && enc_8[ie1, i1] = enc_2 then";
+  out_game "l2.out.cv";
+  out_game "l2occ.out.cv" occ;
+  (* Use correctness of the KEM: In the Decap oracle for honest
+     participants, return the key chosen in the Encap oracle.
+     This replacement is done at the 1st line that matches the regex,
+     at the 3rd term/occurrence number within the match (zz_3). *)
+  replace
+    at_nth 1 3 "return{[0-9]*}({[0-9]*}AuthDecap_Some({[0-9]*}zz_3))"
+    "zz_10[ie1_2, i1_8]";
+  all_simplify;
+  (* Make it possible to reason about the composition of the
+     random oracle inputs, specifically the group elements,
+     which is needed for the usage of the GDH assumption. *)
+  insert after "OH(x1"
+    "let eae_input(
+      salt: extract_salt_t,
+      concatExtract(
+        protocol1: label_protocol_t,
+        suite1: suite_id_t,
+        label1: label_extract_t,
+        concatDH(dh1: G_t, dh2: G_t)),
+      concatExpand(
+        l: two_byte_t,
+        protocol2: label_protocol_t,
+        suite2: suite_id_t,
+        label2: label_expand_t,
+        concatContext(pkE': G_t, pkR': G_t, pkS': G_t))) = x1 in";
+  out_game "l3.out.cv";
+  crypto rom(ExtractAndExpand_inner);
+  out_game "l4.out.cv";
+  (* Apply the GDH assumption, where the longterm static key sk, and
+     the ephemeral key z_5 (generated in the Encaps oracle in the case
+     of honest participants), are considered uncompromised. *)
+  crypto gdh(exp) [variables: sk -> a, z_5 -> b];
+  out_game "l5.out.cv";
+
+  (* go to the right side *)
+  start_from_other_end;
+  out_game "r1.out.cv";
+  (* Make it possible to reason about the composition of the
+     random oracle inputs, specifically the group elements,
+     which is needed for the usage of the GDH assumption. *)
+  insert after "OH(x1"
+    "let eae_input(
+      salt: extract_salt_t,
+      concatExtract(
+        protocol1: label_protocol_t,
+        suite1: suite_id_t,
+        label1: label_extract_t,
+        concatDH(dh1: G_t, dh2: G_t)),
+      concatExpand(l: two_byte_t,
+        protocol2: label_protocol_t,
+        suite2: suite_id_t,
+        label2: label_expand_t,
+        concatContext(pkE'': G_t, pkR'': G_t, pkS'': G_t))) = x1_1 in";
+  crypto rom(ExtractAndExpand_inner);
+  out_game "r2.out.cv";
+  success
+}
+
+type G_t [bounded].
+fun Serialize(G_t): bitstring [data].
+type Z_t [bounded,pcoll250,nonuniform].
+proba PCollKey [pest250].
+
+expand DH_proba_collision_minimal(
+  G_t,
+  Z_t,
+  g,
+  exp,
+  mult,
+  PCollKey
+).
+
+
+proba Adv_GDH.
+proba PDistRerandom.
+expand GDH_RSR_minimal(
+  (* types *)
+  G_t,  (* Group elements *)
+  Z_t,  (* Exponents *)
+  (* variables *)
+  g,    (* a generator of the group *)
+  exp,  (* exponentiation function *)
+  mult, (* multiplication function for exponents *)
+  (* probabilities *)
+  Adv_GDH, (* probability of breaking the GDH assumption *)
+  PDistRerandom (* probability of distinguishing a key that comes from 
+       rerandomization from an honestly chosen key *)
+).
+
+(* For a group of prime order q:
+   PColl1Rand(Z_t) = PColl2Rand(Z_t) = 1/(q-1)
+   PCollKey1 = PCollKey2 = 1/(q-1)
+   PDistRerandom = 0
+
+   For Curve25519:
+   PColl1Rand(Z_t) = PColl2Rand(Z_t) = 2^{-251}
+   PCollKey1 = PCollKey2 = 2 PColl1Rand(Z_t) = 2^{-250}
+   PDistRerandom = 2^{-125}
+
+   For Curve448:
+   PColl1Rand(Z_t) = PColl2Rand(Z_t) = 2^{-445}
+   PCollKey1 = PCollKey2 = 2 PColl1Rand(Z_t) = 2^{-444}
+   PDistRerandom = 2^{-220}
+*)
+
+letfun DH(exponent: Z_t, group_element: G_t) =
+  exp(group_element, exponent).
+letfun pkgen(exponent: Z_t) =
+  exp(g, exponent).
+letfun skgen(exponent: Z_t) =
+  exponent.
+letfun GenerateKeyPair() =
+  z <-R Z_t;
+  (skgen(z), pkgen(z)).
+
+
+(* KDF *)
+
+type hash_key_t [fixed]. (* RO key *)
+type eae_input_t [fixed].
+type eae_output_t [fixed,large].
+type extract_salt_t [fixed]. (* We only use one constant salt value. *)
+type extract_key_t [fixed].
+type expand_info_t [fixed].
+const lbytes_empty: extract_salt_t.
+
+fun eae_input(extract_salt_t, extract_key_t, expand_info_t): eae_input_t [data].
+
+(* The core of ExtractAndExpand, a.k.a. HKDF.
+(* Usage of the RO assumption is for example justified in Lemma 6 of
+Benjamin Lipp, Bruno Blanchet, Karthikeyan Bhargavan,
+A Mechanised Cryptographic Proof of the WireGuard Virtual Private Network Protocol,
+EuroSP2019 *)
+expand ROM_hash_1(
+  (* types *)
+  hash_key_t,
+  eae_input_t,
+  eae_output_t,
+  (* functions *)
+  ExtractAndExpand_inner,
+  (* processes *)
+  ExtractAndExpand_inner_orcl,
+  (* parameters *)
+  Qh  (* number of queries to the oracle by the adversary *)
+).
+
+
+type length_t [fixed].
+type two_byte_t [fixed].
+fun I2OSP2(length_t): two_byte_t [data].
+const Nsecret: length_t.
+
+type label_protocol_t [fixed].
+const RFCXXXX: label_protocol_t.
+
+type label_extract_t [fixed].
+const label_eae_prk: label_extract_t.
+
+type label_expand_t [fixed].
+const label_shared_secret: label_expand_t.
+
+type suite_id_t [fixed].
+const suite_id: suite_id_t.
+
+type GG_t [fixed].
+type GGG_t [fixed].
+
+fun concatDH(G_t, G_t): GG_t [data].
+fun concatContext(G_t, G_t, G_t): GGG_t [data].
+
+(* This can be data because we only use it with a few known constants
+   for the two first parameters, or with fixed-length parameters. *)
+fun concatExtract(label_protocol_t, suite_id_t, label_extract_t, GG_t): extract_key_t [data].
+
+(* concatExpand is only used in LabeledExpand, which is only used
+   in ExtractAndExpand in the KEM:
+     LabeledExpand(eae_prk, label_shared_secret, kem_context, Nsecret)
+   with the following call:
+     concatExpand(I2OSP2(L), RFCXXXX, suite_id, label, info).
+   I2OSP2 is fixed-length (two bytes),
+   RFCXXXX is fixed-length (7 bytes),
+   suite_id is fixed-length,
+   label_shared_secret is fixed-length;
+   info is fixed-length as concatenation of enc||pkR||pkS *)
+fun concatExpand(two_byte_t, label_protocol_t, suite_id_t, label_expand_t, GGG_t): expand_info_t [data].
+
+(* Detailed justification that the following usage of ExtractAndExpand
+   satisfies the assumptions of above-mentioned Lemma 6, given it is
+   implemented by HKDF:
+
+- keyspace and info||i_0 do not collide, because info has two bytes and
+  then RFCXXXX, and RFCXXXX does not collide with itself when moved by
+  two bytes.
+
+For long Nsecret, we also need to consider this:
+- keyspace and hmac_output_space||info||i_j with j>0
+  Length(keyspace) - Length(hmac_output_space||info||i_j)
+  = -2 +Length(label_eae_prk) -Length(label_shared_secret) +Length(dh) -Length(kem_context) -Nh
+  = -2 +7 -13 +Ndh -Nenc -Npk -Npk -Nh
+  = -8 +Ndh -Nenc -Npk -Npk -Nh
+  Assuming that Ndh is pretty close to Npk, we can argue that
+  keyspace and hmac_output_space||info||i_j with j>0
+  have clearly different lengths, and thus, do not collide.
+
+Therefore the following usage of ExtractAndExpand satisfies the
+assumptions of Lemma 6.
+*)
+letfun ExtractAndExpand(key_extr: hash_key_t, dh: GG_t, kem_context: GGG_t) =
+  let key = concatExtract(RFCXXXX, suite_id, label_eae_prk, dh) in
+  let info = concatExpand(I2OSP2(Nsecret), RFCXXXX, suite_id, label_shared_secret, kem_context) in
+  ExtractAndExpand_inner(key_extr, eae_input(lbytes_empty, key, info)).
+
+
+expand OptionType_2(AuthEncap_res_t, AuthEncap_tuple, AuthEncap_None, eae_output_t, bitstring).
+
+letfun AuthEncap(key_extr: hash_key_t, pkR: G_t, skS: Z_t) =
+  let (skE: Z_t, pkE: G_t) = GenerateKeyPair() in
+  (
+    let dh: GG_t = concatDH(DH(skE, pkR), DH(skS, pkR)) in
+    let enc: bitstring = Serialize(pkE) in
+    let pkS = pkgen(skS) in
+    let kemContext: GGG_t = concatContext(pkE, pkR, pkS) in
+    let zz: eae_output_t = ExtractAndExpand(key_extr, dh, kemContext) in
+    AuthEncap_tuple(zz, enc)
+  ) else (
+    AuthEncap_None
+  ).
+
+expand OptionType_1(AuthDecap_res_t, AuthDecap_Some, AuthDecap_None, eae_output_t).
+
+letfun AuthDecap(key_extr: hash_key_t, enc: bitstring, skR: Z_t, pkS: G_t) =
+  let Serialize(pkE: G_t) = enc in
+  (
+    let dh: GG_t = concatDH(DH(skR, pkE), DH(skR, pkS)) in
+    let pkR = pkgen(skR) in
+    let kemContext: GGG_t = concatContext(pkE, pkR, pkS) in
+    let zz: eae_output_t = ExtractAndExpand(key_extr, dh, kemContext) in
+    AuthDecap_Some(zz)
+  ) else (
+    AuthDecap_None
+  ).
+
+
+
+param N, Qeperuser, Qdperuser [size30].
+
+equivalence
+  Ostart() :=
+    key_extr <-R hash_key_t;
+    return();
+    ((
+      foreach i <= N do Osetup() := sk <-R Z_t; return(); (
+        foreach ie <= Qeperuser do (
+	  OAEncap(pk_R: G_t) :=
+            return(AuthEncap(key_extr, pk_R, skgen(sk)))) |
+        foreach id <= Qdperuser do (
+	  OADecap(pk_S: G_t, enc: bitstring) :=
+            return(AuthDecap(key_extr, enc, skgen(sk), pk_S))) |
+	(* The next oracle gives the public key to the adversary *)
+        Opk() := return(pkgen(sk))
+      )) |
+      (* The random oracle ExtractAndExpand_inner *)
+      run ExtractAndExpand_inner_orcl(key_extr)
+    )
+
+  Ostart() :=
+    key_extr <-R hash_key_t;
+    return();
+    ((
+      foreach i <= N do Osetup() := sk <-R Z_t; return(); (
+        foreach ie <= Qeperuser do (
+	  OAEncap(pk_R: G_t) :=
+            find i1 <= N suchthat defined(sk[i1]) && pk_R = pkgen(sk[i1]) then (
+              let AuthEncap_tuple(k: eae_output_t, ce: bitstring) = AuthEncap(key_extr, pk_R, skgen(sk)) in (
+                k' <-R eae_output_t;
+                return(AuthEncap_tuple(k', ce))
+	      )
+	      else (
+	        (* Never happens because AuthEncap always returns AuthEncap_tuple(...) *)
+                return(AuthEncap_None)
+              )
+            ) else (
+              return(AuthEncap(key_extr, pk_R, skgen(sk)))
+            )) |
+        foreach id <= Qdperuser do (
+	  OADecap(pk_S: G_t, cd: bitstring) :=
+	    (* This "find" implements a lookup in the set E of the paper.
+               The set is not built explicitly; we look for values in
+               encryption queries using arrays -- all variables are implicitly
+               stored in arrays indexed by replication indices above their
+               definition. *)
+            find ie1 <= Qeperuser, i1 <= N suchthat
+              defined(sk[i1], pk_R[ie1, i1], k'[ie1, i1], ce[ie1, i1]) &&
+                pkgen(sk) = pk_R[ie1, i1] && pkgen(sk[i1]) = pk_S && ce[ie1, i1] = cd then (
+              return(AuthDecap_Some(k'[ie1, i1]))
+            ) else (
+              return(AuthDecap(key_extr, cd, skgen(sk), pk_S))
+            )) |
+        Opk() := return(pkgen(sk))
+      )) |
+      run ExtractAndExpand_inner_orcl(key_extr)
+    )

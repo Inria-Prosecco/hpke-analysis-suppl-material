@@ -1,0 +1,37 @@
+(* Pseudo random function (PRF) 
+   key: type of keys, must be "bounded" (to be able to generate random numbers from it, and to talk about the runtime of f without mentioned the length of the key), typically "fixed" and "large".
+   input1: type of the input of the PRF.
+   output: type of the output of the PRF, must be "bounded" or "nonuniform", typically "fixed".
+
+   f: PRF function
+
+   Pprf(t, Nk, Ntot, l): probability of breaking the PRF property
+   in time t, for Nk keys, N queries to the PRF on total of length at most l.
+
+   The types key, input1, output and the probability Pprf must
+   be declared before this macro is expanded. The function f
+   is declared by this macro. It must not be declared elsewhere,
+   and it can be used only after expanding the macro.
+
+      *)
+
+def multikey_PRF(key, input1, output, f, Pprf) {
+
+fun f(key, input1):output.
+
+param Nk, N.
+
+equiv(prf(f))
+  foreach ik <= Nk do
+    k <-R key; (
+    foreach i <= N do O(x: input1) := return(f(k, x)))
+<=(Pprf(time, Nk,#O))=>
+  foreach ik <= Nk do
+     foreach i <= N do O(x: input1) :=
+        find[unique] u <= N suchthat defined(x[u], r[u]) && x = x[u] then
+	  return(r[u])
+        else
+          r <-R output; return(r).
+
+}
+

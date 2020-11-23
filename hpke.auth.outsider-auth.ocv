@@ -1,0 +1,301 @@
+proof {
+  out_game "g00.out.cv";
+  remove_assign binder the_sk;
+  remove_assign binder the_pk;
+  out_game "g01.out.cv";
+  crypto outsider_cca(AuthEncap) [variables: s->s_1];
+  out_game "g02.out.cv";
+  SArename k_2;
+  out_game "g03.out.cv";
+  crypto outsider_auth(AuthEncap) [variables: s->s_1];
+  out_game "g04.out.cv";
+  crypto eliminate_failing(AuthEncap) **;
+  out_game "g05.out.cv";
+  crypto prf(KeySchedule_auth) k'_1 k'_2 k'_3;
+  out_game "g06.out.cv";
+  crypto splitter(split) **;
+  out_game "g07.out.cv";
+  crypto int_ctxt(Seal_inner) part1_7 part1_6 part1_2 part1_3 part1_5 part1_1 part1;
+  out_game "g08.out.cv";
+  success
+}
+
+(** Key Encapsulation Mechanism **)
+type keypairseed_t [bounded,large].
+type kemseed_t [fixed,large].
+type skey_t [bounded,large].
+type pkey_t [bounded,large].
+type kemkey_t [fixed,large].
+type kemciph_t [fixed,large].
+type AuthEncap_res_t [fixed,large].
+proba P_pk_coll.
+proba Adv_Outsider_CCA.
+proba Adv_Outsider_Auth.
+fun kemkey2bitstr(kemkey_t): bitstring [data].
+fun kemciph2bitstr(kemciph_t): bitstring [data].
+expand Outsider_Secure_Authenticated_KEM(keypairseed_t, pkey_t, skey_t, kemseed_t, AuthEncap_res_t, AuthDecap_res_t, kemkey_t, kemciph_t, skgen, pkgen, GenerateKeyPair, AuthEncap, AuthEncap_r, AuthEncap_key_r, AuthEncap_enc_r, AuthEncap_tuple, AuthEncap_None, AuthDecap, AuthDecap_Some, AuthDecap_None, P_pk_coll, Adv_Outsider_CCA, Adv_Outsider_Auth).
+
+
+type key_t [large,fixed].
+
+type nonce_t [large,fixed].
+expand Xor(
+  nonce_t,   (* the space on which xor operates *)
+  xor,       (* name of the xor function *)
+  nonce_zero (* the bitstring consisting only of zeroes in nonce_t; also used for seq that starts at zero *)
+).
+
+
+(** KDF **)
+
+type extract_t [fixed,large].
+type keys_t [fixed,large].
+type tuple_t [fixed,large].
+expand random_split_2(
+  keys_t,
+  key_t,
+  nonce_t,
+  tuple_t,
+  concat,
+  split
+).
+
+proba Adv_PRF_KeySchedule.
+expand multikey_PRF(
+  kemkey_t,
+  bitstring, (* info *)
+  keys_t,
+  KeySchedule_auth,
+  Adv_PRF_KeySchedule
+).
+
+
+(* An AEAD encryption algorithm *)
+
+proba Adv_cpa.
+proba Adv_ctxt.
+expand multikey_AEAD(
+  (* types *)
+  key_t,
+  bitstring, (* plaintext *)
+  bitstring, (* ciphertext *)
+  bitstring, (* additional data *)
+  nonce_t,
+  (* functions *)
+  Seal_inner,
+  Open_inner,
+  injbot, (* injection from plaintext to bitstringbot:
+          (* injbot(plaintext): bitstringbot *)
+  Length,   (* returns a plaintext of same length, consisting of zeros:
+          (* Length(plaintext): plaintext *)
+  (* probabilities *)
+  Adv_cpa,
+  Adv_ctxt
+).
+letfun Seal(key: key_t, nonce: nonce_t, aad: bitstring, pt: bitstring) =
+  Seal_inner(pt, aad, key, nonce).
+letfun Open(key: key_t, nonce: nonce_t, aad: bitstring, ct: bitstring) =
+  Open_inner(ct, aad, key, nonce).
+
+
+
+(* Encryption Context *)
+
+type context_t [large,fixed].
+(* key, nonce, seq *)
+fun Context(key_t, nonce_t, nonce_t): context_t [data].
+
+
+expand OptionType_1(KeySchedule_res_t, KeySchedule_Some, KeySchedule_None, context_t).
+
+letfun KeySchedule(shared_secret: kemkey_t, info: bitstring) =
+  let concat(key: key_t, nonce: nonce_t) =
+        split(KeySchedule_auth(shared_secret, info)) in (
+    KeySchedule_Some(Context(key, nonce, nonce_zero))
+  ) else (
+    KeySchedule_None
+  ).
+
+
+(* Authentication using an Asymmetric Key *)
+
+expand OptionType_2(SetupAuthS_res_t, SetupAuthS_Some, SetupAuthS_None, kemciph_t, context_t).
+
+letfun SetupAuthS(pkR: pkey_t, info: bitstring, skS: skey_t) =
+  let AuthEncap_tuple(shared_secret: kemkey_t, enc: kemciph_t) = AuthEncap(pkR, skS) in
+  (
+    let KeySchedule_Some(ctx: context_t) = KeySchedule(shared_secret, info) in
+    (
+      SetupAuthS_Some(enc, ctx)
+    ) else (
+      SetupAuthS_None
+    )
+  ) else (
+    SetupAuthS_None
+  ).
+
+expand OptionType_1(SetupAuthR_res_t, SetupAuthR_Some, SetupAuthR_None, context_t).
+
+letfun SetupAuthR(enc: kemciph_t, skR: skey_t, info: bitstring, pkS: pkey_t) =
+  let AuthDecap_Some(shared_secret: kemkey_t) = AuthDecap(enc, skR, pkS) in
+  (
+    let KeySchedule_Some(ctx: context_t) = KeySchedule(shared_secret, info) in
+    (
+      SetupAuthR_Some(ctx)
+    ) else (
+      SetupAuthR_None
+    )
+  ) else (
+    SetupAuthR_None
+  ).
+
+
+(* Encryption and Decryption *)
+
+letfun Context_Nonce(nonce: nonce_t, seq: nonce_t) =
+  (* We suppose that seq has already the length of the nonce, by
+     assigning it the type nonce_t. *)
+  xor(nonce, seq).
+
+
+expand OptionType_1(Context_Seal_res_t, Context_Seal_Some, Context_Seal_None, bitstring).
+
+letfun Context_Seal(context: context_t, aad: bitstring,
+                    pt: bitstring) =
+  let Context(key: key_t, nonce: nonce_t, seq: nonce_t) = context in
+  (
+    let ct: bitstring = Seal(key, Context_Nonce(nonce, seq), aad, pt) in
+    (* We consider a single message, so we do not need to model the increment of seq *)
+    Context_Seal_Some(ct)
+  ) else (
+    Context_Seal_None
+  ).
+
+expand OptionType_1(Context_Open_res_t, Context_Open_Some, Context_Open_None, bitstring).
+
+letfun Context_Open(context: context_t, aad: bitstring,
+                    ct: bitstring) =
+  let Context(key: key_t, nonce: nonce_t, seq: nonce_t) = context in
+  (
+    let injbot(pt: bitstring) = Open(key, Context_Nonce(nonce, seq),
+                                     aad, ct) in
+    (
+      (* We consider a single message, so we do not need to model the increment of seq *)
+      Context_Open_Some(pt)
+    ) else (
+      Context_Open_None
+    )
+  ) else (
+    Context_Open_None
+  ).
+
+(* Single-Shot APIs *)
+
+expand OptionType_2(SealAuth_res_t, SealAuth_Some, SealAuth_None, kemciph_t, bitstring).
+
+letfun SealAuth(pkR: pkey_t, info: bitstring, aad: bitstring,
+                pt: bitstring, skS: skey_t) =
+  let SetupAuthS_Some(enc: kemciph_t, ctx: context_t) =
+    SetupAuthS(pkR, info, skS) in
+  (
+    let Context_Seal_Some(ct: bitstring) = Context_Seal(ctx, aad, pt) in
+    (
+      SealAuth_Some(enc, ct)
+    ) else (
+      SealAuth_None
+    )
+  ) else (
+    SealAuth_None
+  ).
+
+expand OptionType_1(OpenAuth_res_t, OpenAuth_Some, OpenAuth_None, Context_Open_res_t).
+
+letfun OpenAuth(enc: kemciph_t, skR: skey_t, info_hash: bitstring,
+                aad: bitstring, ct: bitstring, pkS: pkey_t) =
+  let SetupAuthR_Some(ctx: context_t) =
+    SetupAuthR(enc, skR, info_hash, pkS) in
+  (
+    OpenAuth_Some(Context_Open(ctx, aad, ct))
+  ) else (
+    OpenAuth_None
+  ).
+
+
+
+
+(* a set E used within the proof,
+   containing 6-tuples of the following type: *)
+table E(
+  pkey_t,    (* sender's public key *)
+  pkey_t,    (* receiver's public key *)
+  kemciph_t, (* KEM ciphertext *)
+  bitstring, (* AEAD ciphertext *)
+  bitstring, (* AEAD additional authenticated data *)
+  bitstring  (* application info string *)
+).
+
+param N.   (* number of honest keypairs/users *)
+param Qeperuser. (* number of calls to the Oaenc() oracle per keypair *)
+param Qdperuser. (* number of calls to the Oadec() oracle per keypair *)
+
+
+(* The proof goal is to prove that the adversary cannot produce inputs
+   such that the event adv_wins is executed. *)
+event adv_wins.
+query event(adv_wins).
+
+process
+
+  (* The adversary can generate up to N honest keypairs/users by calling
+  (* the Osetup() oracle. The nested oracles Oaenc() and Oadec()
+  (* will be available for each honest keypair. *)
+  (foreach i <= N do
+   Osetup() :=
+     let (the_sk: skey_t, the_pk: pkey_t) = GenerateKeyPair() in
+     (* The public key of each honest keypair is made available
+     (* to the adversary. *)
+     return(the_pk);
+
+     (* This block defines the oracles Oaenc() and Oadec() which
+     (* are available for each honest keypair. *)
+     (
+       (* This defines the Oaenc() oracle with up to Qeperuser calls per keypair *)
+       (foreach iae <= Qeperuser do
+        Oaenc(pk: pkey_t, m: bitstring, aad: bitstring, info: bitstring) :=
+          let SealAuth_Some(enc: kemciph_t, ct: bitstring) =
+              SealAuth(pk, info, aad, m, the_sk) in (
+            insert E(the_pk, pk, enc, ct, aad, info);
+            return(SealAuth_Some(enc, ct))
+          ) else (
+            return(SealAuth_None)
+          )
+       ) |
+
+       (* This defines the Oadec() oracle with up to Qdperuser calls per keypair *)
+       (foreach iad <= Qdperuser do
+        Oadec(pk: pkey_t, enc: kemciph_t, c: bitstring, aad: bitstring, info: bitstring) :=
+          return(OpenAuth(enc, the_sk, info, aad, c, pk))
+       )
+
+     ) (* End of the block defining Oaenc() and Oadec() *)
+  ) (* End of the block defining Osetup() *)
+  |
+
+  (* The adversary can make one call to the challenge oracle. *)
+  Ochall(pk_S: pkey_t, pk_R: pkey_t, enc_star: kemciph_t,
+         ciph_star: bitstring, aad_star: bitstring, info_star: bitstring) :=
+    (* only accept pk_S, pk_R such that they are honest public keys *)
+    find i' <= N, i'' <= N suchthat
+        defined(the_pk[i'], the_pk[i''], the_sk[i'], the_sk[i''])
+        && the_pk[i'] = pk_S
+        && the_pk[i''] = pk_R then (
+      get E(=pk_S, =pk_R, =enc_star, =ciph_star, =aad_star, =info_star) in (
+        return(bottom)
+      ) else (
+        let OpenAuth_Some(Context_Open_Some(pt: bitstring)) =
+            OpenAuth(enc_star, the_sk[i''], info_star, aad_star, ciph_star, pk_S) in (
+          event_abort adv_wins
+        ) else return(bottom)
+      )
+    ) else return(bottom)
+

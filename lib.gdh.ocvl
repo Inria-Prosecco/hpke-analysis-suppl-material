@@ -1,0 +1,125 @@
+(* DH_proba_collision_minimal says that 
+   the probability that exp(g, x) = Y for random x and Y independent of x 
+   is at most PCollKey *)
+
+def DH_proba_collision_minimal(G, Z, g, exp, mult, PCollKey) {
+
+expand DH_basic(G, Z, g, exp, exp', mult).
+   (* In some game transformations, exp is rewritten into exp'
+      to avoid loops. We do not do that here, so exp' is not used. *)
+
+collision x <-R Z; forall Y: G;
+  return(exp(g, x) = Y) <=(PCollKey)=> return(false) if Y independent-of x.
+
+}
+
+
+
+def GDH_RSR_minimal(G, Z, g, exp, mult, pGDH, pDistRerandom) {
+
+(* the GDH assumption
+    This equivalence says that, when exp(g,a[i]) and exp(g,b[j]) are known to the
+    adversary, the adversary can compute exp(g, mult(a[i], b[j])) only with
+    negligible probability, even in the presence of a decision DH oracle
+    DH(A,B,C) tells whether A = g^a, C = B^a for some a. *)
+
+param na, naDDH, naDDH1, naDDH2, naDDH3, naDDH4, naDDH5, naDDH6, naDDH7, naDDH8, naDH9,
+      nb, nbDDH, nbDDH1, nbDDH2, nbDDH3, nbDDH4, nbDDH5, nbDDH6, nbDDH7, nbDDH8, nbDH9.
+
+(* In the code below:
+   - oracles OA and OB give the public Diffie-Hellman keys to the adversary
+   - oracles ODHa9 and ODHb9 are particular cases of OA and OB, respectively:
+     exp(g, mult(a,x)) = exp(exp(g,a), x). They appear explicitly because
+     CryptoVerif would not detect that exp(g, mult(a,x)) can be computed
+     using exp(g,a), since exp(g,a) is not a subterm of exp(g, mult(a,x)). 
+   - Oracles ODDHa1, ODDHa, ODDHa8, ODDHb1, ODDHb, ODDHb8 are instances
+     of the decision DH oracle.
+     ODDHa1(m,m') = DH(exp(g,a), m', m)
+     ODDHa(m,j) = DH(exp(g,a), exp(g,b[j]), m)
+     		and in this case we can apply the CDH assumption
+		and replace the result with "false" in the right-hand side
+     ODDHa8(m,j) = DH(exp(g,a), exp(g,a[j]), m)
+     ODDHb1(m,m') = DH(exp(g,b), m', m)
+     ODDHb(m,j) = DH(exp(g,b), exp(g,a[j]), m)
+     		and in this case we can apply the CDH assumption
+		and replace the result with "false" in the right-hand side
+     ODDHb8(m,j) = DH(exp(g,b), exp(g,b[j]), m)
+  *)
+
+equiv(gdh(exp))
+    foreach ia <= na do a <-R Z; (
+      OA() := return(exp(g,a)) |
+      foreach iaDDH1 <= naDDH1 do ODDHa1(m:G, m':G) := return(m = exp(m', a)) |
+      foreach iaDDH  <= naDDH  do ODDHa(m:G, j<=nb) [useful_change] := return(m = exp(g, mult(b[j], a))) |
+      foreach iaDDH8 <= naDDH8 do ODDHa8(m:G,j<=na) [3] := return(m = exp(g,mult(a[j], a))) |
+      foreach iaDH9 <= naDH9 do ODHa9(x:Z) [2] := return(exp(g, mult(a, x)))
+    ) |
+    foreach ib <= nb do b <-R Z; (
+      OB() := return(exp(g,b)) |
+      foreach ibDDH1 <= nbDDH1 do ODDHb1(m:G, m':G) := return(m = exp(m', b)) |
+      foreach ibDDH  <= nbDDH  do ODDHb(m:G, j<=na) := return(m = exp(g, mult(a[j], b))) |
+      foreach ibDDH8 <= nbDDH8 do ODDHb8(m:G,j<=nb) [3] := return(m = exp(g,mult(b[j], b))) |
+      foreach ibDH9 <= nbDH9 do ODHb9(x:Z) [2] := return(exp(g, mult(b, x)))
+    )
+<=(pGDH(time + (na + nb + 1) * time(exp),
+         #ODDHa + #ODDHa1 + #ODDHa8 +
+         #ODDHb + #ODDHb1 + #ODDHb8)
+      + (na + nb) * pDistRerandom)=> [computational]
+    foreach ia <= na do a <-R Z [unchanged]; (
+      OA() := return(exp(g,a)) |
+      foreach iaDDH1 <= naDDH1 do ODDHa1(m:G, m':G) := return(m = exp(m', a)) |
+      foreach iaDDH <= naDDH do ODDHa(m:G, j<=nb) := return(false) |
+      foreach iaDDH8 <= naDDH8 do ODDHa8(m:G,j<=na) [3] := return(m = exp(g,mult(a[j], a))) |
+      foreach iaDH9 <= naDH9 do ODHa9(x:Z) := return(exp(g, mult(a, x)))
+    ) |
+    foreach ib <= nb do b <-R Z [unchanged]; (
+      OB() := return(exp(g,b)) |
+      foreach ibDDH1 <= nbDDH1 do ODDHb1(m:G, m':G) := return(m = exp(m', b)) |
+      foreach ibDDH <= nbDDH do ODDHb(m:G, j<=na) := return(false) |
+      foreach ibDDH8 <= nbDDH8 do ODDHb8(m:G,j<=nb) [3] := return(m = exp(g,mult(b[j], b))) |
+      foreach ibDH9 <= nbDH9 do ODHb9(x:Z) := return(exp(g, mult(b, x)))
+    ).
+
+}
+
+
+def square_GDH_RSR_minimal(G, Z, g, exp, mult, pSQGDH, pDistRerandom) {
+
+(* the square GDH assumption
+    This equivalence says that, when exp(g,a[i]) are known to the
+    adversary, the adversary can compute exp(g, mult(a[i], a[j])) only with
+    negligible probability, even in the presence of a decision DH oracle
+    DH(A,B,C) tells whether A = g^a, C = B^a for some a. *)
+
+param na, naDDH, naDDH1, naDDH2, naDDH3, naDDH4, naDDH5, naDH9.
+
+(* In the code below:
+   - oracle OA gives the public Diffie-Hellman keys to the adversary
+   - oracle ODHa9 is a particular case of OA:
+     exp(g, mult(a,x)) = exp(exp(g,a), x). It appears explicitly because
+     CryptoVerif would not detect that exp(g, mult(a,x)) can be computed
+     using exp(g,a), since exp(g,a) is not a subterm of exp(g, mult(a,x)). 
+   - Oracles ODDHa1 and ODDHa are instances of the decision DH oracle.
+     ODDHa1(m,m') = DH(exp(g,a), m', m)
+     ODDHa(m,j) = DH(exp(g,a), exp(g,a[j]), m)
+     		and in this case we can apply the CDH assumption
+		and replace the result with "false" in the right-hand side
+  *)
+
+equiv(gdh(exp))
+    foreach ia <= na do a <-R Z; (
+      OA() := return(exp(g,a)) |
+      foreach iaDDH1 <= naDDH1 do ODDHa1(m:G, m':G) := return(m = exp(m', a)) |
+      foreach iaDDH  <= naDDH  do ODDHa(m:G, j<=na) [useful_change] := return(m = exp(g, mult(a[j], a))) |
+      foreach iaDH9 <= naDH9 do ODHa9(x:Z) [2] := return(exp(g, mult(a, x)))
+    )
+<=(pSQGDH(time + (na+1) * time(exp), #ODDHa + #ODDHa1) + na * pDistRerandom)=> [computational]
+    foreach ia <= na do a <-R Z [unchanged]; (
+      OA() := return(exp(g,a)) |
+      foreach iaDDH1 <= naDDH1 do ODDHa1(m:G, m':G) := return(m = exp(m', a)) |
+      foreach iaDDH <= naDDH do ODDHa(m:G, j<=na) := return(false) |
+      foreach iaDH9 <= naDH9 do ODHa9(x:Z) := return(exp(g, mult(a, x)))
+    ).
+
+}
+

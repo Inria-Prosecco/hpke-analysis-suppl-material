@@ -1,0 +1,15 @@
+def OptionType_1(option, option_Some, option_None, input) {
+  type option.
+  fun option_Some(input): option [data].
+  const option_None: option.
+  equation forall x: input;
+    option_Some(x) <> option_None.
+}
+
+def OptionType_2(option, option_Some, option_None, input1, input2) {
+  type option.
+  fun option_Some(input1, input2): option [data].
+  const option_None: option.
+  equation forall x1: input1, x2: input2;
+    option_Some(x1, x2) <> option_None.
+}
