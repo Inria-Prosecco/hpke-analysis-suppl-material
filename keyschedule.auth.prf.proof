@@ -31,7 +31,7 @@ Game 1 is
        return();
        foreach i <= Nperkey do
        Oprf(info_3: bitstring) :=
-       return((mode: mode_t <- mode_auth; psk: bitstring <- default_psk; psk_id: bitstring <- default_psk_id; psk_id_hash: cr_output_t <- (salt_3: cr_salt_t <- empty; label_5: label_extract_t <- label_psk_id_hash; labeled_input: bitstring <- concat_CR(RFCXXXX, suite_id, label_5, psk_id); Extract_CR(cr_key_2, salt_3, labeled_input)); info_hash: cr_output_t <- (salt_4: cr_salt_t <- empty; label_6: label_extract_t <- label_info_hash; labeled_input_1: bitstring <- concat_CR(RFCXXXX, suite_id, label_6, info_3); Extract_CR(cr_key_2, salt_4, labeled_input_1)); key_schedule_context: bitstring <- concat_KeySched(mode, psk_id_hash, info_hash); secrett: extract_t <- (label_7: label_extract_t <- label_secret; IKM: bitstring <- psk; labeled_IKM: bitstring <- concat_PRF(RFCXXXX, suite_id, label_7, IKM); Extract_PRF(k, labeled_IKM)); key: key_t <- (label_8: label_expand_t <- label_key; L_2: length_t <- Nk; truncate_to_Nk((labeledInfo: bitstring <- concat_Expand(L_2, RFCXXXX, suite_id, label_8, key_schedule_context); Expand_PRF(secrett, labeledInfo)))); nonce: nonce_t <- (label_9: label_expand_t <- label_nonce; L_3: length_t <- Nn; truncate_to_Nn((labeledInfo_1: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context); Expand_PRF(secrett, labeledInfo_1)))); concat(key, nonce)))
+       return((mode: mode_t <- mode_auth; psk: bitstring <- default_psk; psk_id: bitstring <- default_psk_id; psk_id_hash: cr_output_t <- (salt_3: cr_salt_t <- empty; label_5: label_extract_t <- label_psk_id_hash; labeled_input: bitstring <- concat_CR(RFCXXXX, suite_id, label_5, psk_id); Extract_CR(cr_key_2, salt_3, labeled_input)); info_hash: cr_output_t <- (salt_4: cr_salt_t <- empty; label_6: label_extract_t <- label_info_hash; labeled_input_1: bitstring <- concat_CR(RFCXXXX, suite_id, label_6, info_3); Extract_CR(cr_key_2, salt_4, labeled_input_1)); key_schedule_context: bitstring <- concat_KeySched(mode, psk_id_hash, info_hash); secrett: extract_t <- (label_7: label_extract_t <- label_secret; IKM: bitstring <- psk; labeled_IKM: bitstring <- concat_PRF(RFCXXXX, suite_id, label_7, IKM); Extract_PRF(k, labeled_IKM)); key: key_t <- (label_8: label_expand_t <- label_key; L_2: length_t <- Nk; truncate_to_Nk((labeledInfo: bitstring <- concat_Expand(L_2, RFCXXXX, suite_id, label_8, key_schedule_context); Expand_PRF(secrett, labeledInfo)))); base_nonce: nonce_t <- (label_9: label_expand_t <- label_base_nonce; L_3: length_t <- Nn; truncate_to_Nn((labeledInfo_1: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context); Expand_PRF(secrett, labeledInfo_1)))); concat(key, base_nonce)))
      ) | (
        OH() :=
        return(cr_key_2)
@@ -73,11 +73,11 @@ Game 3 is
        L_2: length_t <- Nk;
        labeledInfo: bitstring <- concat_Expand(L_2, RFCXXXX, suite_id, label_8, key_schedule_context);
        key: key_t <- truncate_to_Nk(Expand_PRF(secrett, labeledInfo));
-       label_9: label_expand_t <- label_nonce;
+       label_9: label_expand_t <- label_base_nonce;
        L_3: length_t <- Nn;
        labeledInfo_1: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
-       nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
-       return(concat(key, nonce))
+       base_nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
+       return(concat(key, base_nonce))
      ) | (
        OH() :=
        return(cr_key_2)
@@ -118,11 +118,11 @@ Game 4 is
        L_2: length_t <- Nk;
        labeledInfo: bitstring <- concat_Expand(L_2, RFCXXXX, suite_id, label_8, key_schedule_context);
        key: key_t <- truncate_to_Nk(Expand_PRF(secrett, labeledInfo));
-       label_9: label_expand_t <- label_nonce;
+       label_9: label_expand_t <- label_base_nonce;
        L_3: length_t <- Nn;
        labeledInfo_1: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
-       nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
-       return(concat(key, nonce))
+       base_nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
+       return(concat(key, base_nonce))
      ) | (
        OH() :=
        return(cr_key_2)
@@ -162,11 +162,11 @@ Game 5 is
        L_2: length_t <- Nk;
        labeledInfo: bitstring <- concat_Expand(L_2, RFCXXXX, suite_id, label_8, key_schedule_context);
        key: key_t <- truncate_to_Nk(Expand_PRF(secrett, labeledInfo));
-       label_9: label_expand_t <- label_nonce;
+       label_9: label_expand_t <- label_base_nonce;
        L_3: length_t <- Nn;
        labeledInfo_1: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
-       nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
-       return(concat(key, nonce))
+       base_nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
+       return(concat(key, base_nonce))
      ) | (
        OH() :=
        return(cr_key_2)
@@ -205,11 +205,11 @@ Game 6 is
        L_2: length_t <- Nk;
        labeledInfo: bitstring <- concat_Expand(L_2, RFCXXXX, suite_id, label_8, key_schedule_context);
        key: key_t <- truncate_to_Nk(Expand_PRF(secrett, labeledInfo));
-       label_9: label_expand_t <- label_nonce;
+       label_9: label_expand_t <- label_base_nonce;
        L_3: length_t <- Nn;
        labeledInfo_1: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
-       nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
-       return(concat(key, nonce))
+       base_nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
+       return(concat(key, base_nonce))
      ) | (
        OH() :=
        return(cr_key_2)
@@ -247,11 +247,11 @@ Game 7 is
        L_2: length_t <- Nk;
        labeledInfo: bitstring <- concat_Expand(L_2, RFCXXXX, suite_id, label_8, key_schedule_context);
        key: key_t <- truncate_to_Nk(Expand_PRF(secrett, labeledInfo));
-       label_9: label_expand_t <- label_nonce;
+       label_9: label_expand_t <- label_base_nonce;
        L_3: length_t <- Nn;
        labeledInfo_1: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
-       nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
-       return(concat(key, nonce))
+       base_nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
+       return(concat(key, base_nonce))
      ) | (
        OH() :=
        return(cr_key_2)
@@ -288,11 +288,11 @@ Game 8 is
        L_2: length_t <- Nk;
        labeledInfo: bitstring <- concat_Expand(L_2, RFCXXXX, suite_id, label_8, key_schedule_context);
        key: key_t <- truncate_to_Nk(Expand_PRF(secrett, labeledInfo));
-       label_9: label_expand_t <- label_nonce;
+       label_9: label_expand_t <- label_base_nonce;
        L_3: length_t <- Nn;
        labeledInfo_1: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
-       nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
-       return(concat(key, nonce))
+       base_nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
+       return(concat(key, base_nonce))
      ) | (
        OH() :=
        return(cr_key_2)
@@ -329,11 +329,11 @@ Game 9 is
        L_2: length_t <- Nk;
        labeledInfo: bitstring <- concat_Expand(L_2, RFCXXXX, suite_id, label_8, key_schedule_context);
        key: key_t <- truncate_to_Nk(Expand_PRF(secrett, labeledInfo));
-       label_9: label_expand_t <- label_nonce;
+       label_9: label_expand_t <- label_base_nonce;
        L_3: length_t <- Nn;
        labeledInfo_1: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
-       nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
-       return(concat(key, nonce))
+       base_nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
+       return(concat(key, base_nonce))
      ) | (
        OH() :=
        return(cr_key_2)
@@ -372,11 +372,11 @@ Game 10 is
        L_2: length_t <- Nk;
        labeledInfo: bitstring <- concat_Expand(L_2, RFCXXXX, suite_id, label_8, key_schedule_context);
        key: key_t <- truncate_to_Nk(Expand_PRF(secrett, labeledInfo));
-       label_9: label_expand_t <- label_nonce;
+       label_9: label_expand_t <- label_base_nonce;
        L_3: length_t <- Nn;
        labeledInfo_1: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
-       nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
-       return(concat(key, nonce))
+       base_nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
+       return(concat(key, base_nonce))
      ) | (
        OH() :=
        return(cr_key_2)
@@ -417,11 +417,11 @@ Game 11 is
          L_2: length_t <- Nk;
          labeledInfo: bitstring <- concat_Expand(L_2, RFCXXXX, suite_id, label_8, key_schedule_context);
          key: key_t <- truncate_to_Nk(Expand_PRF(secrett, labeledInfo));
-         label_9: label_expand_t <- label_nonce;
+         label_9: label_expand_t <- label_base_nonce;
          L_3: length_t <- Nn;
          labeledInfo_1: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
-         nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
-         return(concat(key, nonce))
+         base_nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
+         return(concat(key, base_nonce))
        else
          else_br: bool <- true;
          mode: mode_t <- mode_auth;
@@ -439,18 +439,18 @@ Game 11 is
          L_2: length_t <- Nk;
          labeledInfo: bitstring <- concat_Expand(L_2, RFCXXXX, suite_id, label_8, key_schedule_context);
          key: key_t <- truncate_to_Nk(Expand_PRF(secrett, labeledInfo));
-         label_9: label_expand_t <- label_nonce;
+         label_9: label_expand_t <- label_base_nonce;
          L_3: length_t <- Nn;
          labeledInfo_1: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
-         nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
-{293}    return(concat(key, nonce))
+         base_nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
+{293}    return(concat(key, base_nonce))
      ) | (
        OH() :=
        return(cr_key_2)
      ))
 
 
-Applying insert instruction r_1 <- concat(key, nonce) at occurrence 293
+Applying insert instruction r_1 <- concat(key, base_nonce) at occurrence 293
 yields
 
 Game 12 is
@@ -481,11 +481,11 @@ Game 12 is
          L_2: length_t <- Nk;
          labeledInfo: bitstring <- concat_Expand(L_2, RFCXXXX, suite_id, label_8, key_schedule_context);
          key: key_t <- truncate_to_Nk(Expand_PRF(secrett, labeledInfo));
-         label_9: label_expand_t <- label_nonce;
+         label_9: label_expand_t <- label_base_nonce;
          L_3: length_t <- Nn;
          labeledInfo_1: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
-         nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
-         return(concat(key, nonce))
+         base_nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
+         return(concat(key, base_nonce))
        else
          else_br: bool <- true;
          mode: mode_t <- mode_auth;
@@ -503,12 +503,12 @@ Game 12 is
          L_2: length_t <- Nk;
          labeledInfo: bitstring <- concat_Expand(L_2, RFCXXXX, suite_id, label_8, key_schedule_context);
          key: key_t <- truncate_to_Nk(Expand_PRF(secrett, labeledInfo));
-         label_9: label_expand_t <- label_nonce;
+         label_9: label_expand_t <- label_base_nonce;
          L_3: length_t <- Nn;
          labeledInfo_1: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
-         nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
-         r_1: keys_t <- concat(key, nonce);
-         return({303}concat(key, nonce))
+         base_nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
+         r_1: keys_t <- concat(key, base_nonce);
+         return({303}concat(key, base_nonce))
      ) | (
        OH() :=
        return(cr_key_2)
@@ -517,7 +517,7 @@ Game 12 is
 
 Applying use variable(s) r_1
   - Use variable r_1
-    - concat(key, nonce) replaced with r_1 at 303
+    - concat(key, base_nonce) replaced with r_1 at 303
 yields
 
 Game 13 is
@@ -548,11 +548,11 @@ Game 13 is
          L_2: length_t <- Nk;
          labeledInfo: bitstring <- concat_Expand(L_2, RFCXXXX, suite_id, label_8, key_schedule_context);
          key: key_t <- truncate_to_Nk(Expand_PRF(secrett, labeledInfo));
-         label_9: label_expand_t <- label_nonce;
+         label_9: label_expand_t <- label_base_nonce;
          L_3: length_t <- Nn;
          labeledInfo_1: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
-         nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
-         return({152}concat(key, nonce))
+         base_nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
+         return({152}concat(key, base_nonce))
        else
          else_br: bool <- true;
          mode: mode_t <- mode_auth;
@@ -570,11 +570,11 @@ Game 13 is
          L_2: length_t <- Nk;
          labeledInfo: bitstring <- concat_Expand(L_2, RFCXXXX, suite_id, label_8, key_schedule_context);
          key: key_t <- truncate_to_Nk(Expand_PRF(secrett, labeledInfo));
-         label_9: label_expand_t <- label_nonce;
+         label_9: label_expand_t <- label_base_nonce;
          L_3: length_t <- Nn;
          labeledInfo_1: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
-         nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
-         r_1: keys_t <- concat(key, nonce);
+         base_nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
+         r_1: keys_t <- concat(key, base_nonce);
          return(r_1)
      ) | (
        OH() :=
@@ -613,10 +613,10 @@ Game 14 is
          L_2: length_t <- Nk;
          labeledInfo: bitstring <- concat_Expand(L_2, RFCXXXX, suite_id, label_8, key_schedule_context);
          key: key_t <- truncate_to_Nk(Expand_PRF(secrett, labeledInfo));
-         label_9: label_expand_t <- label_nonce;
+         label_9: label_expand_t <- label_base_nonce;
          L_3: length_t <- Nn;
          labeledInfo_1: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
-         nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
+         base_nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
          return(r_1[l_1])
        else
          else_br: bool <- true;
@@ -635,11 +635,11 @@ Game 14 is
          L_2: length_t <- Nk;
          labeledInfo: bitstring <- concat_Expand(L_2, RFCXXXX, suite_id, label_8, key_schedule_context);
          key: key_t <- truncate_to_Nk(Expand_PRF(secrett, labeledInfo));
-         label_9: label_expand_t <- label_nonce;
+         label_9: label_expand_t <- label_base_nonce;
          L_3: length_t <- Nn;
          labeledInfo_1: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
-         nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
-         r_1: keys_t <- concat(key, nonce);
+         base_nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
+         r_1: keys_t <- concat(key, base_nonce);
          return(r_1)
      ) | (
        OH() :=
@@ -652,7 +652,7 @@ Applying remove assignments of findcond
   - Remove assignments on secrett (definition removed, all usages removed)
   - Remove assignments on secrett (definition removed, all usages removed)
   - Remove assignments on key (definition removed, all usages removed)
-  - Remove assignments on nonce (definition removed, all usages removed)
+  - Remove assignments on base_nonce (definition removed, all usages removed)
   - Remove assignments on labeledInfo (definition removed, all usages removed)
   - Remove assignments on labeledInfo_1 (definition removed, all usages removed)
   - Remove assignments on key_schedule_context (definition removed, all usages removed)
@@ -700,11 +700,11 @@ Game 15 is
          L_2: length_t <- Nk;
          labeledInfo: bitstring <- concat_Expand(L_2, RFCXXXX, suite_id, label_8, key_schedule_context);
          key: key_t <- truncate_to_Nk(Expand_PRF(sec, labeledInfo));
-         label_9: label_expand_t <- label_nonce;
+         label_9: label_expand_t <- label_base_nonce;
          L_3: length_t <- Nn;
          labeledInfo_1: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
-         nonce: nonce_t <- truncate_to_Nn(Expand_PRF(sec, labeledInfo_1));
-         r_1: keys_t <- concat(key, nonce);
+         base_nonce: nonce_t <- truncate_to_Nn(Expand_PRF(sec, labeledInfo_1));
+         r_1: keys_t <- concat(key, base_nonce);
          return(r_1)
      ) | (
        OH() :=
@@ -744,11 +744,11 @@ Game 16 is
          L_2: length_t <- Nk;
          labeledInfo: bitstring <- concat_Expand(L_2, RFCXXXX, suite_id, label_8, key_schedule_context);
          key: key_t <- truncate_to_Nk(Expand_PRF(sec, labeledInfo));
-         label_9: label_expand_t <- label_nonce;
+         label_9: label_expand_t <- label_base_nonce;
          L_3: length_t <- Nn;
          labeledInfo_1: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
-         nonce: nonce_t <- truncate_to_Nn(Expand_PRF(sec, labeledInfo_1));
-         r_1: keys_t <- concat(key, nonce);
+         base_nonce: nonce_t <- truncate_to_Nn(Expand_PRF(sec, labeledInfo_1));
+         r_1: keys_t <- concat(key, base_nonce);
          return(r_1)
      ) | (
        OH() :=
@@ -789,11 +789,11 @@ Game 17 is
          L_2: length_t <- Nk;
          labeledInfo: bitstring <- concat_Expand(L_2, RFCXXXX, suite_id, label_8, key_schedule_context);
          key: key_t <- truncate_to_Nk(Expand_PRF(sec, labeledInfo));
-         label_9: label_expand_t <- label_nonce;
+         label_9: label_expand_t <- label_base_nonce;
          L_3: length_t <- Nn;
          labeledInfo_1: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
-         nonce: nonce_t <- truncate_to_Nn(Expand_PRF(sec, labeledInfo_1));
-         r_1: keys_t <- concat(key, nonce);
+         base_nonce: nonce_t <- truncate_to_Nn(Expand_PRF(sec, labeledInfo_1));
+         r_1: keys_t <- concat(key, base_nonce);
          return(r_1)
      ) | (
        OH() :=
@@ -837,11 +837,11 @@ Game 18 is
          L_2: length_t <- Nk;
          labeledInfo: bitstring <- concat_Expand(L_2, RFCXXXX, suite_id, label_8, key_schedule_context);
          key: key_t <- truncate_to_Nk(Expand_PRF(sec, labeledInfo));
-         label_9: label_expand_t <- label_nonce;
+         label_9: label_expand_t <- label_base_nonce;
          L_3: length_t <- Nn;
          labeledInfo_1: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
-         nonce: nonce_t <- truncate_to_Nn(Expand_PRF(sec, labeledInfo_1));
-         r_1: keys_t <- concat(key, nonce);
+         base_nonce: nonce_t <- truncate_to_Nn(Expand_PRF(sec, labeledInfo_1));
+         r_1: keys_t <- concat(key, base_nonce);
          return(r_1)
      ) | (
        OH() :=
@@ -882,11 +882,11 @@ Game 19 is
          L_2: length_t <- Nk;
          labeledInfo: bitstring <- concat_Expand(L_2, RFCXXXX, suite_id, label_8, key_schedule_context);
          key: key_t <- truncate_to_Nk(Expand_PRF(r_2, labeledInfo));
-         label_9: label_expand_t <- label_nonce;
+         label_9: label_expand_t <- label_base_nonce;
          L_3: length_t <- Nn;
          labeledInfo_1: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
-         nonce: nonce_t <- truncate_to_Nn(Expand_PRF(r_2, labeledInfo_1));
-         r_1: keys_t <- concat(key, nonce);
+         base_nonce: nonce_t <- truncate_to_Nn(Expand_PRF(r_2, labeledInfo_1));
+         r_1: keys_t <- concat(key, base_nonce);
          return(r_1)
      ) | (
        OH() :=
@@ -925,11 +925,11 @@ Game 20 is
          L_2: length_t <- Nk;
          labeledInfo: bitstring <- concat_Expand(L_2, RFCXXXX, suite_id, label_8, key_schedule_context);
          key: key_t <- truncate_to_Nk((x_1: bitstring <- labeledInfo; {116}find [unique] u_3 = ri_7 <= Nperkey suchthat defined(x_1[ri_7], r_3[ri_7]) && (x_1 = x_1[ri_7]) then r_3[u_3] orfind u_2 = ri_5 <= Nperkey suchthat defined(x_2[ri_5], r_4[ri_5]) && {137}(x_1 = x_2[ri_5]) then r_4[u_2] else r_3 <-R expand_t; r_3));
-         label_9: label_expand_t <- label_nonce;
+         label_9: label_expand_t <- label_base_nonce;
          L_3: length_t <- Nn;
          labeledInfo_1: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
-         nonce: nonce_t <- truncate_to_Nn((x_2: bitstring <- labeledInfo_1; {176}find [unique] u_1 = ri_3 <= Nperkey suchthat defined(x_1[ri_3], r_3[ri_3]) && {181}(x_2 = x_1[ri_3]) then r_3[u_1] orfind u = ri_1 <= Nperkey suchthat defined(x_2[ri_1], r_4[ri_1]) && (x_2 = x_2[ri_1]) then r_4[u] else r_4 <-R expand_t; r_4));
-         r_1: keys_t <- concat(key, nonce);
+         base_nonce: nonce_t <- truncate_to_Nn((x_2: bitstring <- labeledInfo_1; {176}find [unique] u_1 = ri_3 <= Nperkey suchthat defined(x_1[ri_3], r_3[ri_3]) && {181}(x_2 = x_1[ri_3]) then r_3[u_1] orfind u = ri_1 <= Nperkey suchthat defined(x_2[ri_1], r_4[ri_1]) && (x_2 = x_2[ri_1]) then r_4[u] else r_4 <-R expand_t; r_4));
+         r_1: keys_t <- concat(key, base_nonce);
          return(r_1)
      ) | (
        OH() :=
@@ -972,11 +972,11 @@ Game 21 is
          L_2: length_t <- Nk;
          labeledInfo: bitstring <- concat_Expand(L_2, RFCXXXX, suite_id, label_8, key_schedule_context);
          key: key_t <- truncate_to_Nk((x_1: bitstring <- labeledInfo; find [unique] u_3 = ri_7 <= Nperkey suchthat defined(x_1[ri_7], r_3[ri_7]) && (x_1 = x_1[ri_7]) then r_3[u_3] else r_3 <-R expand_t; r_3));
-         label_9: label_expand_t <- label_nonce;
+         label_9: label_expand_t <- label_base_nonce;
          L_3: length_t <- Nn;
          labeledInfo_1: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
-         nonce: nonce_t <- truncate_to_Nn((x_2: bitstring <- labeledInfo_1; find [unique] u = ri_1 <= Nperkey suchthat defined(x_2[ri_1], r_4[ri_1]) && (x_2 = x_2[ri_1]) then r_4[u] else r_4 <-R expand_t; r_4));
-         r_1: keys_t <- concat(key, nonce);
+         base_nonce: nonce_t <- truncate_to_Nn((x_2: bitstring <- labeledInfo_1; find [unique] u = ri_1 <= Nperkey suchthat defined(x_2[ri_1], r_4[ri_1]) && (x_2 = x_2[ri_1]) then r_4[u] else r_4 <-R expand_t; r_4));
+         r_1: keys_t <- concat(key, base_nonce);
          return(r_1)
      ) | (
        OH() :=
@@ -1017,34 +1017,34 @@ Game 22 is
          x_1: bitstring <- labeledInfo;
          find [unique] u_3 = ri_7 <= Nperkey suchthat defined(x_1[ri_7], r_3[ri_7]) && (x_1 = x_1[ri_7]) then
            key: key_t <- truncate_to_Nk(r_3[u_3]);
-           label_9: label_expand_t <- label_nonce;
+           label_9: label_expand_t <- label_base_nonce;
            L_3: length_t <- Nn;
            labeledInfo_1: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
            x_2: bitstring <- labeledInfo_1;
            find [unique] u = ri_1 <= Nperkey suchthat defined(x_2[ri_1], r_4[ri_1]) && (x_2 = x_2[ri_1]) then
-             nonce: nonce_t <- truncate_to_Nn(r_4[u]);
-             r_1: keys_t <- concat(key, nonce);
+             base_nonce: nonce_t <- truncate_to_Nn(r_4[u]);
+             r_1: keys_t <- concat(key, base_nonce);
              return(r_1)
            else
              r_4 <-R expand_t;
-             nonce: nonce_t <- truncate_to_Nn(r_4);
-             r_1: keys_t <- concat(key, nonce);
+             base_nonce: nonce_t <- truncate_to_Nn(r_4);
+             r_1: keys_t <- concat(key, base_nonce);
              return(r_1)
          else
            r_3 <-R expand_t;
            key: key_t <- truncate_to_Nk(r_3);
-           label_9: label_expand_t <- label_nonce;
+           label_9: label_expand_t <- label_base_nonce;
            L_3: length_t <- Nn;
            labeledInfo_1: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
            x_2: bitstring <- labeledInfo_1;
            find [unique] u = ri_1 <= Nperkey suchthat defined(x_2[ri_1], r_4[ri_1]) && (x_2 = x_2[ri_1]) then
-             nonce: nonce_t <- truncate_to_Nn(r_4[u]);
-             r_1: keys_t <- concat(key, nonce);
+             base_nonce: nonce_t <- truncate_to_Nn(r_4[u]);
+             r_1: keys_t <- concat(key, base_nonce);
              return(r_1)
            else
              r_4 <-R expand_t;
-             nonce: nonce_t <- truncate_to_Nn(r_4);
-             r_1: keys_t <- concat(key, nonce);
+             base_nonce: nonce_t <- truncate_to_Nn(r_4);
+             r_1: keys_t <- concat(key, base_nonce);
              return(r_1)
      ) | (
        OH() :=
@@ -1086,34 +1086,34 @@ Game 23 is
          labeledInfo: bitstring <- concat_Expand(L_2, RFCXXXX, suite_id, label_8, key_schedule_context);
 {110}    find [unique] u_3 = ri_7 <= Nperkey suchthat defined(labeledInfo[ri_7], labeledInfo[ri_7], r_3[ri_7]) && {117}(labeledInfo = labeledInfo[ri_7]) then
            key: key_t <- truncate_to_Nk(r_3[u_3]);
-           label_9: label_expand_t <- label_nonce;
+           label_9: label_expand_t <- label_base_nonce;
            L_3: length_t <- Nn;
            labeledInfo_1: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
            x_2: bitstring <- labeledInfo_1;
 {152}      find [unique] u = ri_1 <= Nperkey suchthat defined(x_2[ri_1], r_4[ri_1]) && {157}(labeledInfo_1 = x_2[ri_1]) then
-             nonce: nonce_t <- truncate_to_Nn(r_4[u]);
-             r_1: keys_t <- concat(key, nonce);
+             base_nonce: nonce_t <- truncate_to_Nn(r_4[u]);
+             r_1: keys_t <- concat(key, base_nonce);
              return(r_1)
            else
              r_4 <-R expand_t;
-             nonce: nonce_t <- truncate_to_Nn(r_4);
-             r_1: keys_t <- concat(key, nonce);
+             base_nonce: nonce_t <- truncate_to_Nn(r_4);
+             r_1: keys_t <- concat(key, base_nonce);
              return(r_1)
          else
            r_3 <-R expand_t;
            key: key_t <- truncate_to_Nk(r_3);
-           label_9: label_expand_t <- label_nonce;
+           label_9: label_expand_t <- label_base_nonce;
            L_3: length_t <- Nn;
            labeledInfo_1: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
            x_2: bitstring <- labeledInfo_1;
 {241}      find [unique] u = ri_1 <= Nperkey suchthat defined(x_2[ri_1], r_4[ri_1]) && {246}(labeledInfo_1 = x_2[ri_1]) then
-             nonce: nonce_t <- truncate_to_Nn(r_4[u]);
-             r_1: keys_t <- concat(key, nonce);
+             base_nonce: nonce_t <- truncate_to_Nn(r_4[u]);
+             r_1: keys_t <- concat(key, base_nonce);
              return(r_1)
            else
              r_4 <-R expand_t;
-             nonce: nonce_t <- truncate_to_Nn(r_4);
-             r_1: keys_t <- concat(key, nonce);
+             base_nonce: nonce_t <- truncate_to_Nn(r_4);
+             r_1: keys_t <- concat(key, base_nonce);
              return(r_1)
      ) | (
        OH() :=
@@ -1159,34 +1159,34 @@ Game 24 is
          labeledInfo: bitstring <- concat_Expand(L_2, RFCXXXX, suite_id, label_8, key_schedule_context);
          find [unique] u_3 = ri_7 <= Nperkey suchthat defined(r_3[ri_7], info_hash[ri_7]) && (info_hash = info_hash[ri_7]) then
            key: key_t <- truncate_to_Nk(r_3[u_3]);
-           label_9: label_expand_t <- label_nonce;
+           label_9: label_expand_t <- label_base_nonce;
            L_3: length_t <- Nn;
            labeledInfo_1: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
            x_2: bitstring <- labeledInfo_1;
            find [unique] u = ri_1 <= Nperkey suchthat defined(r_4[ri_1], info_hash[ri_1]) && (info_hash = info_hash[ri_1]) then
-             nonce: nonce_t <- truncate_to_Nn(r_4[u]);
-             r_1: keys_t <- concat(key, nonce);
+             base_nonce: nonce_t <- truncate_to_Nn(r_4[u]);
+             r_1: keys_t <- concat(key, base_nonce);
              return(r_1)
            else
              r_4 <-R expand_t;
-             nonce: nonce_t <- truncate_to_Nn(r_4);
-             r_1: keys_t <- concat(key, nonce);
+             base_nonce: nonce_t <- truncate_to_Nn(r_4);
+             r_1: keys_t <- concat(key, base_nonce);
              return(r_1)
          else
            r_3 <-R expand_t;
            key: key_t <- truncate_to_Nk(r_3);
-           label_9: label_expand_t <- label_nonce;
+           label_9: label_expand_t <- label_base_nonce;
            L_3: length_t <- Nn;
            labeledInfo_1: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
            x_2: bitstring <- labeledInfo_1;
            find [unique] u = ri_1 <= Nperkey suchthat defined(r_4[ri_1], info_hash[ri_1]) && (info_hash = info_hash[ri_1]) then
-             nonce: nonce_t <- truncate_to_Nn(r_4[u]);
-             r_1: keys_t <- concat(key, nonce);
+             base_nonce: nonce_t <- truncate_to_Nn(r_4[u]);
+             r_1: keys_t <- concat(key, base_nonce);
              return(r_1)
            else
              r_4 <-R expand_t;
-             nonce: nonce_t <- truncate_to_Nn(r_4);
-             r_1: keys_t <- concat(key, nonce);
+             base_nonce: nonce_t <- truncate_to_Nn(r_4);
+             r_1: keys_t <- concat(key, base_nonce);
              return(r_1)
      ) | (
        OH() :=
@@ -1234,25 +1234,25 @@ Game 25 is
          find [unique] u_3 = ri_7 <= Nperkey suchthat defined(r_3[ri_7], info_hash[ri_7]) && (info_hash = info_hash[ri_7]) then
            key: key_t <- truncate_to_Nk(r_3[u_3]);
            find [unique] u = ri_1 <= Nperkey suchthat defined(r_4[ri_1], info_hash[ri_1]) && (info_hash = info_hash[ri_1]) then
-             nonce: nonce_t <- truncate_to_Nn(r_4[u]);
-             r_1: keys_t <- concat(key, nonce);
+             base_nonce: nonce_t <- truncate_to_Nn(r_4[u]);
+             r_1: keys_t <- concat(key, base_nonce);
              return(r_1)
            else
              r_4 <-R expand_t;
-             nonce: nonce_t <- truncate_to_Nn(r_4);
-             r_1: keys_t <- concat(key, nonce);
+             base_nonce: nonce_t <- truncate_to_Nn(r_4);
+             r_1: keys_t <- concat(key, base_nonce);
              return(r_1)
          else
            r_3 <-R expand_t;
            key: key_t <- truncate_to_Nk(r_3);
            find [unique] u = ri_1 <= Nperkey suchthat defined(r_4[ri_1], info_hash[ri_1]) && (info_hash = info_hash[ri_1]) then
-             nonce: nonce_t <- truncate_to_Nn(r_4[u]);
-             r_1: keys_t <- concat(key, nonce);
+             base_nonce: nonce_t <- truncate_to_Nn(r_4[u]);
+             r_1: keys_t <- concat(key, base_nonce);
              return(r_1)
            else
              r_4 <-R expand_t;
-             nonce: nonce_t <- truncate_to_Nn(r_4);
-             r_1: keys_t <- concat(key, nonce);
+             base_nonce: nonce_t <- truncate_to_Nn(r_4);
+             r_1: keys_t <- concat(key, base_nonce);
              return(r_1)
      ) | (
        OH() :=
@@ -1287,25 +1287,25 @@ Game 26 is
  {59}    find [unique] u_3 = ri_7 <= Nperkey suchthat defined(r_3[ri_7], info_hash[ri_7]) && {64}(info_hash = info_hash[ri_7]) then
            key: key_t <- truncate_to_Nk(r_3[u_3]);
            find [unique] u = ri_1 <= Nperkey suchthat defined(r_4[ri_1], info_hash[ri_1]) && (info_hash = info_hash[ri_1]) then
-             nonce: nonce_t <- truncate_to_Nn(r_4[u]);
-             r_1: keys_t <- concat(key, nonce);
+             base_nonce: nonce_t <- truncate_to_Nn(r_4[u]);
+             r_1: keys_t <- concat(key, base_nonce);
              return(r_1)
            else
              r_4 <-R expand_t;
-             nonce: nonce_t <- truncate_to_Nn(r_4);
-             r_1: keys_t <- concat(key, nonce);
+             base_nonce: nonce_t <- truncate_to_Nn(r_4);
+             r_1: keys_t <- concat(key, base_nonce);
              return(r_1)
          else
            r_3 <-R expand_t;
            key: key_t <- truncate_to_Nk(r_3);
 {142}      find [unique] u = ri_1 <= Nperkey suchthat defined(r_4[ri_1], info_hash[ri_1]) && {147}(info_hash = info_hash[ri_1]) then
-             nonce: nonce_t <- truncate_to_Nn(r_4[u]);
-             r_1: keys_t <- concat(key, nonce);
+             base_nonce: nonce_t <- truncate_to_Nn(r_4[u]);
+             r_1: keys_t <- concat(key, base_nonce);
              return(r_1)
            else
              r_4 <-R expand_t;
-             nonce: nonce_t <- truncate_to_Nn(r_4);
-             r_1: keys_t <- concat(key, nonce);
+             base_nonce: nonce_t <- truncate_to_Nn(r_4);
+             r_1: keys_t <- concat(key, base_nonce);
              return(r_1)
      ) | (
        OH() :=
@@ -1343,8 +1343,8 @@ Game 27 is
          r_3 <-R expand_t;
          key: key_t <- truncate_to_Nk(r_3);
          r_4 <-R expand_t;
-         nonce: nonce_t <- truncate_to_Nn(r_4);
-         r_1: keys_t <- concat(key, nonce);
+         base_nonce: nonce_t <- truncate_to_Nn(r_4);
+         r_1: keys_t <- concat(key, base_nonce);
          return(r_1)
      ) | (
        OH() :=
@@ -1376,8 +1376,8 @@ Game 28 is
          k_1 <-R key_t;
          key: key_t <- k_1;
          r_4 <-R expand_t;
-         nonce: nonce_t <- truncate_to_Nn(r_4);
-         r_1: keys_t <- concat(key, nonce);
+         base_nonce: nonce_t <- truncate_to_Nn(r_4);
+         r_1: keys_t <- concat(key, base_nonce);
          return(r_1)
      ) | (
        OH() :=
@@ -1408,8 +1408,8 @@ Game 29 is
        else
          k_1 <-R key_t;
          r_4 <-R expand_t;
-         nonce: nonce_t <- truncate_to_Nn(r_4);
-         r_1: keys_t <- concat(k_1, nonce);
+         base_nonce: nonce_t <- truncate_to_Nn(r_4);
+         r_1: keys_t <- concat(k_1, base_nonce);
          return(r_1)
      ) | (
        OH() :=
@@ -1436,8 +1436,8 @@ Game 30 is
        else
          k_1 <-R key_t;
          k_2 <-R nonce_t;
-         nonce: nonce_t <- k_2;
-         r_1: keys_t <- concat(k_1, nonce);
+         base_nonce: nonce_t <- k_2;
+         r_1: keys_t <- concat(k_1, base_nonce);
          return(r_1)
      ) | (
        OH() :=
@@ -1446,7 +1446,7 @@ Game 30 is
 
 
 Applying remove assignments of findcond
-  - Remove assignments on nonce (definition removed, all usages removed)
+  - Remove assignments on base_nonce (definition removed, all usages removed)
 yields
 
 Game 31 is

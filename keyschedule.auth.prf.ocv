@@ -15,7 +15,7 @@ const label_secret: label_extract_t.
 (* This type denotes the labels used along with LabeledExpand. *)
 type label_expand_t [fixed].
 const label_key: label_expand_t.
-const label_nonce: label_expand_t.
+const label_base_nonce: label_expand_t.
 
 (* These types denote the RFC-wide constants binding to the name
    of the protocol and the used ciphersuite. *)
@@ -150,11 +150,11 @@ letfun KeySchedule(
 
   let key: key_t =
     LabeledExpand_PRF_Nk(secrett, label_key,   key_schedule_context, Nk) in
-  let nonce: nonce_t =
-    LabeledExpand_PRF_Nn(secrett, label_nonce, key_schedule_context, Nn) in
+  let base_nonce: nonce_t =
+    LabeledExpand_PRF_Nn(secrett, label_base_nonce, key_schedule_context, Nn) in
 
   (* The following line defines the return value of the function: *)
-  concat(key, nonce).
+  concat(key, base_nonce).
 
 
 letfun KeySchedule_auth(
@@ -189,7 +189,7 @@ proof {
       then else else_br <- true";
   out_game "l02.out.cv" occ;
   insert before_nth 2 "return(concat("
-    "r_1 <- concat(key, nonce)";
+    "r_1 <- concat(key, base_nonce)";
   use_variable "r_1";
   out_game "l03.out.cv" occ;
   replace at 2 "return{[0-9]+}({[0-9]+}concat("

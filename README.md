@@ -1,9 +1,13 @@
-# Supplementary Material for HPKE Proofs
+# Analysing the HPKE Standard – Supplementary Material
+
+This is supplementary material accompanying the paper
+“Analysing the HPKE Standard” by Joël Alwen, Bruno Blanchet, Eduard Hauck,
+Eike Kiltz, Benjamin Lipp, and Doreen Riepel.
 
 ## Preliminaries
 
 The “RFC” we are referring to in this README, is
-[the current draft-RFC on Hybrid Public Key Encryption](https://www.ietf.org/id/draft-irtf-cfrg-hpke-05.html).
+[the draft 6 of the RFC “Hybrid Public Key Encryption”](https://www.ietf.org/id/draft-irtf-cfrg-hpke-06.html).
 
 ### Installation of CryptoVerif
 
