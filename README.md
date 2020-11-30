@@ -1,5 +1,7 @@
 # Analysing the HPKE Standard – Supplementary Material
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4297811.svg)](https://doi.org/10.5281/zenodo.4297811)
+
 This is supplementary material accompanying the paper
 “Analysing the HPKE Standard” by Joël Alwen, Bruno Blanchet, Eduard Hauck,
 Eike Kiltz, Benjamin Lipp, and Doreen Riepel.
