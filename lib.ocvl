@@ -1,3 +1,49 @@
+(*************************************************************
+ *                                                           *
+ *       Cryptographic protocol verifier                     *
+ *                                                           *
+ *       Bruno Blanchet and David Cadé                       *
+ *                                                           *
+ *       Copyright (C) ENS, CNRS, INRIA, 2005-2021           *
+ *                                                           *
+ *************************************************************)
+
+(*
+
+    Copyright ENS, CNRS, INRIA 
+    contributors: Bruno Blanchet, Bruno.Blanchet@inria.fr
+                  David Cadé
+
+This software is a computer program whose purpose is to verify 
+cryptographic protocols in the computational model.
+
+This software is governed by the CeCILL-B license under French law and
+abiding by the rules of distribution of free software.  You can  use, 
+modify and/ or redistribute the software under the terms of the CeCILL-B
+license as circulated by CEA, CNRS and INRIA at the following URL
+"http://www.cecill.info". 
+
+As a counterpart to the access to the source code and  rights to copy,
+modify and redistribute granted by the license, users are provided only
+with a limited warranty  and the software's author,  the holder of the
+economic rights,  and the successive licensors  have only  limited
+liability. 
+
+In this respect, the user's attention is drawn to the risks associated
+with loading,  using,  modifying and/or developing or reproducing the
+software by the user in light of its specific status of free software,
+that may mean  that it is complicated to manipulate,  and  that  also
+therefore means  that it is reserved for developers  and  experienced
+professionals having in-depth computer knowledge. Users are therefore
+encouraged to load and test the software's suitability as regards their
+requirements in conditions enabling the security of their systems and/or 
+data to be ensured and,  more generally, to use and operate it in the 
+same conditions as regards security. 
+
+The fact that you are presently reading this means that you have had
+knowledge of the CeCILL-B license and that you accept its terms.
+
+*)
 equation forall x:bool; not(not(x)) = x.
 equation forall x:bool,y:bool; (not(x && y)) = (not(x) || not(y)).
 equation forall x:bool,y:bool; (not(x || y)) = (not(x) && not(y)).
@@ -2015,26 +2061,31 @@ equation forall m:cleartext, r:keyseed, r2:enc_seed;
 equation forall m:cleartext, r:keyseed, r2:enc_seed; 
 	dec2(enc_r2(m, pkgen2(r), r2), skgen2(r)) = injbot(m).
 
+table cipher(N3,cleartext,ciphertext).
+
 equiv(ind_cca2(enc))
        foreach i3 <= N3 do r <-R keyseed; (
            Opk() [2] := return(pkgen(r)) |
 	   foreach i2 <= N2 do Odec(m:ciphertext) := return(dec(m, skgen(r))) |
            foreach i <= N do r1 <-R enc_seed; Oenc(x1:cleartext) := return(enc_r(x1, pkgen(r),r1))) |
        foreach i4 <= N4 do r2 <-R enc_seed; Oenc2(x:cleartext, y:pkey) [3] := return(enc_r(x,y,r2)) [all]
-     <=(N3 * (N + N4) * Penc(time + (N4+N-1) * time(enc_r, max(maxlength(x),maxlength(x1))) + (N3-1)*(time(pkgen) + time(skgen) + N2 * time(dec, maxlength(m)) + N * time(enc_r, max(maxlength(x),maxlength(x1)))), N2) + 0.5 * N3 * (N3-1) * Penccoll)=> 
+     <=(N3 * (N + N4) * Penc(time + (N4+N-1) * time(enc_r, max(maxlength(x),maxlength(x1))) + (N3-1)*(time(pkgen) + time(skgen) + N2 * time(dec, maxlength(m)) + N * time(enc_r, max(maxlength(x),maxlength(x1)))), N2))=> 
        foreach i3 <= N3 do r <-R keyseed; (
            Opk() := return(pkgen2(r)) |
 	   foreach i2 <= N2 do Odec(m:ciphertext) :=
-                find j <= N suchthat defined(m1[j],x1[j]) && m = m1[j] then return(injbot(x1[j])) 
-		orfind j <= N4 suchthat defined(m2[j],y[j],x[j]) &&
-		y[j] = pkgen2(r) && m = m2[j] then return(injbot(x[j])) else return(dec2(m, skgen2(r))) |
+	        get cipher(=i3, x, =m) in
+		  return(injbot(x))
+		else
+		  return(dec2(m, skgen2(r))) |
 	   foreach i <= N do r1 <-R enc_seed; Oenc(x1:cleartext) :=
-			m1:ciphertext <- enc_r2(Z(x1), pkgen2(r), r1);
+			m1 <- enc_r2(Z(x1), pkgen2(r), r1);
+			insert cipher(i3, x1, m1);
 			return(m1)) |
        foreach i4 <= N4 do Oenc2(x:cleartext, y:pkey) :=
 		find k <= N3 suchthat defined(r[k]) && y = pkgen2(r[k]) then
 			(r2 <-R enc_seed; 
-			m2:ciphertext <- enc_r2(Z(x), y, r2);
+			m2 <- enc_r2(Z(x), y, r2);
+			insert cipher(k, x, m2);
 			return(m2))
 		else r3 <-R enc_seed; return(enc_r(x,y,r3)).
 
@@ -2043,6 +2094,8 @@ equiv(ind_cca2(enc))
    that you do not want to transform.
    It renames only the encryption function symbol for the occurrences that are transformed,
    so it can be applied again to other occurrences. *)
+
+table cipher1(cleartext, ciphertext).
 
 equiv(ind_cca2_partial(enc))
        r <-R keyseed; (
@@ -2053,10 +2106,11 @@ equiv(ind_cca2_partial(enc))
        r <-R keyseed; (
            Opk() := return(pkgen(r)) |
 	   foreach i2 <= N2 do Odec(m:ciphertext) :=
-                find j <= N suchthat defined(m1[j],x1[j]) && m = m1[j] then return(injbot(x1[j])) else
+                get cipher1(x, =m) in return(injbot(x)) else
 		return(dec(m, skgen(r))) |
 	   foreach i <= N do r1 <-R enc_seed; Oenc(x1:cleartext) :=
-			m1:ciphertext <- enc_r2(Z(x1), pkgen(r), r1);
+			m1 <- enc_r2(Z(x1), pkgen(r), r1);
+			insert cipher1(x1, m1);
 			return(m1)).
 
 collision r1 <-R keyseed; r2 <-R keyseed; 
@@ -3399,12 +3453,12 @@ equiv(cdh(exp))
       foreach ibDDH <= nbDDH do ODDHb(m:G, j<=na) := return(m = exp(g, mult(a[j], b))) |
       foreach ibDH9 <= nbDH9 do ODHb9(x:Z) [2] := return(exp(g, mult(b, x)))
     )
-<=((naDDH + nbDDH) * na * nb * pCDH(time + (na + nb + #ODDHa + #ODDHb - 3) * time(exp)))=> [computational]
+<=((naDDH + nbDDH) * na * nb * pCDH(time + (na + nb + #ODDHa + #ODDHb - 3 + #ODHa9 + #ODHb9) * time(exp)))=> [computational]
     foreach ia <= na do a <-R Z [unchanged]; (
       OA() := return(exp'(g,a)) |
       Oa() := let ka:bool = true in return(a) |
       foreach iaDDH <= naDDH do ODDHa(m:G, j<=nb) := 
-      	      find u<=nb suchthat defined(kb[u],b[u]) && b[j] = b[u] then return(m = exp'(g, mult(b[j], a))) else 
+      	      if defined(kb[j]) then return(m = exp'(g, mult(b[j], a))) else 
               if defined(ka) then return(m = exp'(g, mult(b[j], a))) else return(false) |
       foreach iaDH9 <= naDH9 do ODHa9(x:Z) := return(exp'(g, mult(a, x)))
     ) |
@@ -3412,9 +3466,41 @@ equiv(cdh(exp))
       OB() := return(exp'(g,b)) |
       Ob() := let kb:bool = true in return(b) |
       foreach ibDDH <= nbDDH do ODDHb(m:G, j<=na) := 
-      	      find u<=na suchthat defined(ka[u],a[u]) && a[j] = a[u] then return(m = exp'(g, mult(a[j], b))) else 
+      	      if defined(ka[j]) then return(m = exp'(g, mult(a[j], b))) else 
               if defined(kb) then return(m = exp'(g, mult(a[j], b))) else return(false) |
       foreach ibDH9 <= nbDH9 do ODHb9(x:Z) := return(exp'(g, mult(b, x)))
+    ).
+
+}
+
+(* Same as CDH, but with a single family of exponents instead of two. 
+   More powerful, but may lead to a higher probability. *)
+
+def CDH_single(G, Z, g, exp, exp', mult, pCDH) {
+
+(* the CDH assumption *) 
+
+param na, naDDH, naDH9.
+
+event square.
+
+equiv(cdh(exp))
+    foreach ia <= na do a <-R Z; (
+      OA() := return(exp(g,a)) | 
+      Oa() [10] := return(a) |
+      foreach iaDDH <= naDDH do ODDHa(m:G, j<=na) [useful_change] := return(m = exp(g, mult(a[j], a))) |
+      foreach iaDH9 <= naDH9 do ODHa9(x:Z) [2] := return(exp(g, mult(a, x)))
+    )
+<=(naDDH * na * (na-1) * pCDH(time + (na + #ODDHa - 3 + #ODHa9) * time(exp)))=> [computational]
+    foreach ia <= na do a <-R Z [unchanged]; (
+      OA() := return(exp'(g,a)) |
+      Oa() := let ka:bool = true in return(a) |
+      foreach iaDDH <= naDDH do ODDHa(m:G, j<=na) :=
+      	      if defined(ka[j]) then return(m = exp'(g, mult(a[j], a))) else
+              if defined(ka) then return(m = exp'(g, mult(a[j], a))) else
+              if j = ia then event_abort square else
+	      return(false) |
+      foreach iaDH9 <= naDH9 do ODHa9(x:Z) := return(exp'(g, mult(a, x)))
     ).
 
 }
@@ -3454,12 +3540,12 @@ equiv(cdh(exp))
       foreach ibDDH <= nbDDH do ODDHb(m:G, j<=na) := return(m = exp(g, mult(a[j], b))) |
       foreach ibDH9 <= nbDH9 do ODHb9(x:Z) [2] := return(exp(g, mult(b, x)))
     )
-<=((#ODDHa + #ODDHb) * max(1, 4*#Oa) * max(1, 4*#Ob) * pCDH(time + (na + nb + #ODDHa + #ODDHb + 1) * time(exp)) + (na + nb) * pDistRerandom)=> [computational]
+<=((#ODDHa + #ODDHb) * max(1, 4*#Oa) * max(1, 4*#Ob) * pCDH(time + (na + nb + #ODDHa + #ODDHb + 1 + #ODHa9 + #ODHb9) * time(exp)) + (na + nb) * pDistRerandom)=> [computational]
     foreach ia <= na do a <-R Z [unchanged]; (
       OA() := return(exp'(g,a)) |
       Oa() := let ka:bool = true in return(a) |
       foreach iaDDH <= naDDH do ODDHa(m:G, j<=nb) := 
-      	      find u<=nb suchthat defined(kb[u],b[u]) && b[j] = b[u] then return(m = exp'(g, mult(b[j], a))) else 
+      	      if defined(kb[j]) then return(m = exp'(g, mult(b[j], a))) else 
               if defined(ka) then return(m = exp'(g, mult(b[j], a))) else return(false) |
       foreach iaDH9 <= naDH9 do ODHa9(x:Z) := return(exp'(g, mult(a, x)))
     ) |
@@ -3467,9 +3553,42 @@ equiv(cdh(exp))
       OB() := return(exp'(g,b)) |
       Ob() := let kb:bool = true in return(b) |
       foreach ibDDH <= nbDDH do ODDHb(m:G, j<=na) := 
-      	      find u<=na suchthat defined(ka[u],a[u]) && a[j] = a[u] then return(m = exp'(g, mult(a[j], b))) else 
+      	      if defined(ka[j]) then return(m = exp'(g, mult(a[j], b))) else 
               if defined(kb) then return(m = exp'(g, mult(a[j], b))) else return(false) |
       foreach ibDH9 <= nbDH9 do ODHb9(x:Z) := return(exp'(g, mult(b, x)))
+    ).
+
+}
+
+(* Same as CDH_RSR, but with a single family of exponents instead of two. 
+   More powerful, but leads to a higher probability. *)
+
+def CDH_RSR_single(G, Z, g, exp, exp', mult, pCDH, pDistRerandom) {
+
+(* the CDH assumption *) 
+
+param na, naDDH, naDH9.
+
+event square.
+
+equiv(cdh(exp))
+    foreach ia <= na do a <-R Z; (
+      OA() := return(exp(g,a)) | 
+      Oa() [10] := return(a) |
+      foreach iaDDH <= naDDH do ODDHa(m:G, j<=na) [useful_change] :=
+      	      return(m = exp(g, mult(a[j], a))) |
+      foreach iaDH9 <= naDH9 do ODHa9(x:Z) [2] := return(exp(g, mult(a, x)))
+    )
+<=(2* #ODDHa * max(1, 27/4*#Oa^2) * pCDH(time + (na + #ODDHa + 1 + #ODHa9) * time(exp)) + na * pDistRerandom)=> [computational]
+    foreach ia <= na do a <-R Z [unchanged]; (
+      OA() := return(exp'(g,a)) |
+      Oa() := let ka:bool = true in return(a) |
+      foreach iaDDH <= naDDH do ODDHa(m:G, j<=na) := 
+      	      if defined(ka[j]) then return(m = exp'(g, mult(a[j], a))) else 
+              if defined(ka) then return(m = exp'(g, mult(a[j], a))) else
+              if j = ia then event_abort square else
+	      return(false) |
+      foreach iaDH9 <= naDH9 do ODHa9(x:Z) := return(exp'(g, mult(a, x)))
     ).
 
 }
@@ -3490,50 +3609,150 @@ event ev_abort.
 
 param na, naDH, nb, nbDH, naDH9, nbDH9.
 
+table dhval(na, nb, G).
+
 equiv(ddh(exp))
     foreach ia <= na do a <-R Z; (
       OA() := return(exp(g,a)) | 
       Oa() [10] := return (a) |
-      foreach iaDH <= naDH do ODHa(j<=nb) [useful_change] := return (exp(g, mult(b[j], a))) |
+      foreach iaDH <= naDH do ODHa(jb<=nb) [useful_change] := return (exp(g, mult(b[jb], a))) |
       foreach iaDH9 <= naDH9 do ODHa9(x:Z) [2] := return(exp(g, mult(a, x)))
     ) |
     foreach ib <= nb do b <-R Z; (
       OB() := return (exp(g,b)) |
       Ob() [10] := return(b) |
-      foreach ibDH <= nbDH do ODHb(j<=na) := return(exp(g, mult(a[j], b))) |
+      foreach ibDH <= nbDH do ODHb(ja<=na) := return(exp(g, mult(a[ja], b))) |
       foreach ibDH9 <= nbDH9 do ODHb9(x:Z) [2] := return(exp(g, mult(b, x)))
     )
-<=(na * nb * pDDH(time + (na + nb + #ODHa + #ODHb - 3) * time(exp)))=>
+<=(na * nb * pDDH(time + (na + nb + #ODHa + #ODHb - 3 + #ODHa9 + #ODHb9) * time(exp)))=>
     foreach ia <= na do a <-R Z; (
       OA() := return(exp'(g,a)) |
       Oa() := 
-         find uaDH <= naDH suchthat defined(ka'[uaDH]) then event_abort ev_abort 
-	 orfind ubDH <= nbDH, ub <= nb suchthat defined(kb'[ubDH, ub], a'[ubDH, ub]) && a'[ubDH, ub] = a then event_abort ev_abort else
+         get dhval(=ia, jb, c) in event_abort ev_abort else
          let ka:bool = true in return(a) |
-      foreach iaDH <= naDH do ODHa(j<=nb) := 
-      	 let b':Z = b[j] in
-	 find u<=nb suchthat defined(kb[u],b[u]) && b' = b[u] then return(exp'(g, mult(b', a))) else 
-         if defined(ka) then return(exp'(g, mult(b', a))) else 
-	 let ka':bool = true in
-         find vaDH <= naDH suchthat defined(b'[vaDH],ca[vaDH]) && b' = b'[vaDH] then return(ca[vaDH]) 
-         orfind vbDH <= nbDH, vb <= nb suchthat defined(b[vb], a'[vbDH, vb], cb[vbDH, vb]) && b' = b[vb] && a = a'[vbDH, vb] then return(cb[vbDH, vb]) else
-	 ca <-R G; return(ca) |
+      foreach iaDH <= naDH do ODHa(jb<=nb) := 
+	 if defined(kb[jb]) then return(exp'(g, mult(b[jb], a))) else 
+         if defined(ka) then return(exp'(g, mult(b[jb], a))) else 
+         get[unique] dhval(=ia, =jb, c) in return(c) else
+	 ca <-R G;
+	 insert dhval(ia, jb, ca);
+	 return(ca) |
       foreach iaDH9 <= naDH9 do ODHa9(x:Z) := return(exp'(g, mult(a, x)))
     ) |
     foreach ib <= nb do b <-R Z; (
       OB() := return(exp'(g,b)) |
       Ob() := 
-         find ubDH <= nbDH suchthat defined(kb'[ubDH]) then event_abort ev_abort 
-	 orfind uaDH <= naDH, ua <= na suchthat defined(ka'[uaDH, ua], b'[uaDH, ua]) && b'[uaDH, ua] = b then event_abort ev_abort else
+         get dhval(ja, =ib, c) in event_abort ev_abort else
          let kb:bool = true in return(b) |
-      foreach ibDH <= nbDH do ODHb(j<=na) := 
-         let a':Z = a[j] in
-	 find u<=na suchthat defined(ka[u],a[u]) && a' = a[u] then return(exp'(g, mult(a', b))) else 
-         if defined(kb) then return(exp'(g, mult(a', b))) else 
-	 let kb':bool = true in
-         find vbDH <= nbDH suchthat defined(a'[vbDH],cb[vbDH]) && a' = a'[vbDH] then return(cb[vbDH]) 
-         orfind vaDH <= naDH, va <= na suchthat defined(a[va], b'[vaDH, va], ca[vaDH, va]) && a' = a[va] && b = b'[vaDH, va] then return(ca[vaDH, va]) else
-	 cb <-R G; return(cb) |
+      foreach ibDH <= nbDH do ODHb(ja<=na) := 
+	 if defined(ka[ja]) then return(exp'(g, mult(a[ja], b))) else 
+         if defined(kb) then return(exp'(g, mult(a[ja], b))) else 
+         get[unique] dhval(=ja, =ib, c) in return(c) else
+	 cb <-R G;
+	 insert dhval(ja, ib, cb);
+	 return(cb) |
+      foreach ibDH9 <= nbDH9 do ODHb9(x:Z) := return(exp'(g, mult(b, x)))
+    ).
+
+}
+
+(* Same as DDH, but with a single family of exponents instead of two. 
+   More powerful, but may lead to a higher probability. *)
+
+def DDH_single(G, Z, g, exp, exp', mult, pDDH) {
+
+(* the DDH assumption *) 
+
+event ev_abort.
+event square.
+
+param na, naDH, naDH9.
+
+table dhval(na, na, G).
+
+equiv(ddh(exp))
+    foreach ia <= na do a <-R Z; (
+      OA() := return(exp(g,a)) | 
+      Oa() [10] := return (a) |
+      foreach iaDH <= naDH do ODHa(j<=na) [useful_change] := return (exp(g, mult(a[j], a))) |
+      foreach iaDH9 <= naDH9 do ODHa9(x:Z) [2] := return(exp(g, mult(a, x)))
+    )
+<=(na*(na-1)/2 * pDDH(time + (na + #ODHa - 3 + #ODHa9) * time(exp)))=>
+    foreach ia <= na do a <-R Z; (
+      OA() := return(exp'(g,a)) |
+      Oa() :=
+      	 get dhval(=ia, j, c) in event_abort ev_abort else
+	 get dhval(j, =ia, c) in event_abort ev_abort else
+         let ka:bool = true in return(a) |
+      foreach iaDH <= naDH do ODHa(j<=na) :=
+	 if defined(ka[j]) then return(exp'(g, mult(a[j], a))) else 
+         if defined(ka) then return(exp'(g, mult(a[j], a))) else
+         if j = ia then event_abort square else
+	 get[unique] dhval(=ia, =j, c) in return(c) else
+	 get[unique] dhval(=j, =ia, c) in return(c) else
+	 ca <-R G;
+	 insert dhval(ia, j, ca);
+	 return(ca) |
+      foreach iaDH9 <= naDH9 do ODHa9(x:Z) := return(exp'(g, mult(a, x)))
+    ).
+
+}
+
+(* Decisional Diffie-Hellman, with random self reducibility. 
+
+   This macro yields a better probability but is much more 
+   restricted than the other DDH macros:
+   - it does not support corruption
+   - it supports only a single Diffie-Hellman query for each
+   exponent a_i, associated with an arbitrary b_j and no Diffie-Hellman
+   queries for b_j.
+   - the default distribution on G must be as follows:
+   There is an underlying prime-order group (the Diffie-Hellman group
+   itself when it has prime order; the prime-order subgroup of the curve
+   generated by the base point for Curve25519/Curve448). The default
+   distribution on G is obtained by choosing uniformly an element in that
+   group minus its neutral element and taking the associated public key in G
+   (the group element itself for prime-order Diffie-Hellman groups;
+   the encoding of its X coordinate for Curve25519/Curve448).
+
+   pDDH(t): the probability of breaking the DDH assumption in time t
+   pDistRerandom: the probability that rerandomization can be distinguished from the
+   original distribution
+          It is 0 when exponents are chosen uniformly in (Z/qZ)^*.
+	  2^-125 for curve25519
+	  2^-220 for curve448
+   Other arguments as in DH_basic.
+
+   All arguments must be declared before this macro. 
+*)
+
+def DDH_RSR(G, Z, g, exp, exp', mult, pDDH, pDistRerandom) {
+
+(* the DDH assumption *) 
+
+param na, nb, naDH9, nbDH9.
+
+equiv(ddh(exp))
+    foreach ia <= na do a <-R Z; (
+      OA() := return(exp(g,a)) | 
+      ODHa(jb<=nb) [useful_change] := return (exp(g, mult(b[jb], a))) |
+      foreach iaDH9 <= naDH9 do ODHa9(x:Z) [2] := return(exp(g, mult(a, x)))
+    ) |
+    foreach ib <= nb do b <-R Z; (
+      OB() := return (exp(g,b)) |
+      foreach ibDH9 <= nbDH9 do ODHb9(x:Z) [2] := return(exp(g, mult(b, x)))
+    )
+<=(pDDH(time + (2*na + 2*nb + 4*#ODHa + #ODHa9 + #ODHb9) * time(exp)) +
+   (2*na+2*nb+#ODHa+1)*Pcoll1rand(G) + (na+nb)*pDistRerandom)=>
+    foreach ia <= na do a <-R Z; (
+      OA() := return(exp'(g,a)) |
+      ODHa(jb<=nb) := 
+	 ca <-R G;
+	 return(ca) |
+      foreach iaDH9 <= naDH9 do ODHa9(x:Z) := return(exp'(g, mult(a, x)))
+    ) |
+    foreach ib <= nb do b <-R Z; (
+      OB() := return(exp'(g,b)) |
       foreach ibDH9 <= nbDH9 do ODHb9(x:Z) := return(exp'(g, mult(b, x)))
     ).
 
@@ -3543,12 +3762,22 @@ equiv(ddh(exp))
 
    pGDH(t, n): the probability of breaking the GDH assumption in time t,
    with at most n calls to the DDH oracle.
+   pDistRerandom: the probability that rerandomization can be distinguished from the
+   original distribution
+          It is 0 when exponents are chosen uniformly in (Z/qZ)^*.
+	  2^-125 for curve25519
+	  2^-220 for curve448
+   (see https://tools.ietf.org/html/draft-barnes-cfrg-mult-for-7748-00 for the rerandomization
+   for curve25519 and curve448). It is needed because, for curve25519/448, to make 
+   the DH decision oracle unambiguous, we generate secret keys in [(p+1)/2,p-1]
+   instead of the set used for generating secret keys in the curve25519/448 implementation.
+   (The latter set yields equivalent secret keys with small probability.)
    Other arguments as in DH_basic.
 
    All arguments must be declared before this macro. 
 *)
 
-def GDH(G, Z, g, exp, exp', mult, pGDH) {
+def GDH(G, Z, g, exp, exp', mult, pGDH, pDistRerandom) {
 
 (* the GDH assumption 
     This equivalence says that, when exp(g,a[i]) and exp(g,b[j]) are known to the
@@ -3557,8 +3786,8 @@ def GDH(G, Z, g, exp, exp', mult, pGDH) {
     DDH(G,A,B,C) tells whether A = G^a, B = G^b, and C = G^{ab} for some a,b,
     that is DDH(G,A,B,C) is (log_G(A) * log_G(B) = log_G(C)). *)
 
-param na, naDDH, naDDH1, naDDH2, naDDH3, naDDH4, naDDH5, naDDH6, naDDH7, naDDH8, naDH9,
-      nb, nbDDH, nbDDH1, nbDDH2, nbDDH3, nbDDH4, nbDDH5, nbDDH6, nbDDH7, nbDDH8, nbDH9.
+param na, naeq, naDDH, naDDH1, naDDH2, naDDH3, naDDH4, naDDH5, naDDH6, naDDH7, naDDH8, naDH9,
+      nb, nbeq, nbDDH, nbDDH1, nbDDH2, nbDDH3, nbDDH4, nbDDH5, nbDDH6, nbDDH7, nbDDH8, nbDH9.
 
 equiv(gdh(exp))
     foreach ia <= na do a <-R Z; (
@@ -3570,6 +3799,10 @@ equiv(gdh(exp))
       foreach iaDDH5 <= naDDH5 do ODDHa5(m:G, j'<=nb,j<=na) := return(exp(m,a[j]) = exp(g, mult(b[j'], a))) |
       foreach iaDDH6 <= naDDH6 do ODDHa6(m:G, j'<=na,j<=nb) := return(exp(m,b[j]) = exp(g, mult(a[j'], a))) |
       foreach iaDDH7 <= naDDH7 do ODDHa7(m:G, j'<=na,j<=na) := return(exp(m,a[j]) = exp(g, mult(a[j'], a))) |
+      foreach iaeq <= naeq do OAeq(m:G) := return(m = exp(g,a)) |
+         (* We put the oracle above before ODDHa1, so that ODDHa1 is not used when m' = g,
+	    which would lead to additional calls to the DDH oracle when in fact
+	    we can simply compare with the public key *)
       foreach iaDDH1 <= naDDH1 do ODDHa1(m:G, m':G) := return(m = exp(m', a)) |
          (* We put the oracle m = exp(m', a) after exp(m,b[j]) = exp(m', a) to apply in priority
 	    the latter. Otherwise, CryptoVerif sometimes uses m = exp(m', a) to discharge
@@ -3587,15 +3820,16 @@ equiv(gdh(exp))
       foreach ibDDH5 <= nbDDH5 do ODDHb5(m:G, j'<=nb,j<=na) := return(exp(m,a[j]) = exp(g, mult(b[j'], b))) |
       foreach ibDDH6 <= nbDDH6 do ODDHb6(m:G, j'<=na,j<=nb) := return(exp(m,b[j]) = exp(g, mult(a[j'], b))) |
       foreach ibDDH7 <= nbDDH7 do ODDHb7(m:G, j'<=na,j<=na) := return(exp(m,a[j]) = exp(g, mult(a[j'], b))) |
+      foreach ibeq <= nbeq do OBeq(m:G) := return(m = exp(g,b)) |
       foreach ibDDH1 <= nbDDH1 do ODDHb1(m:G, m':G) := return(m = exp(m', b)) |
       foreach ibDDH  <= nbDDH  do ODDHb(m:G, j<=na) := return(m = exp(g, mult(a[j], b))) |
       foreach ibDDH8 <= nbDDH8 do ODDHb8(m:G,j<=nb) [3] := return(m = exp(g,mult(b[j], b))) |
       foreach ibDH9 <= nbDH9 do ODHb9(x:Z) [2] := return(exp(g, mult(b, x)))
     )
 <=(na * nb *
-	   pGDH(time + (na + nb - 1) * time(exp),
+	   pGDH(time + (na + nb - 1 + #ODHa9 + #ODHb9) * time(exp),
 	   #ODDHa + #ODDHa1 + #ODDHa2 + #ODDHa3 + #ODDHa4 + #ODDHa5 + #ODDHa6 + #ODDHa7 + #ODDHa8 +
-	   #ODDHb + #ODDHb1 + #ODDHb2 + #ODDHb3 + #ODDHb4 + #ODDHb5 + #ODDHb6 + #ODDHb7 + #ODDHb8))=> [computational]
+	   #ODDHb + #ODDHb1 + #ODDHb2 + #ODDHb3 + #ODDHb4 + #ODDHb5 + #ODDHb6 + #ODDHb7 + #ODDHb8) + (na + nb) * pDistRerandom)=> [computational]
     foreach ia <= na do a <-R Z [unchanged]; (
       OA() := return(exp'(g,a)) |
       Oa() := let ka:bool = true in return(a) |
@@ -3611,25 +3845,25 @@ equiv(gdh(exp))
       foreach iaDDH3 <= naDDH3 do ODDHa3(m:G, m':G,j<=na) := return(exp'(m,a[j]) = exp'(m', a)) |
       	    (* Similar to ODDHa2 *)
       foreach iaDDH4 <= naDDH4 do ODDHa4(m:G, j'<=nb,j<=nb) :=
-      	      find u<=nb suchthat defined(kb[u],b[u]) && b[j'] = b[u] then return(exp'(m,b[j]) = exp'(g, mult(b[j'], a))) else
+      	      if defined(kb[j']) then return(exp'(m,b[j]) = exp'(g, mult(b[j'], a))) else
 	      if defined(ka) then return(exp'(m,b[j]) = exp'(g, mult(b[j'], a))) else
-	      return(b[j] = b[j'] && exp'(m,b[j']) = exp'(g, mult(b[j'], a))) |
+	      return(j = j' && exp'(m,b[j']) = exp'(g, mult(b[j'], a))) |
 	    (* GDH always allows to compute exp(m, b[j]) = exp(g,mult(b[j'],a))
 	       as a particular case of ODDHa2.
 	       When a or b[j'] is leaked, that is all we use and we keep the value
 	       that occurs in the left-hand side exp'(m, b[j]) = exp'(g,mult(b[j'],a)).
 	       Otherwise, we distinguish two cases:
-	       - When b[j] = b[j'], we also keep the value of the left-hand side.
+	       - When j = j', we also keep the value of the left-hand side.
 	       - Otherwise, we apply the CDH assumption considering an adversary
 	         that knows b[j] and computes exp(m, b[j]). This adversary cannot
 	         compute exp(g,mult(b[j'],a)) by CDH, so the equality 
 	         exp(m, b[j]) = exp(g,mult(b[j'],a)) is false in this case.
 	       Hence, the equality exp(m, b[j]) = exp(g,mult(b[j'],a))
-	       reduces to b[j] = b[j'] && exp'(m,b[j']) = exp'(g, mult(b[j'], a)). *)
+	       reduces to j = j' && exp'(m,b[j']) = exp'(g, mult(b[j'], a)). *)
       foreach iaDDH5 <= naDDH5 do ODDHa5(m:G, j'<=nb,j<=na) :=
-      	      find u<=nb suchthat defined(kb[u],b[u]) && b[j'] = b[u] then return(exp'(m,a[j]) = exp'(g, mult(b[j'], a))) else
+      	      if defined(kb[j']) then return(exp'(m,a[j]) = exp'(g, mult(b[j'], a))) else
 	      if defined(ka) then return(exp'(m,a[j]) = exp'(g, mult(b[j'], a))) else
-	      return (a[j] = a && exp'(m,a) = exp'(g, mult(b[j'], a))) |
+	      return (j = ia && exp'(m,a) = exp'(g, mult(b[j'], a))) |
 	      (* This case is similar to ODDHa4. *)	      
       foreach iaDDH6 <= naDDH6 do ODDHa6(m:G, j'<=na,j<=nb) := return(exp'(m,b[j]) = exp'(g, mult(a[j'], a))) |
       foreach iaDDH7 <= naDDH7 do ODDHa7(m:G, j'<=na,j<=na) := return(exp'(m,a[j]) = exp'(g, mult(a[j'], a))) |
@@ -3638,12 +3872,13 @@ equiv(gdh(exp))
 	       We need to consider all these forms because CryptoVerif rewrites
 	       exp(exp(g,b[j']),a) into exp(g,mult(b[j'],a)), and it would not
 	       detect exp(g,mult(b[j'],a)) as an instance of exp(m',a). *)
+      foreach iaeq <= naeq do OAeq(m:G) := return(m = exp'(g,a)) |
       foreach iaDDH1 <= naDDH1 do ODDHa1(m:G, m':G) := 
 	      return(m = exp'(m', a))
 		(* GDH allows to compute m = exp(m',a) for any m and m', without leaking a,
 		   as it is DDH(g, exp(g,a), m', m) *) |
       foreach iaDDH <= naDDH do ODDHa(m:G, j<=nb) := 
-      	      find u<=nb suchthat defined(kb[u],b[u]) && b[j] = b[u] then return(m = exp'(g, mult(b[j], a))) else 
+      	      if defined(kb[j]) then return(m = exp'(g, mult(b[j], a))) else 
               if defined(ka) then return(m = exp'(g, mult(b[j], a))) else return(false) |
             (* ODDHa is a particular case of ODDHa1 in which can apply the CDH assumption,
 	       provided a and b[j] are not leaked. *)
@@ -3660,18 +3895,19 @@ equiv(gdh(exp))
       foreach ibDDH4 <= nbDDH4 do ODDHb4(m:G, j'<=nb,j<=nb) := return(exp'(m,b[j]) = exp'(g, mult(b[j'], b))) |
       foreach ibDDH5 <= nbDDH5 do ODDHb5(m:G, j'<=nb,j<=na) := return(exp'(m,a[j]) = exp'(g, mult(b[j'], b))) |
       foreach ibDDH6 <= nbDDH6 do ODDHb6(m:G, j'<=na,j<=nb) :=
-      	      find u<=na suchthat defined(ka[u],a[u]) && a[j'] = a[u] then return(exp'(m,b[j]) = exp'(g, mult(a[j'], b))) else
+      	      if defined(ka[j']) then return(exp'(m,b[j]) = exp'(g, mult(a[j'], b))) else
 	      if defined(kb) then return(exp'(m,b[j]) = exp'(g, mult(a[j'], b))) else
-	      return(b[j] = b && exp'(m,b) = exp'(g, mult(a[j'], b))) |
+	      return(j = ib && exp'(m,b) = exp'(g, mult(a[j'], b))) |
       foreach ibDDH7 <= nbDDH7 do ODDHb7(m:G, j'<=na,j<=na) :=
-      	      find u<=na suchthat defined(ka[u],a[u]) && a[j'] = a[u] then return(exp'(m,a[j]) = exp'(g, mult(a[j'], b))) else
+      	      if defined(ka[j']) then return(exp'(m,a[j]) = exp'(g, mult(a[j'], b))) else
 	      if defined(kb) then return(exp'(m,a[j]) = exp'(g, mult(a[j'], b))) else
-	      return(a[j] = a[j'] && exp'(m,a[j']) = exp'(g, mult(a[j'], b))) |
+	      return(j = j' && exp'(m,a[j']) = exp'(g, mult(a[j'], b))) |
+      foreach ibeq <= nbeq do OBeq(m:G) := return(m = exp'(g,b)) |
       foreach ibDDH1 <= nbDDH1 do ODDHb1(m:G, m':G) := 
 	      return(m = exp'(m', b))
 		(* GDH allows to compute m = exp(m',b) for any m and m', without leaking b *) |
       foreach ibDDH <= nbDDH do ODDHb(m:G, j<=na) := 
-      	      find u<=na suchthat defined(ka[u],a[u]) && a[j] = a[u] then return(m = exp'(g, mult(a[j], b))) else 
+      	      if defined(ka[j]) then return(m = exp'(g, mult(a[j], b))) else 
               if defined(kb) then return(m = exp'(g, mult(a[j], b))) else return(false) |
       foreach ibDDH8 <= nbDDH8 do ODDHb8(m:G,j<=nb) [3] := return(m = exp'(g,mult(b[j], b))) |
       foreach ibDH9 <= nbDH9 do ODHb9(x:Z) := return(exp'(g, mult(b, x)))
@@ -3682,6 +3918,87 @@ equiv(gdh(exp))
     m = exp(g, mult(b[j], a)), and the procedure that tests whether a
     term in the game matches a term in the equivalence would not
     recognize that m = exp(g, mult(b[j], a)) in the game matches m =
+    exp(m', a) in the equivalence. *)
+}
+
+
+(* Same as GDH, but with a single family of exponents instead of two. 
+   More powerful, but may lead to a higher probability. *)
+
+def GDH_single(G, Z, g, exp, exp', mult, pGDH, pDistRerandom) {
+
+(* the GDH assumption 
+    This equivalence says that, when exp(g,a[i]) are known to the
+    adversary, the adversary can compute exp(g, mult(a[i], a[j])) for i<>j only with
+    negligible probability, even in the presence of a DDH oracle
+    DDH(G,A,B,C) tells whether A = G^a, B = G^b, and C = G^{ab} for some a,b,
+    that is DDH(G,A,B,C) is (log_G(A) * log_G(B) = log_G(C)). *)
+
+param na, naeq, naDDH, naDDH1, naDDH2, naDDH3, naDDH4, naDDH5, naDH9.
+
+equiv(gdh(exp))
+    foreach ia <= na do a <-R Z; (
+      OA() := return(exp(g,a)) | 
+      Oa() [10] := return(a) |
+      foreach iaDDH3 <= naDDH3 do ODDHa3(m:G, m':G,j<=na) := return(exp(m,a[j]) = exp(m', a)) |
+      foreach iaDDH5 <= naDDH5 do ODDHa5(m:G, j'<=na,j<=na) [useful_change] := return(exp(m,a[j]) = exp(g, mult(a[j'], a))) |
+      foreach iaeq <= naeq do OAeq(m:G) := return(m = exp(g,a)) |
+         (* We put the oracle above before ODDHa1, so that ODDHa1 is not used when m' = g,
+	    which would lead to additional calls to the DDH oracle when in fact
+	    we can simply compare with the public key *)
+      foreach iaDDH1 <= naDDH1 do ODDHa1(m:G, m':G) := return(m = exp(m', a)) |
+      foreach iaDDH  <= naDDH  do ODDHa(m:G, j<=na) [useful_change] := return(m = exp(g, mult(a[j], a))) |
+      foreach iaDH9 <= naDH9 do ODHa9(x:Z) [2] := return(exp(g, mult(a, x)))
+    ) 
+<=(na * (na-1)/2 * pGDH(time + (na  + #ODHa9) * time(exp), #ODDHa + #ODDHa1 + #ODDHa3 + #ODDHa5) + na * pDistRerandom)=> [computational]
+    foreach ia <= na do a <-R Z [unchanged]; (
+      OA() := return(exp'(g,a)) |
+      Oa() := let ka:bool = true in return(a) |
+      foreach iaDDH3 <= naDDH3 do ODDHa3(m:G, m':G,j<=na) := return(exp'(m,a[j]) = exp'(m', a)) |
+      	   (* GDH allows to compute exp(m, a[j]) = exp(m',a) for any m and m', 
+	      without leaking a, as it is DDH(exp(g,a), exp(g,a[j]), m, m')
+	      Indeed, 
+    	      D(exp(g,a),exp(g,a[j]),m,m') 
+      	        = (log_{g^a}(g^a[j]) * log_{g^a}(m) = log_{g^a}(m'))
+      		= (a[j]/a * log_g(m)/a = log_g(m')/a)
+      		= (a[j] * log_g(m) = a log_g(m'))
+      		= (m^a[j] = m'^a). *)
+      foreach iaDDH5 <= naDDH5 do ODDHa5(m:G, j'<=na,j<=na) :=
+      	      if defined(ka[j']) then return(exp'(m,a[j]) = exp'(g, mult(a[j'], a))) else
+	      if defined(ka) then return(exp'(m,a[j]) = exp'(g, mult(a[j'], a))) else
+	      return ((j = ia || j = j' || j' = ia) && exp'(m,a[j]) = exp'(g, mult(a[j'], a))) |
+	    (* GDH always allows to compute exp(m, a[j]) = exp(g,mult(a[j'],a))
+	       as a particular case of ODDHa2.
+	       When a or a[j'] is leaked, that is all we use and we keep the value
+	       that occurs in the left-hand side exp'(m, a[j]) = exp'(g,mult(a[j'],a)).
+	       Otherwise, we distinguish two cases:
+	       - When j = ia || j = j' || j' = ia, we keep the value
+	       that occurs in the left-hand side exp'(m, a[j]) = exp'(g,mult(a[j'],a)).
+	       - Otherwise, we apply the CDH assumption considering an adversary
+	         that knows a[j] and computes exp(m, a[j]). This adversary cannot
+	         compute exp(g,mult(a[j'],a)) by CDH, so the equality 
+	         exp(m, a[j]) = exp(g,mult(a[j'],a)) is false in this case.
+	       Hence, the equality exp(m, a[j]) = exp(g,mult(a[j'],a))
+	       reduces to (j = ia || j = j' || j' = ia) && exp'(m, a[j]) = exp'(g,mult(a[j'],a)). *)
+      foreach iaeq <= naeq do OAeq(m:G) := return(m = exp'(g,a)) |
+      foreach iaDDH1 <= naDDH1 do ODDHa1(m:G, m':G) := 
+	      return(m = exp'(m', a))
+		(* GDH allows to compute m = exp(m',a) for any m and m', without leaking a,
+		   as it is DDH(g, exp(g,a), m', m) *) |
+      foreach iaDDH <= naDDH do ODDHa(m:G, j<=na) := 
+      	      if defined(ka[j]) then return(m = exp'(g, mult(a[j], a))) else 
+              if defined(ka) then return(m = exp'(g, mult(a[j], a))) else
+	      return(j = ia && m = exp'(g, mult(a[j], a))) |
+            (* ODDHa is a particular case of ODDHa1 in which can apply the CDH assumption,
+	       provided a and a[j] are not leaked. *)
+      foreach iaDH9 <= naDH9 do ODHa9(x:Z) := return(exp'(g, mult(a, x)))
+    ).
+    (* We need to consider both forms m = exp(m', a) and m = exp(g,
+    mult(a[j], a)) in the equivalence, because, when m' is known to be
+    exp(g, a[j]), CryptoVerif is going to simplify m = exp(m', a) into
+    m = exp(g, mult(a[j], a)), and the procedure that tests whether a
+    term in the game matches a term in the equivalence would not
+    recognize that m = exp(g, mult(a[j], a)) in the game matches m =
     exp(m', a) in the equivalence. *)
 }
 
@@ -3712,8 +4029,8 @@ def GDH_RSR(G, Z, g, exp, exp', mult, pGDH, pDistRerandom) {
     DDH(G,A,B,C) tells whether A = G^a, B = G^b, and C = G^{ab} for some a,b,
     that is DDH(G,A,B,C) is (log_G(A) * log_G(B) = log_G(C)). *)
 
-param na, naDDH, naDDH1, naDDH2, naDDH3, naDDH4, naDDH5, naDDH6, naDDH7, naDDH8, naDH9,
-      nb, nbDDH, nbDDH1, nbDDH2, nbDDH3, nbDDH4, nbDDH5, nbDDH6, nbDDH7, nbDDH8, nbDH9.
+param na, naeq, naDDH, naDDH1, naDDH2, naDDH3, naDDH4, naDDH5, naDDH6, naDDH7, naDDH8, naDH9,
+      nb, nbeq, nbDDH, nbDDH1, nbDDH2, nbDDH3, nbDDH4, nbDDH5, nbDDH6, nbDDH7, nbDDH8, nbDH9.
 
 equiv(gdh(exp))
     foreach ia <= na do a <-R Z; (
@@ -3725,7 +4042,11 @@ equiv(gdh(exp))
       foreach iaDDH5 <= naDDH5 do ODDHa5(m:G, j'<=nb,j<=na) := return(exp(m,a[j]) = exp(g, mult(b[j'], a))) |
       foreach iaDDH6 <= naDDH6 do ODDHa6(m:G, j'<=na,j<=nb) := return(exp(m,b[j]) = exp(g, mult(a[j'], a))) |
       foreach iaDDH7 <= naDDH7 do ODDHa7(m:G, j'<=na,j<=na) := return(exp(m,a[j]) = exp(g, mult(a[j'], a))) |
-      foreach iaDDH1 <= naDDH1 do ODDHa1(m:G, m':G) := return(m = exp(m', a)) |
+       foreach iaeq <= naeq do OAeq(m:G) := return(m = exp(g,a)) |
+         (* We put the oracle above before ODDHa1, so that ODDHa1 is not used when m' = g,
+	    which would lead to additional calls to the DDH oracle when in fact
+	    we can simply compare with the public key *)
+     foreach iaDDH1 <= naDDH1 do ODDHa1(m:G, m':G) := return(m = exp(m', a)) |
       foreach iaDDH  <= naDDH  do ODDHa(m:G, j<=nb) [useful_change] := return(m = exp(g, mult(b[j], a))) |
       foreach iaDDH8 <= naDDH8 do ODDHa8(m:G,j<=na) [3] := return(m = exp(g,mult(a[j], a))) |
       foreach iaDH9 <= naDH9 do ODHa9(x:Z) [2] := return(exp(g, mult(a, x)))
@@ -3739,13 +4060,14 @@ equiv(gdh(exp))
       foreach ibDDH5 <= nbDDH5 do ODDHb5(m:G, j'<=nb,j<=na) := return(exp(m,a[j]) = exp(g, mult(b[j'], b))) |
       foreach ibDDH6 <= nbDDH6 do ODDHb6(m:G, j'<=na,j<=nb) := return(exp(m,b[j]) = exp(g, mult(a[j'], b))) |
       foreach ibDDH7 <= nbDDH7 do ODDHb7(m:G, j'<=na,j<=na) := return(exp(m,a[j]) = exp(g, mult(a[j'], b))) |
+      foreach ibeq <= nbeq do OBeq(m:G) := return(m = exp(g,b)) |
       foreach ibDDH1 <= nbDDH1 do ODDHb1(m:G, m':G) := return(m = exp(m', b)) |
       foreach ibDDH  <= nbDDH  do ODDHb(m:G, j<=na) := return(m = exp(g, mult(a[j], b))) |
       foreach ibDDH8 <= nbDDH8 do ODDHb8(m:G,j<=nb) [3] := return(m = exp(g,mult(b[j], b))) |
       foreach ibDH9 <= nbDH9 do ODHb9(x:Z) [2] := return(exp(g, mult(b, x)))
     )
-<=(max(1, 4*(#Oa-max(-1,-(#ODDHa5+#ODDHb7)))) * max(1, 4*(#Ob-max(-1,-(#ODDHa4+#ODDHb6)))) *
-	   pGDH(time + (na + nb + 1) * time(exp),
+<=(max(1, 4*(#Oa+optim-if #ODDHa5+#ODDHb7=0 then 0 else 1)) * max(1, 4*(#Ob+optim-if #ODDHa4+#ODDHb6=0 then 0 else 1)) *
+	   pGDH(time + (na + nb + 1 + #ODHa9 + #ODHb9) * time(exp),
 	   #ODDHa + #ODDHa1 + #ODDHa2 + #ODDHa3 + #ODDHa4 + #ODDHa5 + #ODDHa6 + #ODDHa7 + #ODDHa8 +
 	   #ODDHb + #ODDHb1 + #ODDHb2 + #ODDHb3 + #ODDHb4 + #ODDHb5 + #ODDHb6 + #ODDHb7 + #ODDHb8)
       + (na + nb) * pDistRerandom)=> [computational]
@@ -3764,25 +4086,25 @@ equiv(gdh(exp))
       foreach iaDDH3 <= naDDH3 do ODDHa3(m:G, m':G,j<=na) := return(exp'(m,a[j]) = exp'(m', a)) |
       	    (* Similar to ODDHa2 *)
       foreach iaDDH4 <= naDDH4 do ODDHa4(m:G, j'<=nb,j<=nb) :=
-      	      find u<=nb suchthat defined(kb[u],b[u]) && b[j'] = b[u] then return(exp'(m,b[j]) = exp'(g, mult(b[j'], a))) else
+      	      if defined(kb[j']) then return(exp'(m,b[j]) = exp'(g, mult(b[j'], a))) else
 	      if defined(ka) then return(exp'(m,b[j]) = exp'(g, mult(b[j'], a))) else
-	      return(b[j] = b[j'] && exp'(m,b[j']) = exp'(g, mult(b[j'], a))) |
+	      return(j = j' && exp'(m,b[j']) = exp'(g, mult(b[j'], a))) |
 	    (* GDH always allows to compute exp(m, b[j]) = exp(g,mult(b[j'],a))
 	       as a particular case of ODDHa2.
 	       When a or b[j'] is leaked, that is all we use and we keep the value
 	       that occurs in the left-hand side exp'(m, b[j]) = exp'(g,mult(b[j'],a)).
 	       Otherwise, we distinguish two cases:
-	       - When b[j] = b[j'], we also keep the value of the left-hand side.
+	       - When j = j', we also keep the value of the left-hand side.
 	       - Otherwise, we apply the CDH assumption considering an adversary
 	         that knows b[j] and computes exp(m, b[j]). This adversary cannot
 	         compute exp(g,mult(b[j'],a)) by CDH, so the equality 
 	         exp(m, b[j]) = exp(g,mult(b[j'],a)) is false in this case.
 	       Hence, the equality exp(m, b[j]) = exp(g,mult(b[j'],a))
-	       reduces to b[j] = b[j'] && exp'(m,b[j']) = exp'(g, mult(b[j'], a)). *)
+	       reduces to j = j' && exp'(m,b[j']) = exp'(g, mult(b[j'], a)). *)
       foreach iaDDH5 <= naDDH5 do ODDHa5(m:G, j'<=nb,j<=na) :=
-      	      find u<=nb suchthat defined(kb[u],b[u]) && b[j'] = b[u] then return(exp'(m,a[j]) = exp'(g, mult(b[j'], a))) else
+      	      if defined(kb[j']) then return(exp'(m,a[j]) = exp'(g, mult(b[j'], a))) else
 	      if defined(ka) then return(exp'(m,a[j]) = exp'(g, mult(b[j'], a))) else
-	      return (a[j] = a && exp'(m,a) = exp'(g, mult(b[j'], a))) |
+	      return (j = ia && exp'(m,a) = exp'(g, mult(b[j'], a))) |
 	      (* This case is similar to ODDHa4. *)	      
       foreach iaDDH6 <= naDDH6 do ODDHa6(m:G, j'<=na,j<=nb) := return(exp'(m,b[j]) = exp'(g, mult(a[j'], a))) |
       foreach iaDDH7 <= naDDH7 do ODDHa7(m:G, j'<=na,j<=na) := return(exp'(m,a[j]) = exp'(g, mult(a[j'], a))) |
@@ -3791,12 +4113,13 @@ equiv(gdh(exp))
 	       We need to consider all these forms because CryptoVerif rewrites
 	       exp(exp(g,b[j']),a) into exp(g,mult(b[j'],a)), and it would not
 	       detect exp(g,mult(b[j'],a)) as an instance of exp(m',a). *)
+      foreach iaeq <= naeq do OAeq(m:G) := return(m = exp'(g,a)) |
       foreach iaDDH1 <= naDDH1 do ODDHa1(m:G, m':G) := 
 	      return(m = exp'(m', a))
 		(* GDH allows to compute m = exp(m',a) for any m and m', without leaking a,
 		   as it is DDH(g, exp(g,a), m', m) *) |
       foreach iaDDH <= naDDH do ODDHa(m:G, j<=nb) := 
-      	      find u<=nb suchthat defined(kb[u],b[u]) && b[j] = b[u] then return(m = exp'(g, mult(b[j], a))) else 
+      	      if defined(kb[j]) then return(m = exp'(g, mult(b[j], a))) else 
               if defined(ka) then return(m = exp'(g, mult(b[j], a))) else return(false) |
             (* ODDHa is a particular case of ODDHa1 in which can apply the CDH assumption,
 	       provided a and b[j] are not leaked. *)
@@ -3813,18 +4136,19 @@ equiv(gdh(exp))
       foreach ibDDH4 <= nbDDH4 do ODDHb4(m:G, j'<=nb,j<=nb) := return(exp'(m,b[j]) = exp'(g, mult(b[j'], b))) |
       foreach ibDDH5 <= nbDDH5 do ODDHb5(m:G, j'<=nb,j<=na) := return(exp'(m,a[j]) = exp'(g, mult(b[j'], b))) |
       foreach ibDDH6 <= nbDDH6 do ODDHb6(m:G, j'<=na,j<=nb) :=
-      	      find u<=na suchthat defined(ka[u],a[u]) && a[j'] = a[u] then return(exp'(m,b[j]) = exp'(g, mult(a[j'], b))) else
+      	      if defined(ka[j']) then return(exp'(m,b[j]) = exp'(g, mult(a[j'], b))) else
 	      if defined(kb) then return(exp'(m,b[j]) = exp'(g, mult(a[j'], b))) else
-	      return(b[j] = b && exp'(m,b) = exp'(g, mult(a[j'], b))) |
+	      return(j = ib && exp'(m,b) = exp'(g, mult(a[j'], b))) |
       foreach ibDDH7 <= nbDDH7 do ODDHb7(m:G, j'<=na,j<=na) :=
-      	      find u<=na suchthat defined(ka[u],a[u]) && a[j'] = a[u] then return(exp'(m,a[j]) = exp'(g, mult(a[j'], b))) else
+      	      if defined(ka[j']) then return(exp'(m,a[j]) = exp'(g, mult(a[j'], b))) else
 	      if defined(kb) then return(exp'(m,a[j]) = exp'(g, mult(a[j'], b))) else
-	      return(a[j] = a[j'] && exp'(m,a[j']) = exp'(g, mult(a[j'], b))) |
+	      return(j = j' && exp'(m,a[j']) = exp'(g, mult(a[j'], b))) |
+      foreach ibeq <= nbeq do OBeq(m:G) := return(m = exp'(g,b)) |
       foreach ibDDH1 <= nbDDH1 do ODDHb1(m:G, m':G) := 
 	      return(m = exp'(m', b))
 		(* GDH allows to compute m = exp(m',b) for any m and m', without leaking b *) |
       foreach ibDDH <= nbDDH do ODDHb(m:G, j<=na) := 
-      	      find u<=na suchthat defined(ka[u],a[u]) && a[j] = a[u] then return(m = exp'(g, mult(a[j], b))) else 
+      	      if defined(ka[j]) then return(m = exp'(g, mult(a[j], b))) else 
               if defined(kb) then return(m = exp'(g, mult(a[j], b))) else return(false) |
       foreach ibDDH8 <= nbDDH8 do ODDHb8(m:G,j<=nb) [3] := return(m = exp'(g,mult(b[j], b))) |
       foreach ibDH9 <= nbDH9 do ODHb9(x:Z) := return(exp'(g, mult(b, x)))
@@ -3835,6 +4159,88 @@ equiv(gdh(exp))
     m = exp(g, mult(b[j], a)), and the procedure that tests whether a
     term in the game matches a term in the equivalence would not
     recognize that m = exp(g, mult(b[j], a)) in the game matches m =
+    exp(m', a) in the equivalence. *)
+}
+
+(* Same as GDH_RSR, but with a single family of exponents instead of two. 
+   More powerful, but leads to a higher probability. *)
+
+def GDH_RSR_single(G, Z, g, exp, exp', mult, pGDH, pDistRerandom) {
+
+(* the GDH assumption 
+    This equivalence says that, when exp(g,a[i]) are known to the
+    adversary, the adversary can compute exp(g, mult(a[i], a[j])) for i<>j only with
+    negligible probability, even in the presence of a DDH oracle
+    DDH(G,A,B,C) tells whether A = G^a, B = G^b, and C = G^{ab} for some a,b,
+    that is DDH(G,A,B,C) is (log_G(A) * log_G(B) = log_G(C)). *)
+
+param na, naeq, naDDH, naDDH1, naDDH2, naDDH3, naDDH4, naDDH5, naDH9.
+
+equiv(gdh(exp))
+    foreach ia <= na do a <-R Z; (
+      OA() := return(exp(g,a)) | 
+      Oa() [10] := return(a) |
+      foreach iaDDH3 <= naDDH3 do ODDHa3(m:G, m':G,j<=na) := return(exp(m,a[j]) = exp(m', a)) |
+      foreach iaDDH5 <= naDDH5 do ODDHa5(m:G, j'<=na,j<=na) [useful_change] := return(exp(m,a[j]) = exp(g, mult(a[j'], a))) |
+      foreach iaeq <= naeq do OAeq(m:G) := return(m = exp(g,a)) |
+         (* We put the oracle above before ODDHa1, so that ODDHa1 is not used when m' = g,
+	    which would lead to additional calls to the DDH oracle when in fact
+	    we can simply compare with the public key *)
+      foreach iaDDH1 <= naDDH1 do ODDHa1(m:G, m':G) := return(m = exp(m', a)) |
+      foreach iaDDH  <= naDDH  do ODDHa(m:G, j<=na) [useful_change] := return(m = exp(g, mult(a[j], a))) |
+      foreach iaDH9 <= naDH9 do ODHa9(x:Z) [2] := return(exp(g, mult(a, x)))
+    ) 
+<=(2* max(1, 27/4*(#Oa+optim-if #ODDHa5=0 then 0 else 1)^2) * 
+	   pGDH(time + (na+1 + #ODHa9) * time(exp),
+	   #ODDHa + #ODDHa1 + #ODDHa3 + #ODDHa5) + na * pDistRerandom)=> [computational]
+    foreach ia <= na do a <-R Z [unchanged]; (
+      OA() := return(exp'(g,a)) |
+      Oa() := let ka:bool = true in return(a) |
+      foreach iaDDH3 <= naDDH3 do ODDHa3(m:G, m':G,j<=na) := return(exp'(m,a[j]) = exp'(m', a)) |
+      	   (* GDH allows to compute exp(m, a[j]) = exp(m',a) for any m and m', 
+	      without leaking a, as it is DDH(exp(g,a), exp(g,a[j]), m, m')
+	      Indeed, 
+    	      D(exp(g,a),exp(g,a[j]),m,m') 
+      	        = (log_{g^a}(g^a[j]) * log_{g^a}(m) = log_{g^a}(m'))
+      		= (a[j]/a * log_g(m)/a = log_g(m')/a)
+      		= (a[j] * log_g(m) = a log_g(m'))
+      		= (m^a[j] = m'^a). *)
+      foreach iaDDH5 <= naDDH5 do ODDHa5(m:G, j'<=na,j<=na) :=
+      	      if defined(ka[j']) then return(exp'(m,a[j]) = exp'(g, mult(a[j'], a))) else
+	      if defined(ka) then return(exp'(m,a[j]) = exp'(g, mult(a[j'], a))) else
+	      return ((j = ia || j = j' || j' = ia) && exp'(m,a[j]) = exp'(g, mult(a[j'], a))) |
+	    (* GDH always allows to compute exp(m, a[j]) = exp(g,mult(a[j'],a))
+	       as a particular case of ODDHa2.
+	       When a or a[j'] is leaked, that is all we use and we keep the value
+	       that occurs in the left-hand side exp'(m, a[j]) = exp'(g,mult(a[j'],a)).
+	       Otherwise, we distinguish two cases:
+	       - When j = ia || j = j' || j' = ia, we keep the value
+	       that occurs in the left-hand side exp'(m, a[j]) = exp'(g,mult(a[j'],a)).
+	       - Otherwise, we apply the CDH assumption considering an adversary
+	         that knows a[j] and computes exp(m, a[j]). This adversary cannot
+	         compute exp(g,mult(a[j'],a)) by CDH, so the equality 
+	         exp(m, a[j]) = exp(g,mult(a[j'],a)) is false in this case.
+	       Hence, the equality exp(m, a[j]) = exp(g,mult(a[j'],a))
+	       reduces to (j = ia || j = j' || j' = ia) && exp'(m, a[j]) = exp'(g,mult(a[j'],a)). *)
+      foreach iaeq <= naeq do OAeq(m:G) := return(m = exp'(g,a)) |
+      foreach iaDDH1 <= naDDH1 do ODDHa1(m:G, m':G) := 
+	      return(m = exp'(m', a))
+		(* GDH allows to compute m = exp(m',a) for any m and m', without leaking a,
+		   as it is DDH(g, exp(g,a), m', m) *) |
+      foreach iaDDH <= naDDH do ODDHa(m:G, j<=na) := 
+      	      if defined(ka[j]) then return(m = exp'(g, mult(a[j], a))) else 
+              if defined(ka) then return(m = exp'(g, mult(a[j], a))) else
+	      return(j = ia && m = exp'(g, mult(a[j], a))) |
+            (* ODDHa is a particular case of ODDHa1 in which can apply the CDH assumption,
+	       provided a and a[j] are not leaked. *)
+      foreach iaDH9 <= naDH9 do ODHa9(x:Z) := return(exp'(g, mult(a, x)))
+    ).
+    (* We need to consider both forms m = exp(m', a) and m = exp(g,
+    mult(a[j], a)) in the equivalence, because, when m' is known to be
+    exp(g, a[j]), CryptoVerif is going to simplify m = exp(m', a) into
+    m = exp(g, mult(a[j], a)), and the procedure that tests whether a
+    term in the game matches a term in the equivalence would not
+    recognize that m = exp(g, mult(a[j], a)) in the game matches m =
     exp(m', a) in the equivalence. *)
 }
 
@@ -3866,13 +4272,13 @@ equiv(cdh(exp))
       	      return(m = exp(g, mult(a[j], a))) |
       foreach iaDH9 <= naDH9 do ODHa9(x:Z) [2] := return(exp(g, mult(a, x)))
     )
-<=(na * naDDH * pSQCDH(time + (na + #ODDHa - 2) * time(exp))
- + na * (na-1) * naDDH *pCDH(time + (na + #ODDHa - 3) * time(exp)))=> [computational]
+<=(na * naDDH * pSQCDH(time + (na + #ODDHa - 2 + #ODHa9) * time(exp))
+ + na * (na-1) * naDDH * pCDH(time + (na + #ODDHa - 3 + #ODHa9) * time(exp)))=> [computational]
     foreach ia <= na do a <-R Z [unchanged]; (
       OA() := return(exp'(g,a)) |
       Oa() := let ka:bool = true in return(a) |
       foreach iaDDH <= naDDH do ODDHa(m:G, j<=na) := 
-      	      find u<=na suchthat defined(ka[u],a[u]) && a[j] = a[u] then return(m = exp'(g, mult(a[j], a))) else 
+      	      if defined(ka[j]) then return(m = exp'(g, mult(a[j], a))) else 
               if defined(ka) then return(m = exp'(g, mult(a[j], a))) else return(false) |
       foreach iaDH9 <= naDH9 do ODHa9(x:Z) := return(exp'(g, mult(a, x)))
     ).
@@ -3910,12 +4316,12 @@ equiv(cdh(exp))
       	      return(m = exp(g, mult(a[j], a))) |
       foreach iaDH9 <= naDH9 do ODHa9(x:Z) [2] := return(exp(g, mult(a, x)))
     )
-<=(#ODDHa * max(1, 27/4*#Oa*#Oa) * pSQCDH(time + (na + #ODDHa + 1) * time(exp)) + na * pDistRerandom)=> [computational]
+<=(#ODDHa * max(1, 27/4*#Oa^2) * pSQCDH(time + (na + #ODDHa + 1 + #ODHa9) * time(exp)) + na * pDistRerandom)=> [computational]
     foreach ia <= na do a <-R Z [unchanged]; (
       OA() := return(exp'(g,a)) |
       Oa() := let ka:bool = true in return(a) |
       foreach iaDDH <= naDDH do ODDHa(m:G, j<=na) := 
-      	      find u<=na suchthat defined(ka[u],a[u]) && a[j] = a[u] then return(m = exp'(g, mult(a[j], a))) else 
+      	      if defined(ka[j]) then return(m = exp'(g, mult(a[j], a))) else 
               if defined(ka) then return(m = exp'(g, mult(a[j], a))) else return(false) |
       foreach iaDH9 <= naDH9 do ODHa9(x:Z) := return(exp'(g, mult(a, x)))
     ).
@@ -3939,6 +4345,8 @@ event ev_abort.
 
 param na, naDH, naDH9.
 
+table dhval(na, na, G).
+
 equiv(ddh(exp))
     foreach ia <= na do a <-R Z; (
       OA() := return(exp(g,a)) | 
@@ -3946,21 +4354,21 @@ equiv(ddh(exp))
       foreach iaDH <= naDH do ODHa(j<=na) [useful_change] := return (exp(g, mult(a[j], a))) |
       foreach iaDH9 <= naDH9 do ODHa9(x:Z) [2] := return(exp(g, mult(a, x)))
     )
-<=(na * pSQDDH(time + (na + #ODHa - 2) * time(exp)) + na*(na-1)/2 * pDDH(time + (na + #ODHa - 3) * time(exp)))=>
+<=(na * pSQDDH(time + (na + #ODHa - 2  + #ODHa9) * time(exp)) + na*(na-1)/2 * pDDH(time + (na + #ODHa - 3 + #ODHa9) * time(exp)))=>
     foreach ia <= na do a <-R Z; (
       OA() := return(exp'(g,a)) |
-      Oa() := 
-         find uaDH <= naDH suchthat defined(ka'[uaDH]) then event_abort ev_abort 
-	 orfind uaDH <= naDH, ua <= na suchthat defined(ka'[uaDH, ua], a'[uaDH, ua]) && a'[uaDH, ua] = a then event_abort ev_abort else
-         let ka:bool = true in return(a) |
+      Oa() :=
+      	 get dhval(=ia, j, c) in event_abort ev_abort else
+	 get dhval(j, =ia, c) in event_abort ev_abort else
+	 let ka:bool = true in return(a) |
       foreach iaDH <= naDH do ODHa(j<=na) := 
-      	 let a':Z = a[j] in
-	 find u<=na suchthat defined(ka[u],a[u]) && a' = a[u] then return(exp'(g, mult(a', a))) else 
-         if defined(ka) then return(exp'(g, mult(a', a))) else 
-	 let ka':bool = true in
-         find vaDH <= naDH suchthat defined(a'[vaDH],ca[vaDH]) && a' = a'[vaDH] then return(ca[vaDH]) 
-         orfind vaDH <= naDH, va <= na suchthat defined(a[va], a'[vaDH, va], ca[vaDH, va]) && a' = a[va] && a = a'[vaDH, va] then return(ca[vaDH, va]) else
-	 ca <-R G; return(ca) |
+	 if defined(ka[j]) then return(exp'(g, mult(a[j], a))) else 
+         if defined(ka) then return(exp'(g, mult(a[j], a))) else
+	 get[unique] dhval(=ia, =j, c) in return(c) else
+	 get[unique] dhval(=j, =ia, c) in return(c) else
+	 ca <-R G;
+	 insert dhval(ia, j, ca);
+	 return(ca) |
       foreach iaDH9 <= naDH9 do ODHa9(x:Z) := return(exp'(g, mult(a, x)))
     ).
 
@@ -3976,12 +4384,22 @@ equiv(ddh(exp))
    with at most n calls to the DDH oracle.
    pSQGDH(t,n): the probability of breaking the square GDH assumption in time t,
    with at most n calls to the DDH oracle.
+   pDistRerandom: the probability that rerandomization can be distinguished from the
+   original distribution
+          It is 0 when exponents are chosen uniformly in (Z/qZ)^*.
+	  2^-125 for curve25519
+	  2^-220 for curve448
+   (see https://tools.ietf.org/html/draft-barnes-cfrg-mult-for-7748-00 for the rerandomization
+   for curve25519 and curve448). It is needed because, for curve25519/448, to make 
+   the DH decision oracle unambiguous, we generate secret keys in [(p+1)/2,p-1]
+   instead of the set used for generating secret keys in the curve25519/448 implementation.
+   (The latter set yields equivalent secret keys with small probability.)
    Other arguments as in DH_basic.
 
    All arguments must be declared before this macro. 
 *)
 
-def square_GDH(G, Z, g, exp, exp', mult, pGDH, pSQGDH) {
+def square_GDH(G, Z, g, exp, exp', mult, pGDH, pSQGDH, pDistRerandom) {
 
 (* the square GDH assumption 
     This equivalence says that, when exp(g,a[i]) are known to the
@@ -3990,7 +4408,7 @@ def square_GDH(G, Z, g, exp, exp', mult, pGDH, pSQGDH) {
     DDH(G,A,B,C) tells whether A = G^a, B = G^b, and C = G^{ab} for some a,b,
     that is DDH(G,A,B,C) is (log_G(A) * log_G(B) = log_G(C)). *)
 
-param na, naDDH, naDDH1, naDDH2, naDDH3, naDDH4, naDDH5, naDH9.
+param na, naeq, naDDH, naDDH1, naDDH2, naDDH3, naDDH4, naDDH5, naDH9.
 
 equiv(gdh(exp))
     foreach ia <= na do a <-R Z; (
@@ -3998,12 +4416,17 @@ equiv(gdh(exp))
       Oa() [10] := return(a) |
       foreach iaDDH3 <= naDDH3 do ODDHa3(m:G, m':G,j<=na) := return(exp(m,a[j]) = exp(m', a)) |
       foreach iaDDH5 <= naDDH5 do ODDHa5(m:G, j'<=na,j<=na) [useful_change] := return(exp(m,a[j]) = exp(g, mult(a[j'], a))) |
+      foreach iaeq <= naeq do OAeq(m:G) := return(m = exp(g,a)) |
+         (* We put the oracle above before ODDHa1, so that ODDHa1 is not used when m' = g,
+	    which would lead to additional calls to the DDH oracle when in fact
+	    we can simply compare with the public key *)
       foreach iaDDH1 <= naDDH1 do ODDHa1(m:G, m':G) := return(m = exp(m', a)) |
       foreach iaDDH  <= naDDH  do ODDHa(m:G, j<=na) [useful_change] := return(m = exp(g, mult(a[j], a))) |
       foreach iaDH9 <= naDH9 do ODHa9(x:Z) [2] := return(exp(g, mult(a, x)))
     ) 
-<=(na * pSQGDH(time + na * time(exp), #ODDHa + #ODDHa1 + #ODDHa3 + #ODDHa5) +
-   na * (na-1) * pGDH(time + na * time(exp), #ODDHa + #ODDHa1 + #ODDHa3 + #ODDHa5))=> [computational]
+<=(na * pSQGDH(time + (na + #ODHa9) * time(exp), #ODDHa + #ODDHa1 + #ODDHa3 + #ODDHa5) +
+   na * (na-1)/2 * pGDH(time + (na + #ODHa9) * time(exp), #ODDHa + #ODDHa1 + #ODDHa3 + #ODDHa5) +
+   na * pDistRerandom)=> [computational]
     foreach ia <= na do a <-R Z [unchanged]; (
       OA() := return(exp'(g,a)) |
       Oa() := let ka:bool = true in return(a) |
@@ -4017,28 +4440,29 @@ equiv(gdh(exp))
       		= (a[j] * log_g(m) = a log_g(m'))
       		= (m^a[j] = m'^a). *)
       foreach iaDDH5 <= naDDH5 do ODDHa5(m:G, j'<=na,j<=na) :=
-      	      find u<=na suchthat defined(ka[u],a[u]) && a[j'] = a[u] then return(exp'(m,a[j]) = exp'(g, mult(a[j'], a))) else
+      	      if defined(ka[j']) then return(exp'(m,a[j]) = exp'(g, mult(a[j'], a))) else
 	      if defined(ka) then return(exp'(m,a[j]) = exp'(g, mult(a[j'], a))) else
-	      return ((a[j] = a || a[j] = a[j']) && exp'(m,a[j]) = exp'(g, mult(a[j'], a))) |
+	      return ((j = ia || j = j') && exp'(m,a[j]) = exp'(g, mult(a[j'], a))) |
 	    (* GDH always allows to compute exp(m, a[j]) = exp(g,mult(a[j'],a))
 	       as a particular case of ODDHa2.
 	       When a or a[j'] is leaked, that is all we use and we keep the value
 	       that occurs in the left-hand side exp'(m, a[j]) = exp'(g,mult(a[j'],a)).
 	       Otherwise, we distinguish two cases:
-	       - When a[j] = a[j'] or a[j] = a[j'], we keep the value
+	       - When j = ia or j = j', we keep the value
 	       that occurs in the left-hand side exp'(m, a[j]) = exp'(g,mult(a[j'],a)).
 	       - Otherwise, we apply the CDH assumption considering an adversary
 	         that knows a[j] and computes exp(m, a[j]). This adversary cannot
 	         compute exp(g,mult(a[j'],a)) by CDH, so the equality 
 	         exp(m, a[j]) = exp(g,mult(a[j'],a)) is false in this case.
 	       Hence, the equality exp(m, a[j]) = exp(g,mult(a[j'],a))
-	       reduces to (a[j] = a || a[j] = a[j']) && exp'(m, a[j]) = exp'(g,mult(a[j'],a)). *)
+	       reduces to (j = ia || j = j') && exp'(m, a[j]) = exp'(g,mult(a[j'],a)). *)
+      foreach iaeq <= naeq do OAeq(m:G) := return(m = exp'(g,a)) |
       foreach iaDDH1 <= naDDH1 do ODDHa1(m:G, m':G) := 
 	      return(m = exp'(m', a))
 		(* GDH allows to compute m = exp(m',a) for any m and m', without leaking a,
 		   as it is DDH(g, exp(g,a), m', m) *) |
       foreach iaDDH <= naDDH do ODDHa(m:G, j<=na) := 
-      	      find u<=na suchthat defined(ka[u],a[u]) && a[j] = a[u] then return(m = exp'(g, mult(a[j], a))) else 
+      	      if defined(ka[j]) then return(m = exp'(g, mult(a[j], a))) else 
               if defined(ka) then return(m = exp'(g, mult(a[j], a))) else return(false) |
             (* ODDHa is a particular case of ODDHa1 in which can apply the CDH assumption,
 	       provided a and a[j] are not leaked. *)
@@ -4080,7 +4504,7 @@ def square_GDH_RSR(G, Z, g, exp, exp', mult, pSQGDH, pDistRerandom) {
     DDH(G,A,B,C) tells whether A = G^a, B = G^b, and C = G^{ab} for some a,b,
     that is DDH(G,A,B,C) is (log_G(A) * log_G(B) = log_G(C)). *)
 
-param na, naDDH, naDDH1, naDDH2, naDDH3, naDDH4, naDDH5, naDH9.
+param na, naeq, naDDH, naDDH1, naDDH2, naDDH3, naDDH4, naDDH5, naDH9.
 
 equiv(gdh(exp))
     foreach ia <= na do a <-R Z; (
@@ -4088,12 +4512,16 @@ equiv(gdh(exp))
       Oa() [10] := return(a) |
       foreach iaDDH3 <= naDDH3 do ODDHa3(m:G, m':G,j<=na) := return(exp(m,a[j]) = exp(m', a)) |
       foreach iaDDH5 <= naDDH5 do ODDHa5(m:G, j'<=na,j<=na) [useful_change] := return(exp(m,a[j]) = exp(g, mult(a[j'], a))) |
+      foreach iaeq <= naeq do OAeq(m:G) := return(m = exp(g,a)) |
+         (* We put the oracle above before ODDHa1, so that ODDHa1 is not used when m' = g,
+	    which would lead to additional calls to the DDH oracle when in fact
+	    we can simply compare with the public key *)
       foreach iaDDH1 <= naDDH1 do ODDHa1(m:G, m':G) := return(m = exp(m', a)) |
       foreach iaDDH  <= naDDH  do ODDHa(m:G, j<=na) [useful_change] := return(m = exp(g, mult(a[j], a))) |
       foreach iaDH9 <= naDH9 do ODHa9(x:Z) [2] := return(exp(g, mult(a, x)))
     ) 
-<=(max(1, 27/4*(#Oa-max(-1,-#ODDHa5))*(#Oa-max(-1,-#ODDHa5))) * 
-	   pSQGDH(time + (na+1) * time(exp),
+<=(max(1, 27/4*(#Oa+optim-if #ODDHa5=0 then 0 else 1)^2) * 
+	   pSQGDH(time + (na+1 + #ODHa9) * time(exp),
 	   #ODDHa + #ODDHa1 + #ODDHa3 + #ODDHa5) + na * pDistRerandom)=> [computational]
     foreach ia <= na do a <-R Z [unchanged]; (
       OA() := return(exp'(g,a)) |
@@ -4108,28 +4536,29 @@ equiv(gdh(exp))
       		= (a[j] * log_g(m) = a log_g(m'))
       		= (m^a[j] = m'^a). *)
       foreach iaDDH5 <= naDDH5 do ODDHa5(m:G, j'<=na,j<=na) :=
-      	      find u<=na suchthat defined(ka[u],a[u]) && a[j'] = a[u] then return(exp'(m,a[j]) = exp'(g, mult(a[j'], a))) else
+      	      if defined(ka[j']) then return(exp'(m,a[j]) = exp'(g, mult(a[j'], a))) else
 	      if defined(ka) then return(exp'(m,a[j]) = exp'(g, mult(a[j'], a))) else
-	      return ((a[j] = a || a[j] = a[j']) && exp'(m,a[j]) = exp'(g, mult(a[j'], a))) |
+	      return ((j = ia || j = j') && exp'(m,a[j]) = exp'(g, mult(a[j'], a))) |
 	    (* GDH always allows to compute exp(m, a[j]) = exp(g,mult(a[j'],a))
 	       as a particular case of ODDHa2.
 	       When a or a[j'] is leaked, that is all we use and we keep the value
 	       that occurs in the left-hand side exp'(m, a[j]) = exp'(g,mult(a[j'],a)).
 	       Otherwise, we distinguish two cases:
-	       - When a[j] = a[j'] or a[j] = a[j'], we keep the value
+	       - When j = ia or j = j', we keep the value
 	       that occurs in the left-hand side exp'(m, a[j]) = exp'(g,mult(a[j'],a)).
 	       - Otherwise, we apply the CDH assumption considering an adversary
 	         that knows a[j] and computes exp(m, a[j]). This adversary cannot
 	         compute exp(g,mult(a[j'],a)) by CDH, so the equality 
 	         exp(m, a[j]) = exp(g,mult(a[j'],a)) is false in this case.
 	       Hence, the equality exp(m, a[j]) = exp(g,mult(a[j'],a))
-	       reduces to (a[j] = a || a[j] = a[j']) && exp'(m, a[j]) = exp'(g,mult(a[j'],a)). *)
+	       reduces to (j = ia || j = j') && exp'(m, a[j]) = exp'(g,mult(a[j'],a)). *)
+      foreach iaeq <= naeq do OAeq(m:G) := return(m = exp'(g,a)) |
       foreach iaDDH1 <= naDDH1 do ODDHa1(m:G, m':G) := 
 	      return(m = exp'(m', a))
 		(* GDH allows to compute m = exp(m',a) for any m and m', without leaking a,
 		   as it is DDH(g, exp(g,a), m', m) *) |
       foreach iaDDH <= naDDH do ODDHa(m:G, j<=na) := 
-      	      find u<=na suchthat defined(ka[u],a[u]) && a[j] = a[u] then return(m = exp'(g, mult(a[j], a))) else 
+      	      if defined(ka[j]) then return(m = exp'(g, mult(a[j], a))) else 
               if defined(ka) then return(m = exp'(g, mult(a[j], a))) else return(false) | 
             (* ODDHa is a particular case of ODDHa1 in which can apply the CDH assumption,
 	       provided a and a[j] are not leaked. *)
@@ -4172,6 +4601,8 @@ event ev_abort.
 
 param na, na1, na2, nb, nb1, nb2, naDH9, nbDH9. 
 
+table prf_dh_val(na, nb, prf_in, prf_out).
+
 equiv(prf_odh(prf))
     foreach ia <= na do a <-R Z; (
       OA() := return(exp(g,a)) | 
@@ -4186,48 +4617,90 @@ equiv(prf_odh(prf))
       foreach ibDH9 <= nbDH9 do ODHb9(x:Z) [2] := return(exp(g, mult(b, x)))
     )
 <=(na * nb * pPRF_ODH(time +
-     (na + nb + #Oa2 + #Ob2 - 3)*time(exp)+
+     (na + nb + #Oa2 + #Ob2 - 3 + #ODHa9 + #ODHb9)*time(exp)+
      (#Oa2 + #Ob2 - 1)*time(prf, max(maxlength(xa2), maxlength(xb2))),
      na2 + nb2))=>
     foreach ia <= na do a <-R Z; (
       OA() := return(exp'(g,a)) |
       Oa() :=
       	 (* Abort when a must not be compromised *)
-         find uaDH <= na2 suchthat defined(ka'[uaDH]) then event_abort ev_abort 
-	 orfind ubDH <= nb2, ub <= nb suchthat defined(kb'[ubDH, ub], a'[ubDH, ub]) && a'[ubDH, ub] = a then event_abort ev_abort else
+	 get prf_dh_val(=ia, jb, x, c) in event_abort ev_abort else
          let ka:bool = true in return(a) |
       foreach ia2 <= na2 do Oa2(jb <= nb, xa2: prf_in) :=
-      	 let b': Z = b[jb] in
-	 find u <= nb suchthat defined(kb[u],b[u]) && b' = b[u] then (* b' compromised *) return(prf(exp'(g, mult(b[jb], a)), xa2)) else
+	 if defined(kb[jb]) then (* b[jb] compromised *) return(prf(exp'(g, mult(b[jb], a)), xa2)) else
          if defined(ka) then (* a compromised *) return(prf(exp'(g, mult(b[jb], a)), xa2)) else
-	 (* At this point, a and b' are not compromised, and must never be compromised in the future *)
-	 let ka': bool = true in
-         find vaDH <= na2 suchthat defined(b'[vaDH],xa2[vaDH],ca2[vaDH]) && b' = b'[vaDH] && xa2 = xa2[vaDH] then return(ca2[vaDH]) 
-         orfind vbDH <= nb2, vb <= nb suchthat defined(b[vb], a'[vbDH, vb], xb2[vbDH, vb], cb2[vbDH, vb]) && b' = b[vb] && a = a'[vbDH, vb] && xa2 = xb2[vbDH, vb] then return(cb2[vbDH, vb]) else
-         ca2 <-R prf_out; return(ca2) |
+	 (* At this point, a and b[jb] are not compromised, and must never be compromised in the future *)
+	 get[unique] prf_dh_val(=ia, =jb, =xa2, c) in return(c) else
+         ca2 <-R prf_out;
+	 insert prf_dh_val(ia, jb, xa2, ca2);
+	 return(ca2) |
       foreach iaDH9 <= naDH9 do ODHa9(x:Z) := return(exp'(g, mult(a, x)))
     ) |
     foreach ib <= nb do b <-R Z; (
       OB() := return(exp'(g,b)) |
       Ob() :=
       	 (* Abort when b must not be compromised *)
-         find ubDH <= nb2 suchthat defined(kb'[ubDH]) then event_abort ev_abort 
-	 orfind uaDH <= na2, ua <= na suchthat defined(ka'[uaDH, ua], b'[uaDH, ua]) && b'[uaDH, ua] = b then event_abort ev_abort else
+	 get prf_dh_val(ja, =ib, x, c) in event_abort ev_abort else
          let kb:bool = true in return(b) |
       foreach ib2 <= nb2 do Ob2(ja <= na, xb2: prf_in) :=
-      	 let a': Z = a[ja] in
-	 find u <= na suchthat defined(ka[u],a[u]) && a' = a[u] then (* a' compromised *) return(prf(exp'(g, mult(a[ja], b)), xb2)) else
+	 if defined(ka[ja]) then (* a[ja] compromised *) return(prf(exp'(g, mult(a[ja], b)), xb2)) else
          if defined(kb) then (* b compromised *) return(prf(exp'(g, mult(a[ja], b)), xb2)) else
-	 (* At this point, b and a' are not compromised, and must never be compromised in the future *)
-	 let kb': bool = true in
-         find vbDH <= nb2 suchthat defined(a'[vbDH],xb2[vbDH],cb2[vbDH]) && a' = a'[vbDH] && xb2 = xb2[vbDH] then return(cb2[vbDH]) 
-         orfind vaDH <= na2, va <= na suchthat defined(a[va], b'[vaDH, va], xa2[vaDH, va], ca2[vaDH, va]) && a' = a[va] && b = b'[vaDH, va] && xb2 = xa2[vaDH, va] then return(ca2[vaDH, va]) else
-         cb2 <-R prf_out; return(cb2) |
+	 (* At this point, b and a[ja] are not compromised, and must never be compromised in the future *)
+	 get[unique] prf_dh_val(=ja, =ib, =xb2, c) in return(c) else
+         cb2 <-R prf_out;
+	 insert prf_dh_val(ja, ib, xb2, cb2);
+	 return(cb2) |
       foreach ibDH9 <= nbDH9 do ODHb9(x:Z) := return(exp'(g, mult(b, x)))
     ).
 	 
 }
 
+
+(* Same as PRF_ODH1, but with a single family of exponents instead of two. 
+   More powerful, but may lead to a higher probability. *)
+
+def PRF_ODH1_single(G, Z, prf_in, prf_out, g, exp, exp', mult, prf, pPRF_ODH) {
+
+fun prf(G, prf_in): prf_out.
+
+(* The PRF-ODH1 assumption *)
+
+event ev_abort.
+event square.
+
+param na, na1, na2, naDH9.
+
+table prf_dh_val(na, na, prf_in, prf_out).
+
+equiv(prf_odh(prf))
+    foreach ia <= na do a <-R Z; (
+      OA() := return(exp(g,a)) | 
+      Oa() [10] := return(a) |
+      foreach ia2 <= na2 do Oa2(ja <= na, xa2: prf_in) [useful_change] := return(prf(exp(g, mult(a[ja], a)), xa2)) |
+      foreach iaDH9 <= naDH9 do ODHa9(x:Z) [2] := return(exp(g, mult(a, x)))
+    )
+<=(na*(na-1)/2 * pPRF_ODH(time + (na + #Oa2 - 3 + #ODHa9)*time(exp) + (#Oa2 - 1) * time(prf, maxlength(xa2)), 2*na2))=>
+    foreach ia <= na do a <-R Z; (
+      OA() := return(exp'(g,a)) |
+      Oa() :=
+      	 (* Abort when a must not be compromised *)
+         get prf_dh_val(=ia, ja, x, c) in event_abort ev_abort else
+	 get prf_dh_val(ja, =ia, x, c) in event_abort ev_abort else
+         let ka:bool = true in return(a) |
+      foreach ia2 <= na2 do Oa2(ja <= na, xa2: prf_in) :=
+	 if defined(ka[ja]) then (* a[ja] compromised *) return(prf(exp'(g, mult(a[ja], a)), xa2)) else
+         if defined(ka) then (* a compromised *) return(prf(exp'(g, mult(a[ja], a)), xa2)) else
+	 if ja = ia then event_abort square else
+	 (* At this point, a and a[ja] are not compromised, and must never be compromised in the future *)
+	 get[unique] prf_dh_val(=ia, =ja, =xa2, c) in return(c) else
+	 get[unique] prf_dh_val(=ja, =ia, =xa2, c) in return(c) else
+         ca2 <-R prf_out;
+	 insert prf_dh_val(ia, ja, xa2, ca2);
+	 return(ca2) |
+      foreach iaDH9 <= naDH9 do ODHa9(x:Z) := return(exp'(g, mult(a, x)))
+    ).
+	 
+}
 
 (* PRF-ODH2 is a consequence of GDH and ROM. It corresponds to mmPRF-ODH in https://eprint.iacr.org/2017/517, but again with several challenge queries using the same or different DH pairs and argument of the PRF.
 
@@ -4255,6 +4728,8 @@ event ev_abort.
 
 param na, na1, na2, nb, nb1, nb2, naDH9, nbDH9. 
 
+table prf_dh_val(na, nb, prf_in, prf_out).
+
 equiv(prf_odh(prf))
     foreach ia <= na do a <-R Z; (
       OA() := return(exp(g,a)) | 
@@ -4271,88 +4746,133 @@ equiv(prf_odh(prf))
       foreach ibDH9 <= nbDH9 do ODHb9(x:Z) [2] := return(exp(g, mult(b, x)))
     )
 <=(na * nb * pPRF_ODH(time +
-     (na + nb + #Oa1 + #Ob1 + #Oa2 + #Ob2 - 3)*time(exp)+
-     #Oa1*time(prf, maxlength(xa1))+#Ob1*time(prf, maxlength(xb1))+
-     (#Oa2 + #Ob2 - 1)*time(prf, max(maxlength(xa2), maxlength(xb2))),
+     (na + nb + #Oa1 + #Ob1 + #Oa2 + #Ob2 - 3 + #ODHa9 + #ODHb9)*time(exp)+
+     (#Oa1 + #Ob1 + #Oa2 + #Ob2 - 1)*
+       time(prf, max(maxlength(xa1), maxlength(xb1), maxlength(xa2), maxlength(xb2))),
      na1 + nb1 + na2 + nb2,
      na1 + nb1))=>
     foreach ia <= na do a <-R Z; (
       OA() := return(exp'(g,a)) |
       Oa() :=
       	 (* Abort when a must not be compromised *)
-         find uaDH <= na2 suchthat defined(ka'[uaDH]) then event_abort ev_abort 
-         orfind uaDH <= na1 suchthat defined(ka''[uaDH]) then event_abort ev_abort 
-	 orfind ubDH <= nb2, ub <= nb suchthat defined(kb'[ubDH, ub], a'[ubDH, ub]) && a'[ubDH, ub] = a then event_abort ev_abort 
-	 orfind ubDH <= nb1, ub <= nb suchthat defined(kb''[ubDH, ub], a''[ubDH, ub]) && a''[ubDH, ub] = a then event_abort ev_abort else
+	 get prf_dh_val(=ia, jb, x, c) in event_abort ev_abort else
          let ka:bool = true in return(a) |
       foreach ia1 <= na1 do Oa1(ma1:G, xa1:prf_in) :=
       	 find j' <= nb suchthat defined(b[j']) && ma1 = exp'(g, b[j']) then
 	 (
 	    (* In this case, that's the same as Oa2 *)
-	    let b'': Z = b[j'] in
-	    find u <= nb suchthat defined(kb[u],b[u]) && b'' = b[u] then (* b'' compromised *) return(prf(exp'(ma1, a), xa1)) else
+	    if defined(kb[j']) then (* b[j'] compromised *) return(prf(exp'(ma1, a), xa1)) else
             if defined(ka) then (* a compromised *) return(prf(exp'(ma1, a), xa1)) else
-	    (* At this point, a and b'' are not compromised, and must never be compromised in the future *)
-	    let ka'': bool = true in
-            find vaDH <= na1 suchthat defined(b''[vaDH],xa1[vaDH],ca1[vaDH]) && b'' = b''[vaDH] && xa1 = xa1[vaDH] then return(ca1[vaDH]) 
-            orfind vaDH <= na2 suchthat defined(b'[vaDH],xa2[vaDH],ca2[vaDH]) && b'' = b'[vaDH] && xa1 = xa2[vaDH] then return(ca2[vaDH]) 
-            orfind vbDH <= nb1, vb <= nb suchthat defined(b[vb], a''[vbDH, vb], xb1[vbDH, vb], cb1[vbDH, vb]) && b'' = b[vb] && a = a''[vbDH, vb] && xa1 = xb1[vbDH, vb] then return(cb1[vbDH, vb]) 
-            orfind vbDH <= nb2, vb <= nb suchthat defined(b[vb], a'[vbDH, vb], xb2[vbDH, vb], cb2[vbDH, vb]) && b'' = b[vb] && a = a'[vbDH, vb] && xa1 = xb2[vbDH, vb] then return(cb2[vbDH, vb]) else
-	    ca1 <-R prf_out; return(ca1)
+	    (* At this point, a and b[j'] are not compromised, and must never be compromised in the future *)
+	    get[unique] prf_dh_val(=ia, =j', =xa1, c) in return(c) else
+	    ca1 <-R prf_out;
+	    insert prf_dh_val(ia, j', xa1, ca1);
+	    return(ca1)
 	 )
 	 else
 	    return(prf(exp'(ma1, a), xa1)) |
       foreach ia2 <= na2 do Oa2(jb <= nb, xa2: prf_in) :=
-      	 let b': Z = b[jb] in
-	 find u <= nb suchthat defined(kb[u],b[u]) && b' = b[u] then (* b' compromised *) return(prf(exp'(g, mult(b[jb], a)), xa2)) else
+	 if defined(kb[jb]) then (* b[jb] compromised *) return(prf(exp'(g, mult(b[jb], a)), xa2)) else
          if defined(ka) then (* a compromised *) return(prf(exp'(g, mult(b[jb], a)), xa2)) else
 	 (* At this point, a and b' are not compromised, and must never be compromised in the future *)
-	 let ka': bool = true in
-         find vaDH <= na1 suchthat defined(b''[vaDH],xa1[vaDH],ca1[vaDH]) && b' = b''[vaDH] && xa2 = xa1[vaDH] then return(ca1[vaDH]) 
-         orfind vaDH <= na2 suchthat defined(b'[vaDH],xa2[vaDH],ca2[vaDH]) && b' = b'[vaDH] && xa2 = xa2[vaDH] then return(ca2[vaDH]) 
-         orfind vbDH <= nb1, vb <= nb suchthat defined(b[vb], a''[vbDH, vb], xb1[vbDH, vb], cb1[vbDH, vb]) && b' = b[vb] && a = a''[vbDH, vb] && xa2 = xb1[vbDH, vb] then return(cb1[vbDH, vb]) 
-         orfind vbDH <= nb2, vb <= nb suchthat defined(b[vb], a'[vbDH, vb], xb2[vbDH, vb], cb2[vbDH, vb]) && b' = b[vb] && a = a'[vbDH, vb] && xa2 = xb2[vbDH, vb] then return(cb2[vbDH, vb]) else
-         ca2 <-R prf_out; return(ca2) |
+	 get[unique] prf_dh_val(=ia, =jb, =xa2, c) in return(c) else
+         ca2 <-R prf_out;
+	 insert prf_dh_val(ia, jb, xa2, ca2);
+	 return(ca2) |
       foreach iaDH9 <= naDH9 do ODHa9(x:Z) := return(exp'(g, mult(a, x)))
     ) |
     foreach ib <= nb do b <-R Z; (
       OB() := return(exp'(g,b)) |
       Ob() :=
       	 (* Abort when b must not be compromised *)
-         find ubDH <= nb2 suchthat defined(kb'[ubDH]) then event_abort ev_abort 
-         orfind ubDH <= nb1 suchthat defined(kb''[ubDH]) then event_abort ev_abort 
-	 orfind uaDH <= na2, ua <= na suchthat defined(ka'[uaDH, ua], b'[uaDH, ua]) && b'[uaDH, ua] = b then event_abort ev_abort 
-	 orfind uaDH <= na1, ua <= na suchthat defined(ka''[uaDH, ua], b''[uaDH, ua]) && b''[uaDH, ua] = b then event_abort ev_abort else
+	 get prf_dh_val(ja, =ib, x, c) in event_abort ev_abort else
          let kb:bool = true in return(b) |
       foreach ib1 <= nb1 do Ob1(mb1:G, xb1:prf_in) :=
       	 find j' <= na suchthat defined(a[j']) && mb1 = exp'(g, a[j']) then
 	 (
 	    (* In this case, that's the same as Oa2 *)
-	    let a'': Z = a[j'] in
-	    find u <= na suchthat defined(ka[u],a[u]) && a'' = a[u] then (* a'' compromised *) return(prf(exp'(mb1, b), xb1)) else
+	    if defined(ka[j']) then (* a[j'] compromised *) return(prf(exp'(mb1, b), xb1)) else
             if defined(kb) then (* b compromised *) return(prf(exp'(mb1, b), xb1)) else
-	    (* At this point, b and a'' are not compromised, and must never be compromised in the future *)
-	    let kb'': bool = true in
-            find vbDH <= nb1 suchthat defined(a''[vbDH],xb1[vbDH],cb1[vbDH]) && a'' = a''[vbDH] && xb1 = xb1[vbDH] then return(cb1[vbDH]) 
-            orfind vbDH <= nb2 suchthat defined(a'[vbDH],xb2[vbDH],cb2[vbDH]) && a'' = a'[vbDH] && xb1 = xb2[vbDH] then return(cb2[vbDH]) 
-            orfind vaDH <= na1, va <= na suchthat defined(a[va], b''[vaDH, va], xa1[vaDH, va], ca1[vaDH, va]) && a'' = a[va] && b = b''[vaDH, va] && xb1 = xa1[vaDH, va] then return(ca1[vaDH, va]) 
-            orfind vaDH <= na2, va <= na suchthat defined(a[va], b'[vaDH, va], xa2[vaDH, va], ca2[vaDH, va]) && a'' = a[va] && b = b'[vaDH, va] && xb1 = xa2[vaDH, va] then return(ca2[vaDH, va]) else
-	    cb1 <-R prf_out; return(cb1)
+	    (* At this point, b and a[j'] are not compromised, and must never be compromised in the future *)
+	    get[unique] prf_dh_val(=j', =ib, =xb1, c) in return(c) else
+	    cb1 <-R prf_out;
+	    insert prf_dh_val(j', ib, xb1, cb1);
+	    return(cb1)
 	 )
 	 else
 	    return(prf(exp'(mb1, b), xb1)) |
       foreach ib2 <= nb2 do Ob2(ja <= na, xb2: prf_in) :=
-      	 let a': Z = a[ja] in
-	 find u <= na suchthat defined(ka[u],a[u]) && a' = a[u] then (* a' compromised *) return(prf(exp'(g, mult(a[ja], b)), xb2)) else
+	 if defined(ka[ja]) then (* a[ja] compromised *) return(prf(exp'(g, mult(a[ja], b)), xb2)) else
          if defined(kb) then (* b compromised *) return(prf(exp'(g, mult(a[ja], b)), xb2)) else
-	 (* At this point, b and a' are not compromised, and must never be compromised in the future *)
-	 let kb': bool = true in
-         find vbDH <= nb1 suchthat defined(a''[vbDH],xb1[vbDH],cb1[vbDH]) && a' = a''[vbDH] && xb2 = xb1[vbDH] then return(cb1[vbDH]) 
-         orfind vbDH <= nb2 suchthat defined(a'[vbDH],xb2[vbDH],cb2[vbDH]) && a' = a'[vbDH] && xb2 = xb2[vbDH] then return(cb2[vbDH]) 
-         orfind vaDH <= na1, va <= na suchthat defined(a[va], b''[vaDH, va], xa1[vaDH, va], ca1[vaDH, va]) && a' = a[va] && b = b''[vaDH, va] && xb2 = xa1[vaDH, va] then return(ca1[vaDH, va]) 
-         orfind vaDH <= na2, va <= na suchthat defined(a[va], b'[vaDH, va], xa2[vaDH, va], ca2[vaDH, va]) && a' = a[va] && b = b'[vaDH, va] && xb2 = xa2[vaDH, va] then return(ca2[vaDH, va]) else
-         cb2 <-R prf_out; return(cb2) |
+	 (* At this point, b and a[ja] are not compromised, and must never be compromised in the future *)
+	 get[unique] prf_dh_val(=ja, =ib, =xb2, c) in return(c) else
+         cb2 <-R prf_out;
+	 insert prf_dh_val(ja, ib, xb2, cb2);
+	 return(cb2) |
       foreach ibDH9 <= nbDH9 do ODHb9(x:Z) := return(exp'(g, mult(b, x)))
+    ).
+	 
+}
+
+(* Same as PRF_ODH2, but with a single family of exponents instead of two. 
+   More powerful, but may lead to a higher probability. *)
+
+def PRF_ODH2_single(G, Z, prf_in, prf_out, g, exp, exp', mult, prf, pPRF_ODH) {
+
+fun prf(G, prf_in): prf_out.
+
+(* The PRF-ODH2 assumption *)
+
+event ev_abort.
+
+param na, na1, na2, naDH9.
+
+table prf_dh_val(na, na, prf_in, prf_out).
+
+equiv(prf_odh(prf))
+    foreach ia <= na do a <-R Z; (
+      OA() := return(exp(g,a)) | 
+      Oa() [10] := return(a) |
+      foreach ia1 <= na1 do Oa1(ma1:G, xa1:prf_in) := return(prf(exp(ma1, a), xa1)) |
+      foreach ia2 <= na2 do Oa2(ja <= na, xa2: prf_in) [useful_change] := return(prf(exp(g, mult(a[ja], a)), xa2)) |
+      foreach iaDH9 <= naDH9 do ODHa9(x:Z) [2] := return(exp(g, mult(a, x)))
+    )
+<=(na*(na-1)/2 * pPRF_ODH(time + (na + #Oa1 + #Oa2 - 3 + #ODHa9)*time(exp) +
+      (#Oa1 + #Oa2 - 1) * time(prf, max(maxlength(xa1), maxlength(xa2))), 2*na2, 2*na1))=>
+    foreach ia <= na do a <-R Z; (
+      OA() := return(exp'(g,a)) |
+      Oa() :=
+      	 (* Abort when a must not be compromised *)
+         get prf_dh_val(=ia, ja, x, c) in event_abort ev_abort else
+         get prf_dh_val(ja, =ia, x, c) in event_abort ev_abort else
+         let ka:bool = true in return(a) |
+      foreach ia1 <= na1 do Oa1(ma1:G, xa1:prf_in) :=
+      	 find j' <= na suchthat defined(a[j']) && ma1 = exp'(g, a[j']) then
+	 (
+	    (* In this case, that's the same as Oa2 *)
+	    if defined(ka[j']) then (* a[j'] compromised *) return(prf(exp'(ma1, a), xa1)) else
+            if defined(ka) then (* a compromised *) return(prf(exp'(ma1, a), xa1)) else
+	    if j' = ia then (* square *) return(prf(exp'(ma1, a), xa1)) else
+	    (* At this point, a and a[j'] are not compromised, and must never be compromised in the future *)
+	    get[unique] prf_dh_val(=ia, =j', =xa1, c) in return(c) else
+	    get[unique] prf_dh_val(=j', =ia, =xa1, c) in return(c) else
+	    ca1 <-R prf_out;
+	    insert prf_dh_val(ia, j', xa1, ca1);
+	    return(ca1)
+	 )
+	 else
+	    return(prf(exp'(ma1, a), xa1)) |
+      foreach ia2 <= na2 do Oa2(ja <= na, xa2: prf_in) :=
+	 if defined(ka[ja]) then (* a[ja] compromised *) return(prf(exp'(g, mult(a[ja], a)), xa2)) else
+         if defined(ka) then (* a compromised *) return(prf(exp'(g, mult(a[ja], a)), xa2)) else
+	 if ja = ia then (* square *) return(prf(exp'(g, mult(a[ja], a)), xa2)) else
+	 (* At this point, a and a[ja] are not compromised, and must never be compromised in the future *)
+	 get[unique] prf_dh_val(=ia, =ja, =xa2, c) in return(c) else
+	 get[unique] prf_dh_val(=ja, =ia, =xa2, c) in return(c) else
+         ca2 <-R prf_out;
+	 insert prf_dh_val(ia, ja, xa2, ca2);
+	 return(ca2) |
+      foreach iaDH9 <= naDH9 do ODHa9(x:Z) := return(exp'(g, mult(a, x)))
     ).
 	 
 }
@@ -4386,6 +4906,8 @@ event ev_abort.
 
 param na, na1, na2, naDH9.
 
+table prf_dh_val(na, na, prf_in, prf_out).
+
 equiv(prf_odh(prf))
     foreach ia <= na do a <-R Z; (
       OA() := return(exp(g,a)) | 
@@ -4393,24 +4915,24 @@ equiv(prf_odh(prf))
       foreach ia2 <= na2 do Oa2(ja <= na, xa2: prf_in) [useful_change] := return(prf(exp(g, mult(a[ja], a)), xa2)) |
       foreach iaDH9 <= naDH9 do ODHa9(x:Z) [2] := return(exp(g, mult(a, x)))
     )
-<=(na * pSQPRF_ODH(time + (na + #Oa2 - 2)*time(exp) + (#Oa2 - 1) * time(prf, maxlength(xa2)), na2) +
-   na*(na-1)/2 * pPRF_ODH(time + (na + #Oa2 - 3)*time(exp) + (#Oa2 - 1) * time(prf, maxlength(xa2)), 2*na2))=>
+<=(na * pSQPRF_ODH(time + (na + #Oa2 - 2 + #ODHa9)*time(exp) + (#Oa2 - 1) * time(prf, maxlength(xa2)), na2) +
+   na*(na-1)/2 * pPRF_ODH(time + (na + #Oa2 - 3 + #ODHa9)*time(exp) + (#Oa2 - 1) * time(prf, maxlength(xa2)), 2*na2))=>
     foreach ia <= na do a <-R Z; (
       OA() := return(exp'(g,a)) |
       Oa() :=
       	 (* Abort when a must not be compromised *)
-         find uaDH <= na2 suchthat defined(ka'[uaDH]) then event_abort ev_abort 
-	 orfind uaDH <= na2, ua <= na suchthat defined(ka'[uaDH, ua], a'[uaDH, ua]) && a'[uaDH, ua] = a then event_abort ev_abort else
+         get prf_dh_val(=ia, ja, x, c) in event_abort ev_abort else
+	 get prf_dh_val(ja, =ia, x, c) in event_abort ev_abort else
          let ka:bool = true in return(a) |
       foreach ia2 <= na2 do Oa2(ja <= na, xa2: prf_in) :=
-      	 let a': Z = a[ja] in
-	 find u <= na suchthat defined(ka[u],a[u]) && a' = a[u] then (* a' compromised *) return(prf(exp'(g, mult(a[ja], a)), xa2)) else
+	 if defined(ka[ja]) then (* a[ja] compromised *) return(prf(exp'(g, mult(a[ja], a)), xa2)) else
          if defined(ka) then (* a compromised *) return(prf(exp'(g, mult(a[ja], a)), xa2)) else
-	 (* At this point, a and a' are not compromised, and must never be compromised in the future *)
-	 let ka': bool = true in
-         find vaDH <= na2 suchthat defined(a'[vaDH],xa2[vaDH],ca2[vaDH]) && a' = a'[vaDH] && xa2 = xa2[vaDH] then return(ca2[vaDH]) 
-         orfind vaDH <= na2, va <= na suchthat defined(a[va], a'[vaDH, va], xa2[vaDH, va], ca2[vaDH, va]) && a' = a[va] && a = a'[vaDH, va] && xa2 = xa2[vaDH, va] then return(ca2[vaDH, va]) else
-         ca2 <-R prf_out; return(ca2) |
+	 (* At this point, a and a[ja] are not compromised, and must never be compromised in the future *)
+	 get[unique] prf_dh_val(=ia, =ja, =xa2, c) in return(c) else
+	 get[unique] prf_dh_val(=ja, =ia, =xa2, c) in return(c) else
+         ca2 <-R prf_out;
+	 insert prf_dh_val(ia, ja, xa2, ca2);
+	 return(ca2) |
       foreach iaDH9 <= naDH9 do ODHa9(x:Z) := return(exp'(g, mult(a, x)))
     ).
 	 
@@ -4447,6 +4969,8 @@ event ev_abort.
 
 param na, na1, na2, naDH9.
 
+table prf_dh_val(na, na, prf_in, prf_out).
+
 equiv(prf_odh(prf))
     foreach ia <= na do a <-R Z; (
       OA() := return(exp(g,a)) | 
@@ -4455,45 +4979,41 @@ equiv(prf_odh(prf))
       foreach ia2 <= na2 do Oa2(ja <= na, xa2: prf_in) [useful_change] := return(prf(exp(g, mult(a[ja], a)), xa2)) |
       foreach iaDH9 <= naDH9 do ODHa9(x:Z) [2] := return(exp(g, mult(a, x)))
     )
-<=(na * pSQPRF_ODH(time + (na + #Oa1 + #Oa2 - 2)*time(exp) + #Oa1 * time(prf, maxlength(xa1)) + (#Oa2 - 1) * time(prf, maxlength(xa2)), na2, na1) +
-   na*(na-1)/2 * pPRF_ODH(time + (na + #Oa1 + #Oa2 - 3)*time(exp) + #Oa1 * time(prf, maxlength(xa1)) + (#Oa2 - 1) * time(prf, maxlength(xa2)), 2*na2, 2*na1))=>
+<=(na * pSQPRF_ODH(time + (na + #Oa1 + #Oa2 - 2 + #ODHa9)*time(exp) +
+      (#Oa1 + #Oa2 - 1) * time(prf, max(maxlength(xa1),maxlength(xa2))), na2, na1) +
+   na*(na-1)/2 * pPRF_ODH(time + (na + #Oa1 + #Oa2 - 3 + #ODHa9)*time(exp) +
+      (#Oa1 + #Oa2 - 1) * time(prf, max(maxlength(xa1), maxlength(xa2))), 2*na2, 2*na1))=>
     foreach ia <= na do a <-R Z; (
       OA() := return(exp'(g,a)) |
       Oa() :=
       	 (* Abort when a must not be compromised *)
-         find uaDH <= na2 suchthat defined(ka'[uaDH]) then event_abort ev_abort 
-         orfind uaDH <= na1 suchthat defined(ka''[uaDH]) then event_abort ev_abort 
-	 orfind uaDH <= na2, ua <= na suchthat defined(ka'[uaDH, ua], a'[uaDH, ua]) && a'[uaDH, ua] = a then event_abort ev_abort 
-	 orfind uaDH <= na1, ua <= na suchthat defined(ka''[uaDH, ua], a''[uaDH, ua]) && a''[uaDH, ua] = a then event_abort ev_abort else
+         get prf_dh_val(=ia, ja, x, c) in event_abort ev_abort else
+         get prf_dh_val(ja, =ia, x, c) in event_abort ev_abort else
          let ka:bool = true in return(a) |
       foreach ia1 <= na1 do Oa1(ma1:G, xa1:prf_in) :=
       	 find j' <= na suchthat defined(a[j']) && ma1 = exp'(g, a[j']) then
 	 (
 	    (* In this case, that's the same as Oa2 *)
-	    let a'': Z = a[j'] in
-	    find u <= na suchthat defined(ka[u],a[u]) && a'' = a[u] then (* a'' compromised *) return(prf(exp'(ma1, a), xa1)) else
+	    if defined(ka[j']) then (* a[j'] compromised *) return(prf(exp'(ma1, a), xa1)) else
             if defined(ka) then (* a compromised *) return(prf(exp'(ma1, a), xa1)) else
-	    (* At this point, a and a'' are not compromised, and must never be compromised in the future *)
-	    let ka'': bool = true in
-            find vaDH <= na1 suchthat defined(a''[vaDH],xa1[vaDH],ca1[vaDH]) && a'' = a''[vaDH] && xa1 = xa1[vaDH] then return(ca1[vaDH]) 
-            orfind vaDH <= na2 suchthat defined(a'[vaDH],xa2[vaDH],ca2[vaDH]) && a'' = a'[vaDH] && xa1 = xa2[vaDH] then return(ca2[vaDH]) 
-            orfind vaDH <= na1, va <= na suchthat defined(a[va], a''[vaDH, va], xa1[vaDH, va], ca1[vaDH, va]) && a'' = a[va] && a = a''[vaDH, va] && xa1 = xa1[vaDH, va] then return(ca1[vaDH, va]) 
-            orfind vaDH <= na2, va <= na suchthat defined(a[va], a'[vaDH, va], xa2[vaDH, va], ca2[vaDH, va]) && a'' = a[va] && a = a'[vaDH, va] && xa1 = xa2[vaDH, va] then return(ca2[vaDH, va]) else
-	    ca1 <-R prf_out; return(ca1)
+	    (* At this point, a and a[j'] are not compromised, and must never be compromised in the future *)
+	    get[unique] prf_dh_val(=ia, =j', =xa1, c) in return(c) else
+	    get[unique] prf_dh_val(=j', =ia, =xa1, c) in return(c) else
+	    ca1 <-R prf_out;
+	    insert prf_dh_val(ia, j', xa1, ca1);
+	    return(ca1)
 	 )
 	 else
 	    return(prf(exp'(ma1, a), xa1)) |
       foreach ia2 <= na2 do Oa2(ja <= na, xa2: prf_in) :=
-      	 let a': Z = a[ja] in
-	 find u <= na suchthat defined(ka[u],a[u]) && a' = a[u] then (* a' compromised *) return(prf(exp'(g, mult(a[ja], a)), xa2)) else
+	 if defined(ka[ja]) then (* a[ja] compromised *) return(prf(exp'(g, mult(a[ja], a)), xa2)) else
          if defined(ka) then (* a compromised *) return(prf(exp'(g, mult(a[ja], a)), xa2)) else
-	 (* At this point, a and a' are not compromised, and must never be compromised in the future *)
-	 let ka': bool = true in
-         find vaDH <= na1 suchthat defined(a''[vaDH],xa1[vaDH],ca1[vaDH]) && a' = a''[vaDH] && xa2 = xa1[vaDH] then return(ca1[vaDH]) 
-         orfind vaDH <= na2 suchthat defined(a'[vaDH],xa2[vaDH],ca2[vaDH]) && a' = a'[vaDH] && xa2 = xa2[vaDH] then return(ca2[vaDH]) 
-         orfind vaDH <= na1, va <= na suchthat defined(a[va], a''[vaDH, va], xa1[vaDH, va], ca1[vaDH, va]) && a' = a[va] && a = a''[vaDH, va] && xa2 = xa1[vaDH, va] then return(ca1[vaDH, va]) 
-         orfind vaDH <= na2, va <= na suchthat defined(a[va], a'[vaDH, va], xa2[vaDH, va], ca2[vaDH, va]) && a' = a[va] && a = a'[vaDH, va] && xa2 = xa2[vaDH, va] then return(ca2[vaDH, va]) else
-         ca2 <-R prf_out; return(ca2) |
+	 (* At this point, a and a[ja] are not compromised, and must never be compromised in the future *)
+	 get[unique] prf_dh_val(=ia, =ja, =xa2, c) in return(c) else
+	 get[unique] prf_dh_val(=ja, =ia, =xa2, c) in return(c) else
+         ca2 <-R prf_out;
+	 insert prf_dh_val(ia, ja, xa2, ca2);
+	 return(ca2) |
       foreach iaDH9 <= naDH9 do ODHa9(x:Z) := return(exp'(g, mult(a, x)))
     ).
 	 
@@ -8125,8 +8645,8 @@ def GDH_RSR_minimal(G, Z, g, exp, mult, pGDH, pDistRerandom) {
     negligible probability, even in the presence of a decision DH oracle
     DH(A,B,C) tells whether A = g^a, C = B^a for some a. *)
 
-param na, naDDH, naDDH1, naDDH2, naDDH3, naDDH4, naDDH5, naDDH6, naDDH7, naDDH8, naDH9,
-      nb, nbDDH, nbDDH1, nbDDH2, nbDDH3, nbDDH4, nbDDH5, nbDDH6, nbDDH7, nbDDH8, nbDH9.
+param na, naeq, naDDH, naDDH1, naDDH2, naDDH3, naDDH4, naDDH5, naDDH6, naDDH7, naDDH8, naDH9,
+      nb, nbeq, nbDDH, nbDDH1, nbDDH2, nbDDH3, nbDDH4, nbDDH5, nbDDH6, nbDDH7, nbDDH8, nbDH9.
 
 (* In the code below:
    - oracles OA and OB give the public Diffie-Hellman keys to the adversary
@@ -8136,21 +8656,28 @@ param na, naDDH, naDDH1, naDDH2, naDDH3, naDDH4, naDDH5, naDDH6, naDDH7, naDDH8,
      using exp(g,a), since exp(g,a) is not a subterm of exp(g, mult(a,x)). 
    - Oracles ODDHa1, ODDHa, ODDHa8, ODDHb1, ODDHb, ODDHb8 are instances
      of the decision DH oracle.
-     ODDHa1(m,m') = DH(exp(g,a), m', m)
-     ODDHa(m,j) = DH(exp(g,a), exp(g,b[j]), m)
+     ODDHa1[i](m,m') = DH_a(i, m', m)
+     ODDHa8[i](m,j) = DH_a(i, exp(g,a[j]), m)
+     ODDHb1[i](m,m') = DH_b(i, m', m)
+     ODDHb8[i](m,j) = DH_b(i, exp(g,b[j]), m)
+     where DH_a(i, m', m) = (m'^a[i] = m)
+           DH_b(i, m', m) = (m'^b[i] = m)
+
+     ODDHa[i](m,j) = DH_l(i, j, m)
      		and in this case we can apply the CDH assumption
 		and replace the result with "false" in the right-hand side
-     ODDHa8(m,j) = DH(exp(g,a), exp(g,a[j]), m)
-     ODDHb1(m,m') = DH(exp(g,b), m', m)
-     ODDHb(m,j) = DH(exp(g,b), exp(g,a[j]), m)
+     ODDHb[i](m,j) = DH_1(j, i, m)
      		and in this case we can apply the CDH assumption
 		and replace the result with "false" in the right-hand side
-     ODDHb8(m,j) = DH(exp(g,b), exp(g,b[j]), m)
   *)
 
 equiv(gdh(exp))
     foreach ia <= na do a <-R Z; (
       OA() := return(exp(g,a)) |
+      foreach iaeq <= naeq do OAeq(m:G) := return(m = exp(g,a)) |
+         (* We put the oracle above before ODDHa1, so that ODDHa1 is not used when m' = g,
+	    which would lead to additional calls to the DDH oracle when in fact
+	    we can simply compare with the public key *)
       foreach iaDDH1 <= naDDH1 do ODDHa1(m:G, m':G) := return(m = exp(m', a)) |
       foreach iaDDH  <= naDDH  do ODDHa(m:G, j<=nb) [useful_change] := return(m = exp(g, mult(b[j], a))) |
       foreach iaDDH8 <= naDDH8 do ODDHa8(m:G,j<=na) [3] := return(m = exp(g,mult(a[j], a))) |
@@ -8158,17 +8685,19 @@ equiv(gdh(exp))
     ) |
     foreach ib <= nb do b <-R Z; (
       OB() := return(exp(g,b)) |
+      foreach ibeq <= nbeq do OBeq(m:G) := return(m = exp(g,b)) |
       foreach ibDDH1 <= nbDDH1 do ODDHb1(m:G, m':G) := return(m = exp(m', b)) |
       foreach ibDDH  <= nbDDH  do ODDHb(m:G, j<=na) := return(m = exp(g, mult(a[j], b))) |
       foreach ibDDH8 <= nbDDH8 do ODDHb8(m:G,j<=nb) [3] := return(m = exp(g,mult(b[j], b))) |
       foreach ibDH9 <= nbDH9 do ODHb9(x:Z) [2] := return(exp(g, mult(b, x)))
     )
-<=(pGDH(time + (na + nb + 1) * time(exp),
+<=(pGDH(time + (na + nb + 1 + #ODHa9 + #ODHb9) * time(exp),
          #ODDHa + #ODDHa1 + #ODDHa8 +
          #ODDHb + #ODDHb1 + #ODDHb8)
       + (na + nb) * pDistRerandom)=> [computational]
     foreach ia <= na do a <-R Z [unchanged]; (
       OA() := return(exp(g,a)) |
+      foreach iaeq <= naeq do OAeq(m:G) := return(m = exp(g,a)) |
       foreach iaDDH1 <= naDDH1 do ODDHa1(m:G, m':G) := return(m = exp(m', a)) |
       foreach iaDDH <= naDDH do ODDHa(m:G, j<=nb) := return(false) |
       foreach iaDDH8 <= naDDH8 do ODDHa8(m:G,j<=na) [3] := return(m = exp(g,mult(a[j], a))) |
@@ -8176,6 +8705,7 @@ equiv(gdh(exp))
     ) |
     foreach ib <= nb do b <-R Z [unchanged]; (
       OB() := return(exp(g,b)) |
+      foreach ibeq <= nbeq do OBeq(m:G) := return(m = exp(g,b)) |
       foreach ibDDH1 <= nbDDH1 do ODDHb1(m:G, m':G) := return(m = exp(m', b)) |
       foreach ibDDH <= nbDDH do ODDHb(m:G, j<=na) := return(false) |
       foreach ibDDH8 <= nbDDH8 do ODDHb8(m:G,j<=nb) [3] := return(m = exp(g,mult(b[j], b))) |
@@ -8193,7 +8723,7 @@ def square_GDH_RSR_minimal(G, Z, g, exp, mult, pSQGDH, pDistRerandom) {
     negligible probability, even in the presence of a decision DH oracle
     DH(A,B,C) tells whether A = g^a, C = B^a for some a. *)
 
-param na, naDDH, naDDH1, naDDH2, naDDH3, naDDH4, naDDH5, naDH9.
+param na, naeq, naDDH, naDDH1, naDDH2, naDDH3, naDDH4, naDDH5, naDH9.
 
 (* In the code below:
    - oracle OA gives the public Diffie-Hellman keys to the adversary
@@ -8202,8 +8732,8 @@ param na, naDDH, naDDH1, naDDH2, naDDH3, naDDH4, naDDH5, naDH9.
      CryptoVerif would not detect that exp(g, mult(a,x)) can be computed
      using exp(g,a), since exp(g,a) is not a subterm of exp(g, mult(a,x)). 
    - Oracles ODDHa1 and ODDHa are instances of the decision DH oracle.
-     ODDHa1(m,m') = DH(exp(g,a), m', m)
-     ODDHa(m,j) = DH(exp(g,a), exp(g,a[j]), m)
+     ODDHa1[i](m,m') = DH_0(exp(g,a[i]), m', m)
+     ODDHa[i](m,j) = DH_l(i, j, m)
      		and in this case we can apply the CDH assumption
 		and replace the result with "false" in the right-hand side
   *)
@@ -8211,13 +8741,18 @@ param na, naDDH, naDDH1, naDDH2, naDDH3, naDDH4, naDDH5, naDH9.
 equiv(gdh(exp))
     foreach ia <= na do a <-R Z; (
       OA() := return(exp(g,a)) |
+      foreach iaeq <= naeq do OAeq(m:G) := return(m = exp(g,a)) |
+         (* We put the oracle above before ODDHa1, so that ODDHa1 is not used when m' = g,
+	    which would lead to additional calls to the DDH oracle when in fact
+	    we can simply compare with the public key *)
       foreach iaDDH1 <= naDDH1 do ODDHa1(m:G, m':G) := return(m = exp(m', a)) |
       foreach iaDDH  <= naDDH  do ODDHa(m:G, j<=na) [useful_change] := return(m = exp(g, mult(a[j], a))) |
       foreach iaDH9 <= naDH9 do ODHa9(x:Z) [2] := return(exp(g, mult(a, x)))
     )
-<=(pSQGDH(time + (na+1) * time(exp), #ODDHa + #ODDHa1) + na * pDistRerandom)=> [computational]
+<=(pSQGDH(time + (na+1 + #ODHa9) * time(exp), #ODDHa + #ODDHa1) + na * pDistRerandom)=> [computational]
     foreach ia <= na do a <-R Z [unchanged]; (
       OA() := return(exp(g,a)) |
+      foreach iaeq <= naeq do OAeq(m:G) := return(m = exp(g,a)) |
       foreach iaDDH1 <= naDDH1 do ODDHa1(m:G, m':G) := return(m = exp(m', a)) |
       foreach iaDDH <= naDDH do ODDHa(m:G, j<=na) := return(false) |
       foreach iaDH9 <= naDH9 do ODHa9(x:Z) := return(exp(g, mult(a, x)))

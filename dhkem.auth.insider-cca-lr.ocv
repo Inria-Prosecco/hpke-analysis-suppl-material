@@ -1,5 +1,8 @@
 proof {
-  allowed_collisions pest150;
+  allowed_collisions default^4/large;
+   (* We allow eliminating collisions with probability in power 4 of 
+      N, Qeperuser, Qdperuser, Qcperuser times PCollKey, to allow q^2 * PCollKey,
+      where q = N * (Qeperuser + Qdperuser + Qcperuser) *)
   (* on the left side *)
   out_game "l0.out.cv";
   (* Let appear this case distinction in the Decap oracle,
@@ -104,8 +107,8 @@ proof {
 
 type G_t [bounded].
 fun Serialize(G_t): bitstring [data].
-type Z_t [bounded,pcoll250,nonuniform].
-proba PCollKey [pest250].
+type Z_t [bounded,nonuniform].
+proba PCollKey.
 
 expand DH_proba_collision_minimal(
   G_t,
@@ -288,7 +291,7 @@ letfun AuthDecap(key_extr: hash_key_t, enc: bitstring, skR: Z_t, pkS: G_t) =
 
 
 
-param N, Qeperuser, Qcperuser, Qdperuser [size30].
+param N, Qeperuser, Qcperuser, Qdperuser.
 
 equivalence
   Ostart() :=

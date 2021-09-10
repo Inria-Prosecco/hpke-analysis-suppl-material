@@ -1,7 +1,7 @@
 type G_t [bounded].
 fun Serialize(G_t): bitstring [data].
-type Z_t [bounded,pcoll250,nonuniform].
-proba PCollKey [pest250].
+type Z_t [bounded,nonuniform].
+proba PCollKey.
 
 expand DH_proba_collision_minimal(
   G_t,

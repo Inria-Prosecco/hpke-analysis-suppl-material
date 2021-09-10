@@ -200,17 +200,14 @@ proof {
   crypto prf(Extract_PRF);
   out_game "l07.out.cv";
   (* Temporarily disable elimination of collisions, especially for the
-     collision resistant hash function (in fact, allows elimination
-     of collisions when their probability is estimated <= 2^-200, and 
-     by default the probability of collisions for the hash function is
-     estimated 2^-160) *)
-  allowed_collisions pest200;
+     collision resistant hash function. *)
+  allowed_collisions ;
   crypto prf(Expand_PRF) **;
   (* Reenable elimination of collisions on the hash function.
      The goal is to eliminate all these collisions in one step,
      to avoid having several terms in the probability for the 
      elimination of collisions for the hash function. *)
-  allowed_collisions pest128;
+  allowed_collisions 1/large;
   simplify;
   crypto truncate(truncate_to_Nk);
   crypto truncate(truncate_to_Nn);

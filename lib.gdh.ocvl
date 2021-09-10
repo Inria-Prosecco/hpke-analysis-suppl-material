@@ -23,8 +23,8 @@ def GDH_RSR_minimal(G, Z, g, exp, mult, pGDH, pDistRerandom) {
     negligible probability, even in the presence of a decision DH oracle
     DH(A,B,C) tells whether A = g^a, C = B^a for some a. *)
 
-param na, naDDH, naDDH1, naDDH2, naDDH3, naDDH4, naDDH5, naDDH6, naDDH7, naDDH8, naDH9,
-      nb, nbDDH, nbDDH1, nbDDH2, nbDDH3, nbDDH4, nbDDH5, nbDDH6, nbDDH7, nbDDH8, nbDH9.
+param na, naeq, naDDH, naDDH1, naDDH2, naDDH3, naDDH4, naDDH5, naDDH6, naDDH7, naDDH8, naDH9,
+      nb, nbeq, nbDDH, nbDDH1, nbDDH2, nbDDH3, nbDDH4, nbDDH5, nbDDH6, nbDDH7, nbDDH8, nbDH9.
 
 (* In the code below:
    - oracles OA and OB give the public Diffie-Hellman keys to the adversary
@@ -34,21 +34,28 @@ param na, naDDH, naDDH1, naDDH2, naDDH3, naDDH4, naDDH5, naDDH6, naDDH7, naDDH8,
      using exp(g,a), since exp(g,a) is not a subterm of exp(g, mult(a,x)). 
    - Oracles ODDHa1, ODDHa, ODDHa8, ODDHb1, ODDHb, ODDHb8 are instances
      of the decision DH oracle.
-     ODDHa1(m,m') = DH(exp(g,a), m', m)
-     ODDHa(m,j) = DH(exp(g,a), exp(g,b[j]), m)
+     ODDHa1[i](m,m') = DH_a(i, m', m)
+     ODDHa8[i](m,j) = DH_a(i, exp(g,a[j]), m)
+     ODDHb1[i](m,m') = DH_b(i, m', m)
+     ODDHb8[i](m,j) = DH_b(i, exp(g,b[j]), m)
+     where DH_a(i, m', m) = (m'^a[i] = m)
+           DH_b(i, m', m) = (m'^b[i] = m)
+
+     ODDHa[i](m,j) = DH_l(i, j, m)
      		and in this case we can apply the CDH assumption
 		and replace the result with "false" in the right-hand side
-     ODDHa8(m,j) = DH(exp(g,a), exp(g,a[j]), m)
-     ODDHb1(m,m') = DH(exp(g,b), m', m)
-     ODDHb(m,j) = DH(exp(g,b), exp(g,a[j]), m)
+     ODDHb[i](m,j) = DH_1(j, i, m)
      		and in this case we can apply the CDH assumption
 		and replace the result with "false" in the right-hand side
-     ODDHb8(m,j) = DH(exp(g,b), exp(g,b[j]), m)
   *)
 
 equiv(gdh(exp))
     foreach ia <= na do a <-R Z; (
       OA() := return(exp(g,a)) |
+      foreach iaeq <= naeq do OAeq(m:G) := return(m = exp(g,a)) |
+         (* We put the oracle above before ODDHa1, so that ODDHa1 is not used when m' = g,
+	    which would lead to additional calls to the DDH oracle when in fact
+	    we can simply compare with the public key *)
       foreach iaDDH1 <= naDDH1 do ODDHa1(m:G, m':G) := return(m = exp(m', a)) |
       foreach iaDDH  <= naDDH  do ODDHa(m:G, j<=nb) [useful_change] := return(m = exp(g, mult(b[j], a))) |
       foreach iaDDH8 <= naDDH8 do ODDHa8(m:G,j<=na) [3] := return(m = exp(g,mult(a[j], a))) |
@@ -56,17 +63,19 @@ equiv(gdh(exp))
     ) |
     foreach ib <= nb do b <-R Z; (
       OB() := return(exp(g,b)) |
+      foreach ibeq <= nbeq do OBeq(m:G) := return(m = exp(g,b)) |
       foreach ibDDH1 <= nbDDH1 do ODDHb1(m:G, m':G) := return(m = exp(m', b)) |
       foreach ibDDH  <= nbDDH  do ODDHb(m:G, j<=na) := return(m = exp(g, mult(a[j], b))) |
       foreach ibDDH8 <= nbDDH8 do ODDHb8(m:G,j<=nb) [3] := return(m = exp(g,mult(b[j], b))) |
       foreach ibDH9 <= nbDH9 do ODHb9(x:Z) [2] := return(exp(g, mult(b, x)))
     )
-<=(pGDH(time + (na + nb + 1) * time(exp),
+<=(pGDH(time + (na + nb + 1 + #ODHa9 + #ODHb9) * time(exp),
          #ODDHa + #ODDHa1 + #ODDHa8 +
          #ODDHb + #ODDHb1 + #ODDHb8)
       + (na + nb) * pDistRerandom)=> [computational]
     foreach ia <= na do a <-R Z [unchanged]; (
       OA() := return(exp(g,a)) |
+      foreach iaeq <= naeq do OAeq(m:G) := return(m = exp(g,a)) |
       foreach iaDDH1 <= naDDH1 do ODDHa1(m:G, m':G) := return(m = exp(m', a)) |
       foreach iaDDH <= naDDH do ODDHa(m:G, j<=nb) := return(false) |
       foreach iaDDH8 <= naDDH8 do ODDHa8(m:G,j<=na) [3] := return(m = exp(g,mult(a[j], a))) |
@@ -74,6 +83,7 @@ equiv(gdh(exp))
     ) |
     foreach ib <= nb do b <-R Z [unchanged]; (
       OB() := return(exp(g,b)) |
+      foreach ibeq <= nbeq do OBeq(m:G) := return(m = exp(g,b)) |
       foreach ibDDH1 <= nbDDH1 do ODDHb1(m:G, m':G) := return(m = exp(m', b)) |
       foreach ibDDH <= nbDDH do ODDHb(m:G, j<=na) := return(false) |
       foreach ibDDH8 <= nbDDH8 do ODDHb8(m:G,j<=nb) [3] := return(m = exp(g,mult(b[j], b))) |
@@ -91,7 +101,7 @@ def square_GDH_RSR_minimal(G, Z, g, exp, mult, pSQGDH, pDistRerandom) {
     negligible probability, even in the presence of a decision DH oracle
     DH(A,B,C) tells whether A = g^a, C = B^a for some a. *)
 
-param na, naDDH, naDDH1, naDDH2, naDDH3, naDDH4, naDDH5, naDH9.
+param na, naeq, naDDH, naDDH1, naDDH2, naDDH3, naDDH4, naDDH5, naDH9.
 
 (* In the code below:
    - oracle OA gives the public Diffie-Hellman keys to the adversary
@@ -100,8 +110,8 @@ param na, naDDH, naDDH1, naDDH2, naDDH3, naDDH4, naDDH5, naDH9.
      CryptoVerif would not detect that exp(g, mult(a,x)) can be computed
      using exp(g,a), since exp(g,a) is not a subterm of exp(g, mult(a,x)). 
    - Oracles ODDHa1 and ODDHa are instances of the decision DH oracle.
-     ODDHa1(m,m') = DH(exp(g,a), m', m)
-     ODDHa(m,j) = DH(exp(g,a), exp(g,a[j]), m)
+     ODDHa1[i](m,m') = DH_0(exp(g,a[i]), m', m)
+     ODDHa[i](m,j) = DH_l(i, j, m)
      		and in this case we can apply the CDH assumption
 		and replace the result with "false" in the right-hand side
   *)
@@ -109,13 +119,18 @@ param na, naDDH, naDDH1, naDDH2, naDDH3, naDDH4, naDDH5, naDH9.
 equiv(gdh(exp))
     foreach ia <= na do a <-R Z; (
       OA() := return(exp(g,a)) |
+      foreach iaeq <= naeq do OAeq(m:G) := return(m = exp(g,a)) |
+         (* We put the oracle above before ODDHa1, so that ODDHa1 is not used when m' = g,
+	    which would lead to additional calls to the DDH oracle when in fact
+	    we can simply compare with the public key *)
       foreach iaDDH1 <= naDDH1 do ODDHa1(m:G, m':G) := return(m = exp(m', a)) |
       foreach iaDDH  <= naDDH  do ODDHa(m:G, j<=na) [useful_change] := return(m = exp(g, mult(a[j], a))) |
       foreach iaDH9 <= naDH9 do ODHa9(x:Z) [2] := return(exp(g, mult(a, x)))
     )
-<=(pSQGDH(time + (na+1) * time(exp), #ODDHa + #ODDHa1) + na * pDistRerandom)=> [computational]
+<=(pSQGDH(time + (na+1 + #ODHa9) * time(exp), #ODDHa + #ODDHa1) + na * pDistRerandom)=> [computational]
     foreach ia <= na do a <-R Z [unchanged]; (
       OA() := return(exp(g,a)) |
+      foreach iaeq <= naeq do OAeq(m:G) := return(m = exp(g,a)) |
       foreach iaDDH1 <= naDDH1 do ODDHa1(m:G, m':G) := return(m = exp(m', a)) |
       foreach iaDDH <= naDDH do ODDHa(m:G, j<=na) := return(false) |
       foreach iaDH9 <= naDH9 do ODHa9(x:Z) := return(exp(g, mult(a, x)))

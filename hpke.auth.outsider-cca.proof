@@ -35,7 +35,7 @@ Game 1 is
      ))
 
 
-Applying expand get, insert
+Applying expand get, insert and prove unique annotations
   - Expand get/insert for table E
 yields
 
@@ -266,7 +266,7 @@ Game 4 is
      ) | (
        foreach iad <= Qdperuser do
        Oadec(pk_4: pkey_t, enc_7: kemciph_t, c: bitstring, aad_10: bitstring, info_7: bitstring) :=
-{104}  find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(the_pk[u_3], pk_5[u_2, u_3], enc_8[u_2, u_3], ct_9[u_2, u_3], aad_11[u_2, u_3], info_8[u_2, u_3], ct_9[u_2, u_3], ct_9[u_2, u_3], ct_9[u_2, u_3], ct_9[u_2, u_3], ct_9[u_2, u_3], ct_9[u_2, u_3]) && {128}((the_pk[u_3] = pk_4) && (pk_5[u_2, u_3] = the_pk) && (enc_8[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7)) then
+{104}  find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(the_pk[u_3], pk_5[u_2, u_3], enc_8[u_2, u_3], aad_11[u_2, u_3], info_8[u_2, u_3], ct_9[u_2, u_3]) && {116}((the_pk[u_3] = pk_4) && (pk_5[u_2, u_3] = the_pk) && (enc_8[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7)) then
          return(OpenAuth_None)
        else
          let AuthDecap_Some(shared_secret_4: kemkey_t) = AuthDecap(enc_7, the_sk, pk_4) in
@@ -274,7 +274,7 @@ Game 4 is
            nonce_9: nonce_t <- get2(r_4);
            key_8: key_t <- get1(r_4);
            seq_4: nonce_t <- nonce_zero;
-           nonce_11: nonce_t <- {208}xor(nonce_9, seq_4);
+           nonce_11: nonce_t <- {196}xor(nonce_9, seq_4);
            let injbot(pt_7: bitstring) = Open_inner(c, aad_10, key_8, nonce_11) in
              return(OpenAuth_Some(Context_Open_Some(pt_7)))
            else
@@ -293,7 +293,7 @@ Game 4 is
              nonce_12: nonce_t <- get2(r_5);
              key_10: key_t <- get1(r_5);
              seq_5: nonce_t <- nonce_zero;
-             nonce_14: nonce_t <- {314}xor(nonce_12, seq_5);
+             nonce_14: nonce_t <- {302}xor(nonce_12, seq_5);
              ct_9: bitstring <- Seal_inner(pt_8, aad_11, key_10, nonce_14);
              return((enc_8, ct_9))
            else
@@ -305,12 +305,12 @@ Game 4 is
      ))
 
 
-Applying simplify [probability N * N * P_pk_coll]
+Applying simplify [probability N^2 * P_pk_coll]
   - Simplification pass
-    - Replaced xor(nonce_12, seq_5) with nonce_12 at 314
-    - Replaced xor(nonce_9, seq_4) with nonce_9 at 208
-    - Replaced ((the_pk[u_3] = pk_4) && (pk_5[u_2, u_3] = the_pk) && (enc_8[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7)) with ((the_pk[u_3] = pk_4) && (i'_1[u_2, u_3] = i) && (enc_8[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7)) at 128
-    - Replaced defined condition the_pk[u_3], pk_5[u_2, u_3], enc_8[u_2, u_3], ct_9[u_2, u_3], aad_11[u_2, u_3], info_8[u_2, u_3], ct_9[u_2, u_3], ct_9[u_2, u_3], ct_9[u_2, u_3], ct_9[u_2, u_3], ct_9[u_2, u_3], ct_9[u_2, u_3] with info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], enc_8[u_2, u_3], i'_1[u_2, u_3], the_pk[u_3] in find at 104
+    - Replaced xor(nonce_12, seq_5) with nonce_12 at 302
+    - Replaced xor(nonce_9, seq_4) with nonce_9 at 196
+    - Replaced ((the_pk[u_3] = pk_4) && (pk_5[u_2, u_3] = the_pk) && (enc_8[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7)) with ((the_pk[u_3] = pk_4) && (i'_1[u_2, u_3] = i) && (enc_8[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7)) at 116
+    - Replaced defined condition the_pk[u_3], pk_5[u_2, u_3], enc_8[u_2, u_3], aad_11[u_2, u_3], info_8[u_2, u_3], ct_9[u_2, u_3] with info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], enc_8[u_2, u_3], i'_1[u_2, u_3], the_pk[u_3] in find at 104
     - Replaced xor(nonce_6, seq_3) with nonce_6 at 59
 yields
 
@@ -608,7 +608,7 @@ Game 9 is
      ) | (
        foreach iad <= Qdperuser do
        Oadec(pk_4: pkey_t, enc_7: kemciph_t, c: bitstring, aad_10: bitstring, info_7: bitstring) :=
-       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(s[u_3], s[u_3], info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], enc_8[u_2, u_3], i'_1[u_2, u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (enc_8[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
+       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(s[u_3], info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], enc_8[u_2, u_3], i'_1[u_2, u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (enc_8[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
          return(OpenAuth_None)
        else
          let AuthDecap_Some(shared_secret_4: kemkey_t) = AuthDecap(enc_7, skgen(s), pk_4) in
@@ -624,7 +624,7 @@ Game 9 is
      ) | (
        foreach ic <= Qcperuser do
        Ochall(pk_5: pkey_t, m0: bitstring, m1: bitstring, aad_11: bitstring, info_8: bitstring) :=
-       find i'_1 = i' <= N suchthat defined(s[i'], s[i']) && (pkgen(s[i']) = pk_5) then
+       find i'_1 = i' <= N suchthat defined(s[i']) && (pkgen(s[i']) = pk_5) then
          if Length(m0) = Length(m1) then
            k_3 <-R kemseed_t;
            let AuthEncap_tuple(shared_secret_5: kemkey_t, enc_8: kemciph_t) = AuthEncap_r(k_3, pk_5, skgen(s)) in
@@ -643,7 +643,7 @@ Game 9 is
      ))
 
 
-Applying equivalence outsider_cca(AuthEncap) with variables: s -> s_1 [probability Adv_Outsider_CCA(time(context for game 9) + time, N, #Ochall + #Oaenc, #Oadec)]
+Applying equivalence outsider_cca(AuthEncap) with variables: s -> s_1 [probability Adv_Outsider_CCA(time_1, N, #Ochall + #Oaenc, #Oadec)]
   - Equivalence outsider_cca(AuthEncap) with variables: k_3 -> ks, k_2 -> ks, s -> s_1
 yields
 
@@ -671,7 +671,7 @@ Game 10 is
      ) | (
        foreach iad <= Qdperuser do
        Oadec(pk_4: pkey_t, enc_7: kemciph_t, c: bitstring, aad_10: bitstring, info_7: bitstring) :=
-       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], enc_8[u_2, u_3], i'_1[u_2, u_3], s[u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (enc_8[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
+       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(s[u_3], info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], enc_8[u_2, u_3], i'_1[u_2, u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (enc_8[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
          return(OpenAuth_None)
        else
 {182}    let AuthDecap_Some(shared_secret_4: kemkey_t) = (pk_S: pkey_t <- pk_4; cd: kemciph_t <- enc_7; find u_7 = ri_3 <= Qeperuser, u_8 = ri_4 <= N suchthat defined(k'[ri_3, ri_4], s[ri_4], pk_R[ri_3, ri_4], k'_1[ri_3, ri_4], ce[ri_3, ri_4]) && (pkgen(s) = pk_R[ri_3, ri_4]) && (pkgen(s[ri_4]) = pk_S) && (ce[ri_3, ri_4] = cd) then AuthDecap_Some(k'_1[u_7, u_8]) orfind u_5 = ri_1 <= Qcperuser, u_6 = ri_2 <= N suchthat defined(k'_2[ri_1, ri_2], s[ri_2], pk_R_1[ri_1, ri_2], k'_3[ri_1, ri_2], ce_1[ri_1, ri_2]) && (pkgen(s) = pk_R_1[ri_1, ri_2]) && (pkgen(s[ri_2]) = pk_S) && (ce_1[ri_1, ri_2] = cd) then AuthDecap_Some(k'_3[u_5, u_6]) else AuthDecap(cd, skgen(s), pk_S)) in
@@ -707,7 +707,7 @@ Game 10 is
      ))
 
 
-Applying expand [probability N * N * P_pk_coll]
+Applying expand [probability N^2 * P_pk_coll]
   - Expand if/find/let
     - Remove else branch of find at 364
     - Simplify pattern AuthEncap_tuple(shared_secret_5: kemkey_t, enc_8: kemciph_t) (tuple expanded) at 359
@@ -766,7 +766,7 @@ Game 11 is
      ) | (
        foreach iad <= Qdperuser do
        Oadec(pk_4: pkey_t, enc_7: kemciph_t, c: bitstring, aad_10: bitstring, info_7: bitstring) :=
-       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], enc_8[u_2, u_3], i'_1[u_2, u_3], s[u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (enc_8[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
+       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(s[u_3], info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], enc_8[u_2, u_3], i'_1[u_2, u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (enc_8[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
          return(OpenAuth_None)
        else
          pk_S: pkey_t <- pk_4;
@@ -890,10 +890,10 @@ Game 12 is
      ) | (
        foreach iad <= Qdperuser do
        Oadec(pk_4: pkey_t, enc_7: kemciph_t, c: bitstring, aad_10: bitstring, info_7: bitstring) :=
-       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], enc_8[u_2, u_3], i'_1[u_2, u_3], s[u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (enc_8[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
+       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(s[u_3], info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], enc_8[u_2, u_3], i'_1[u_2, u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (enc_8[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
          return(OpenAuth_None)
        else
-{269}    find u_7 = ri_3 <= Qeperuser, u_8 = ri_4 <= N suchthat defined(pk_3[ri_3, ri_4], k'_1[ri_3, ri_4], k'[ri_3, ri_4], s[ri_4], k'_1[ri_3, ri_4], ce[ri_3, ri_4]) && {281}((pkgen(s) = pk_3[ri_3, ri_4]) && (pkgen(s[ri_4]) = pk_4) && (ce[ri_3, ri_4] = enc_7)) then
+{269}    find u_7 = ri_3 <= Qeperuser, u_8 = ri_4 <= N suchthat defined(pk_3[ri_3, ri_4], k'[ri_3, ri_4], s[ri_4], k'_1[ri_3, ri_4], ce[ri_3, ri_4]) && {279}((pkgen(s) = pk_3[ri_3, ri_4]) && (pkgen(s[ri_4]) = pk_4) && (ce[ri_3, ri_4] = enc_7)) then
            r_4: keys_t <- KeySchedule_auth(k'_1[u_7, u_8], info_7);
            nonce_9: nonce_t <- get2(r_4);
            key_8: key_t <- get1(r_4);
@@ -901,7 +901,7 @@ Game 12 is
              return(OpenAuth_Some(Context_Open_Some(pt_7)))
            else
              return(OpenAuth_Some(Context_Open_None))
-         orfind u_5 = ri_1 <= Qcperuser, u_6 = ri_2 <= N suchthat defined(pk_5[ri_1, ri_2], k'_3[ri_1, ri_2], k'_2[ri_1, ri_2], s[ri_2], k'_3[ri_1, ri_2], ce_1[ri_1, ri_2]) && {367}((pkgen(s) = pk_5[ri_1, ri_2]) && (pkgen(s[ri_2]) = pk_4) && (ce_1[ri_1, ri_2] = enc_7)) then
+         orfind u_5 = ri_1 <= Qcperuser, u_6 = ri_2 <= N suchthat defined(pk_5[ri_1, ri_2], k'_2[ri_1, ri_2], s[ri_2], k'_3[ri_1, ri_2], ce_1[ri_1, ri_2]) && {363}((pkgen(s) = pk_5[ri_1, ri_2]) && (pkgen(s[ri_2]) = pk_4) && (ce_1[ri_1, ri_2] = enc_7)) then
            r_4: keys_t <- KeySchedule_auth(k'_3[u_5, u_6], info_7);
            nonce_9: nonce_t <- get2(r_4);
            key_8: key_t <- get1(r_4);
@@ -953,12 +953,12 @@ Game 12 is
      ))
 
 
-Applying simplify [probability N * N * P_pk_coll]
+Applying simplify [probability N^2 * P_pk_coll]
   - Simplification pass
-    - Replaced ((pkgen(s) = pk_5[ri_1, ri_2]) && (pkgen(s[ri_2]) = pk_4) && (ce_1[ri_1, ri_2] = enc_7)) with ((i = i'_1[ri_1, ri_2]) && (pkgen(s[ri_2]) = pk_4) && (ce_1[ri_1, ri_2] = enc_7)) at 367
-    - Replaced defined condition pk_5[ri_1, ri_2], k'_3[ri_1, ri_2], k'_2[ri_1, ri_2], s[ri_2], k'_3[ri_1, ri_2], ce_1[ri_1, ri_2] with k'_2[ri_1, ri_2], k'_3[ri_1, ri_2], ce_1[ri_1, ri_2], s[ri_2], i'_1[ri_1, ri_2] in find at 269
-    - Replaced ((pkgen(s) = pk_3[ri_3, ri_4]) && (pkgen(s[ri_4]) = pk_4) && (ce[ri_3, ri_4] = enc_7)) with ((i = u_9[ri_3, ri_4]) && (pkgen(s[ri_4]) = pk_4) && (ce[ri_3, ri_4] = enc_7)) at 281
-    - Replaced defined condition pk_3[ri_3, ri_4], k'_1[ri_3, ri_4], k'[ri_3, ri_4], s[ri_4], k'_1[ri_3, ri_4], ce[ri_3, ri_4] with k'[ri_3, ri_4], k'_1[ri_3, ri_4], ce[ri_3, ri_4], s[ri_4], u_9[ri_3, ri_4] in find at 269
+    - Replaced ((pkgen(s) = pk_5[ri_1, ri_2]) && (pkgen(s[ri_2]) = pk_4) && (ce_1[ri_1, ri_2] = enc_7)) with ((i = i'_1[ri_1, ri_2]) && (pkgen(s[ri_2]) = pk_4) && (ce_1[ri_1, ri_2] = enc_7)) at 363
+    - Replaced defined condition pk_5[ri_1, ri_2], k'_2[ri_1, ri_2], s[ri_2], k'_3[ri_1, ri_2], ce_1[ri_1, ri_2] with k'_2[ri_1, ri_2], k'_3[ri_1, ri_2], ce_1[ri_1, ri_2], s[ri_2], i'_1[ri_1, ri_2] in find at 269
+    - Replaced ((pkgen(s) = pk_3[ri_3, ri_4]) && (pkgen(s[ri_4]) = pk_4) && (ce[ri_3, ri_4] = enc_7)) with ((i = u_9[ri_3, ri_4]) && (pkgen(s[ri_4]) = pk_4) && (ce[ri_3, ri_4] = enc_7)) at 279
+    - Replaced defined condition pk_3[ri_3, ri_4], k'[ri_3, ri_4], s[ri_4], k'_1[ri_3, ri_4], ce[ri_3, ri_4] with k'[ri_3, ri_4], k'_1[ri_3, ri_4], ce[ri_3, ri_4], s[ri_4], u_9[ri_3, ri_4] in find at 269
 yields
 
 Game 13 is
@@ -1003,7 +1003,7 @@ Game 13 is
      ) | (
        foreach iad <= Qdperuser do
        Oadec(pk_4: pkey_t, enc_7: kemciph_t, c: bitstring, aad_10: bitstring, info_7: bitstring) :=
-       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], enc_8[u_2, u_3], i'_1[u_2, u_3], s[u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (enc_8[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
+       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(s[u_3], info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], enc_8[u_2, u_3], i'_1[u_2, u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (enc_8[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
          return(OpenAuth_None)
        else
          find u_7 = ri_3 <= Qeperuser, u_8 = ri_4 <= N suchthat defined(k'[ri_3, ri_4], k'_1[ri_3, ri_4], ce[ri_3, ri_4], s[ri_4], u_9[ri_3, ri_4]) && (i = u_9[ri_3, ri_4]) && (pkgen(s[ri_4]) = pk_4) && (ce[ri_3, ri_4] = enc_7) then
@@ -1119,7 +1119,7 @@ Game 14 is
      ) | (
        foreach iad <= Qdperuser do
        Oadec(pk_4: pkey_t, enc_7: kemciph_t, c: bitstring, aad_10: bitstring, info_7: bitstring) :=
-       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], enc_8[u_2, u_3], i'_1[u_2, u_3], s[u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (enc_8[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
+       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(s[u_3], info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], enc_8[u_2, u_3], i'_1[u_2, u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (enc_8[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
          return(OpenAuth_None)
        else
          find u_7 = ri_3 <= Qeperuser, u_8 = ri_4 <= N suchthat defined(k'[ri_3, ri_4], k'_1[ri_3, ri_4], ce[ri_3, ri_4], s[ri_4], u_9[ri_3, ri_4]) && (i = u_9[ri_3, ri_4]) && (pkgen(s[ri_4]) = pk_4) && (ce[ri_3, ri_4] = enc_7) then
@@ -1235,7 +1235,7 @@ Game 15 is
      ) | (
        foreach iad <= Qdperuser do
        Oadec(pk_4: pkey_t, enc_7: kemciph_t, c: bitstring, aad_10: bitstring, info_7: bitstring) :=
-       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], enc_8[u_2, u_3], i'_1[u_2, u_3], s[u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (enc_8[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
+       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(s[u_3], info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], enc_8[u_2, u_3], i'_1[u_2, u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (enc_8[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
          return(OpenAuth_None)
        else
          find u_7 = ri_3 <= Qeperuser, u_8 = ri_4 <= N suchthat defined(k'[ri_3, ri_4], k'_1[ri_3, ri_4], ce[ri_3, ri_4], s[ri_4], u_9[ri_3, ri_4]) && (i = u_9[ri_3, ri_4]) && (pkgen(s[ri_4]) = pk_4) && (ce[ri_3, ri_4] = enc_7) then
@@ -1351,10 +1351,10 @@ Game 16 is
      ) | (
        foreach iad <= Qdperuser do
        Oadec(pk_4: pkey_t, enc_7: kemciph_t, c: bitstring, aad_10: bitstring, info_7: bitstring) :=
-       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], enc_8[u_2, u_3], i'_1[u_2, u_3], s[u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (enc_8[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
+       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(s[u_3], info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], enc_8[u_2, u_3], i'_1[u_2, u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (enc_8[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
          return(OpenAuth_None)
        else
-{320}    find u_7 = ri_3 <= Qeperuser, u_8 = ri_4 <= N suchthat defined(k'[ri_3, ri_4], k'_1[ri_3, ri_4], ce[ri_3, ri_4], s[ri_4], u_9[ri_3, ri_4]) && (i = u_9[ri_3, ri_4]) && (pkgen(s[ri_4]) = pk_4) && (ce[ri_3, ri_4] = enc_7) then
+         find u_7 = ri_3 <= Qeperuser, u_8 = ri_4 <= N suchthat defined(k'_1[ri_3, ri_4], ce[ri_3, ri_4], s[ri_4], u_9[ri_3, ri_4]) && (i = u_9[ri_3, ri_4]) && (pkgen(s[ri_4]) = pk_4) && (ce[ri_3, ri_4] = enc_7) then
            r_4: keys_t <- KeySchedule_auth(k'_1[u_7, u_8], info_7);
            nonce_9: nonce_t <- get2(r_4);
            key_8: key_t <- get1(r_4);
@@ -1362,7 +1362,7 @@ Game 16 is
              return(OpenAuth_Some(Context_Open_Some(pt_7)))
            else
              return(OpenAuth_Some(Context_Open_None))
-         orfind u_5 = ri_1 <= Qcperuser, u_6 = ri_2 <= N suchthat defined(k'_2[ri_1, ri_2], k'_3[ri_1, ri_2], ce_1[ri_1, ri_2], s[ri_2], i'_1[ri_1, ri_2]) && (i = i'_1[ri_1, ri_2]) && (pkgen(s[ri_2]) = pk_4) && (ce_1[ri_1, ri_2] = enc_7) then
+         orfind u_5 = ri_1 <= Qcperuser, u_6 = ri_2 <= N suchthat defined(k'_3[ri_1, ri_2], ce_1[ri_1, ri_2], s[ri_2], i'_1[ri_1, ri_2]) && (i = i'_1[ri_1, ri_2]) && (pkgen(s[ri_2]) = pk_4) && (ce_1[ri_1, ri_2] = enc_7) then
            r_4: keys_t <- KeySchedule_auth(k'_3[u_5, u_6], info_7);
            nonce_9: nonce_t <- get2(r_4);
            key_8: key_t <- get1(r_4);
@@ -1387,7 +1387,7 @@ Game 16 is
        find i'_1 = i' <= N suchthat defined(s[i']) && (pkgen(s[i']) = pk_5) then
          if Length(m0) = Length(m1) then
            k_3 <-R kemseed_t;
-{572}      let AuthEncap_tuple(k_5: kemkey_t, ce_1: kemciph_t) = (k_10: kemseed_t <- k_3; pk_8: pkey_t <- pk_5; sk_4: skey_t <- skgen(s); AuthEncap_tuple(AuthEncap_key(k_10, pk_8, sk_4), AuthEncap_enc(k_10, pk_8, sk_4))) in
+{568}      let AuthEncap_tuple(k_5: kemkey_t, ce_1: kemciph_t) = (k_10: kemseed_t <- k_3; pk_8: pkey_t <- pk_5; sk_4: skey_t <- skgen(s); AuthEncap_tuple(AuthEncap_key(k_10, pk_8, sk_4), AuthEncap_enc(k_10, pk_8, sk_4))) in
              k'_2: kemkey_t <- cst_kemkey_t;
              enc_8: kemciph_t <- ce_1;
              k'_3 <-R kemkey_t;
@@ -1418,10 +1418,8 @@ Game 16 is
 
 Applying expand
   - Expand if/find/let
-    - Simplify pattern AuthEncap_tuple(k_5: kemkey_t, ce_1: kemciph_t) (tuple expanded) at 572
-    - Remove else branch of let at 572
-    - Replaced defined condition k'_2[ri_1, ri_2], k'_3[ri_1, ri_2], ce_1[ri_1, ri_2], s[ri_2], i'_1[ri_1, ri_2] with k'_3[ri_1, ri_2], ce_1[ri_1, ri_2], s[ri_2], i'_1[ri_1, ri_2] in find at 320
-    - Replaced defined condition k'[ri_3, ri_4], k'_1[ri_3, ri_4], ce[ri_3, ri_4], s[ri_4], u_9[ri_3, ri_4] with k'_1[ri_3, ri_4], ce[ri_3, ri_4], s[ri_4], u_9[ri_3, ri_4] in find at 320
+    - Simplify pattern AuthEncap_tuple(k_5: kemkey_t, ce_1: kemciph_t) (tuple expanded) at 568
+    - Remove else branch of let at 568
     - Simplify pattern AuthEncap_tuple(shared_secret_3: kemkey_t, enc_5: kemciph_t) (tuple expanded) at 169
     - Remove else branch of let at 169
     - Simplify pattern AuthEncap_tuple(k_4: kemkey_t, ce: kemciph_t) (tuple expanded) at 30
@@ -1469,7 +1467,7 @@ Game 17 is
      ) | (
        foreach iad <= Qdperuser do
        Oadec(pk_4: pkey_t, enc_7: kemciph_t, c: bitstring, aad_10: bitstring, info_7: bitstring) :=
-       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], enc_8[u_2, u_3], i'_1[u_2, u_3], s[u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (enc_8[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
+       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(s[u_3], info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], enc_8[u_2, u_3], i'_1[u_2, u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (enc_8[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
          return(OpenAuth_None)
        else
          find u_7 = ri_3 <= Qeperuser, u_8 = ri_4 <= N suchthat defined(k'_1[ri_3, ri_4], ce[ri_3, ri_4], s[ri_4], u_9[ri_3, ri_4]) && (i = u_9[ri_3, ri_4]) && (pkgen(s[ri_4]) = pk_4) && (ce[ri_3, ri_4] = enc_7) then
@@ -1575,99 +1573,7 @@ Game 18 is
      ) | (
        foreach iad <= Qdperuser do
        Oadec(pk_4: pkey_t, enc_7: kemciph_t, c: bitstring, aad_10: bitstring, info_7: bitstring) :=
-{175}  find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(ce_1[u_2, u_3], ce_1[u_2, u_3], info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], i'_1[u_2, u_3], s[u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
-         return(OpenAuth_None)
-       else
-         find u_7 = ri_3 <= Qeperuser, u_8 = ri_4 <= N suchthat defined(k'_1[ri_3, ri_4], ce[ri_3, ri_4], s[ri_4], u_9[ri_3, ri_4]) && (i = u_9[ri_3, ri_4]) && (pkgen(s[ri_4]) = pk_4) && (ce[ri_3, ri_4] = enc_7) then
-           r_4: keys_t <- KeySchedule_auth(k'_1[u_7, u_8], info_7);
-           nonce_9: nonce_t <- get2(r_4);
-           key_8: key_t <- get1(r_4);
-           let injbot(pt_7: bitstring) = Open_inner(c, aad_10, key_8, nonce_9) in
-             return(OpenAuth_Some(Context_Open_Some(pt_7)))
-           else
-             return(OpenAuth_Some(Context_Open_None))
-         orfind u_5 = ri_1 <= Qcperuser, u_6 = ri_2 <= N suchthat defined(k'_3[ri_1, ri_2], ce_1[ri_1, ri_2], s[ri_2], i'_1[ri_1, ri_2]) && (i = i'_1[ri_1, ri_2]) && (pkgen(s[ri_2]) = pk_4) && (ce_1[ri_1, ri_2] = enc_7) then
-           r_4: keys_t <- KeySchedule_auth(k'_3[u_5, u_6], info_7);
-           nonce_9: nonce_t <- get2(r_4);
-           key_8: key_t <- get1(r_4);
-           let injbot(pt_7: bitstring) = Open_inner(c, aad_10, key_8, nonce_9) in
-             return(OpenAuth_Some(Context_Open_Some(pt_7)))
-           else
-             return(OpenAuth_Some(Context_Open_None))
-         else
-           let AuthDecap_Some(shared_secret_4: kemkey_t) = AuthDecap(enc_7, skgen(s), pk_4) in
-             r_4: keys_t <- KeySchedule_auth(shared_secret_4, info_7);
-             nonce_9: nonce_t <- get2(r_4);
-             key_8: key_t <- get1(r_4);
-             let injbot(pt_7: bitstring) = Open_inner(c, aad_10, key_8, nonce_9) in
-               return(OpenAuth_Some(Context_Open_Some(pt_7)))
-             else
-               return(OpenAuth_Some(Context_Open_None))
-           else
-             return(OpenAuth_None)
-     ) | (
-       foreach ic <= Qcperuser do
-       Ochall(pk_5: pkey_t, m0: bitstring, m1: bitstring, aad_11: bitstring, info_8: bitstring) :=
-       find i'_1 = i' <= N suchthat defined(s[i']) && (pkgen(s[i']) = pk_5) then
-         if Length(m0) = Length(m1) then
-           k_3 <-R kemseed_t;
-           sk_4: skey_t <- skgen(s);
-           ce_1: kemciph_t <- AuthEncap_enc(k_3, pk_5, sk_4);
-           k'_3 <-R kemkey_t;
-           r_5: keys_t <- KeySchedule_auth(k'_3, info_8);
-           nonce_12: nonce_t <- get2(r_5);
-           key_10: key_t <- get1(r_5);
-           pt_8: bitstring <- test(b, m0, m1);
-           ct_9: bitstring <- Seal_inner(pt_8, aad_11, key_10, nonce_12);
-           return((ce_1, ct_9))
-         else
-           return(bottom)
-       else
-         return(bottom)
-     ))
-
-
-Applying simplify
-  - Simplification pass
-    - Replaced defined condition ce_1[u_2, u_3], ce_1[u_2, u_3], info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], i'_1[u_2, u_3], s[u_3] with info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], ce_1[u_2, u_3], i'_1[u_2, u_3], s[u_3] in find at 175
-yields
-
-Game 19 is
-     Ostart() :=
-     b <-R bool;
-     return();
-     foreach i <= N do
-     Osetup() :=
-     s <-R keypairseed_t;
-     return(pkgen(s));
-     ((
-       foreach iae <= Qeperuser do
-       Oaenc(pk_3: pkey_t, m: bitstring, aad_9: bitstring, info_6: bitstring) :=
-       find u_9 = ri_5 <= N suchthat defined(s[ri_5]) && (pk_3 = pkgen(s[ri_5])) then
-         k_7 <-R kemseed_t;
-         sk_3: skey_t <- skgen(s);
-         ce: kemciph_t <- AuthEncap_enc(k_7, pk_3, sk_3);
-         k'_1 <-R kemkey_t;
-         r_3: keys_t <- KeySchedule_auth(k'_1, info_6);
-         nonce_6: nonce_t <- get2(r_3);
-         key_6: key_t <- get1(r_3);
-         ct_7: bitstring <- Seal_inner(m, aad_9, key_6, nonce_6);
-         return(SealAuth_Some(ce, ct_7))
-       else
-         k_6 <-R kemseed_t;
-         sk_2: skey_t <- skgen(s);
-         enc_5: kemciph_t <- AuthEncap_enc(k_6, pk_3, sk_2);
-         shared_secret_3: kemkey_t <- AuthEncap_key(k_6, pk_3, sk_2);
-         r_3: keys_t <- KeySchedule_auth(shared_secret_3, info_6);
-         nonce_6: nonce_t <- get2(r_3);
-         key_6: key_t <- get1(r_3);
-         ct_7: bitstring <- Seal_inner(m, aad_9, key_6, nonce_6);
-         k'_1 <-R kemkey_t;
-         return(SealAuth_Some(enc_5, ct_7))
-     ) | (
-       foreach iad <= Qdperuser do
-       Oadec(pk_4: pkey_t, enc_7: kemciph_t, c: bitstring, aad_10: bitstring, info_7: bitstring) :=
-       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], ce_1[u_2, u_3], i'_1[u_2, u_3], s[u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
+       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(ce_1[u_2, u_3], s[u_3], info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], i'_1[u_2, u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
          return(OpenAuth_None)
        else
          find u_7 = ri_3 <= Qeperuser, u_8 = ri_4 <= N suchthat defined(k'_1[ri_3, ri_4], ce[ri_3, ri_4], s[ri_4], u_9[ri_3, ri_4]) && (i = u_9[ri_3, ri_4]) && (pkgen(s[ri_4]) = pk_4) && (ce[ri_3, ri_4] = enc_7) then
@@ -1723,7 +1629,7 @@ Applying SA rename k'_1
   - Rename variable k'_1 into k'_5, k'_4
 yields
 
-Game 20 is
+Game 19 is
      Ostart() :=
      b <-R bool;
      return();
@@ -1758,7 +1664,7 @@ Game 20 is
      ) | (
        foreach iad <= Qdperuser do
        Oadec(pk_4: pkey_t, enc_7: kemciph_t, c: bitstring, aad_10: bitstring, info_7: bitstring) :=
-       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], ce_1[u_2, u_3], i'_1[u_2, u_3], s[u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
+       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(ce_1[u_2, u_3], s[u_3], info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], i'_1[u_2, u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
          return(OpenAuth_None)
        else
          find u_7 = ri_3 <= Qeperuser, u_8 = ri_4 <= N suchthat defined(k'_4[ri_3, ri_4], ce[ri_3, ri_4], s[ri_4], u_9[ri_3, ri_4]) && (i = u_9[ri_3, ri_4]) && (pkgen(s[ri_4]) = pk_4) && (ce[ri_3, ri_4] = enc_7) then
@@ -1815,7 +1721,7 @@ Applying simplify
     - Remove random number generation at 153
 yields
 
-Game 21 is
+Game 20 is
      Ostart() :=
      b <-R bool;
      return();
@@ -1849,7 +1755,7 @@ Game 21 is
      ) | (
        foreach iad <= Qdperuser do
        Oadec(pk_4: pkey_t, enc_7: kemciph_t, c: bitstring, aad_10: bitstring, info_7: bitstring) :=
-       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], ce_1[u_2, u_3], i'_1[u_2, u_3], s[u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
+       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(ce_1[u_2, u_3], s[u_3], info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], i'_1[u_2, u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
          return(OpenAuth_None)
        else
          find u_7 = ri_3 <= Qeperuser, u_8 = ri_4 <= N suchthat defined(k'_4[ri_3, ri_4], ce[ri_3, ri_4], s[ri_4], u_9[ri_3, ri_4]) && (i = u_9[ri_3, ri_4]) && (pkgen(s[ri_4]) = pk_4) && (ce[ri_3, ri_4] = enc_7) then
@@ -1901,8 +1807,101 @@ Game 21 is
      ))
 
 
-Applying equivalence prf(KeySchedule_auth) with k'_3 [probability Adv_PRF_KeySchedule(time(context for game 21) + time, #Ochall, #Ochall + #Oadec)]
+Applying equivalence prf(KeySchedule_auth) with k'_3 [probability Adv_PRF_KeySchedule(time_2, #Ochall, #Ochall + #Oadec)]
   - Equivalence prf(KeySchedule_auth) with variables: k'_3 -> k_1
+yields
+
+Game 21 is
+     Ostart() :=
+     b <-R bool;
+     return();
+     foreach i <= N do
+     Osetup() :=
+     s <-R keypairseed_t;
+     return(pkgen(s));
+     ((
+       foreach iae <= Qeperuser do
+       Oaenc(pk_3: pkey_t, m: bitstring, aad_9: bitstring, info_6: bitstring) :=
+       find u_9 = ri_5 <= N suchthat defined(s[ri_5]) && (pk_3 = pkgen(s[ri_5])) then
+         k_7 <-R kemseed_t;
+         sk_3: skey_t <- skgen(s);
+         ce: kemciph_t <- AuthEncap_enc(k_7, pk_3, sk_3);
+         k'_4 <-R kemkey_t;
+         r_3: keys_t <- KeySchedule_auth(k'_4, info_6);
+         nonce_6: nonce_t <- get2(r_3);
+         key_6: key_t <- get1(r_3);
+         ct_7: bitstring <- Seal_inner(m, aad_9, key_6, nonce_6);
+         return(SealAuth_Some(ce, ct_7))
+       else
+         k_6 <-R kemseed_t;
+         sk_2: skey_t <- skgen(s);
+         enc_5: kemciph_t <- AuthEncap_enc(k_6, pk_3, sk_2);
+         shared_secret_3: kemkey_t <- AuthEncap_key(k_6, pk_3, sk_2);
+         r_3: keys_t <- KeySchedule_auth(shared_secret_3, info_6);
+         nonce_6: nonce_t <- get2(r_3);
+         key_6: key_t <- get1(r_3);
+         ct_7: bitstring <- Seal_inner(m, aad_9, key_6, nonce_6);
+         return(SealAuth_Some(enc_5, ct_7))
+     ) | (
+       foreach iad <= Qdperuser do
+       Oadec(pk_4: pkey_t, enc_7: kemciph_t, c: bitstring, aad_10: bitstring, info_7: bitstring) :=
+       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(ce_1[u_2, u_3], s[u_3], info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], i'_1[u_2, u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
+         return(OpenAuth_None)
+       else
+         find u_7 = ri_3 <= Qeperuser, u_8 = ri_4 <= N suchthat defined(k'_4[ri_3, ri_4], ce[ri_3, ri_4], s[ri_4], u_9[ri_3, ri_4]) && (i = u_9[ri_3, ri_4]) && (pkgen(s[ri_4]) = pk_4) && (ce[ri_3, ri_4] = enc_7) then
+           r_4: keys_t <- KeySchedule_auth(k'_4[u_7, u_8], info_7);
+           nonce_9: nonce_t <- get2(r_4);
+           key_8: key_t <- get1(r_4);
+           let injbot(pt_7: bitstring) = Open_inner(c, aad_10, key_8, nonce_9) in
+             return(OpenAuth_Some(Context_Open_Some(pt_7)))
+           else
+             return(OpenAuth_Some(Context_Open_None))
+         orfind u_5 = ri_1 <= Qcperuser, u_6 = ri_2 <= N suchthat defined(k'_3[ri_1, ri_2], ce_1[ri_1, ri_2], s[ri_2], i'_1[ri_1, ri_2]) && (i = i'_1[ri_1, ri_2]) && (pkgen(s[ri_2]) = pk_4) && (ce_1[ri_1, ri_2] = enc_7) then
+           r_4: keys_t <- (x: bitstring <- info_7; find [unique] u_12 = ri_12 <= Qdperuser, u_13 = ri_13 <= N suchthat defined(r_6[ri_12, ri_13], x[ri_12, ri_13], u_6[ri_12, ri_13], u_5[ri_12, ri_13]) && (u_5[ri_12, ri_13] = u_5) && (u_6[ri_12, ri_13] = u_6) && (x = x[ri_12, ri_13]) then r_6[u_12, u_13] orfind  suchthat defined(x_1[u_5, u_6], r_7[u_5, u_6]) && (x = x_1[u_5, u_6]) then r_7[u_5, u_6] else r_6 <-R keys_t; r_6);
+           nonce_9: nonce_t <- get2(r_4);
+           key_8: key_t <- get1(r_4);
+           let injbot(pt_7: bitstring) = Open_inner(c, aad_10, key_8, nonce_9) in
+             return(OpenAuth_Some(Context_Open_Some(pt_7)))
+           else
+             return(OpenAuth_Some(Context_Open_None))
+         else
+           let AuthDecap_Some(shared_secret_4: kemkey_t) = AuthDecap(enc_7, skgen(s), pk_4) in
+             r_4: keys_t <- KeySchedule_auth(shared_secret_4, info_7);
+             nonce_9: nonce_t <- get2(r_4);
+             key_8: key_t <- get1(r_4);
+             let injbot(pt_7: bitstring) = Open_inner(c, aad_10, key_8, nonce_9) in
+               return(OpenAuth_Some(Context_Open_Some(pt_7)))
+             else
+               return(OpenAuth_Some(Context_Open_None))
+           else
+             return(OpenAuth_None)
+     ) | (
+       foreach ic <= Qcperuser do
+       Ochall(pk_5: pkey_t, m0: bitstring, m1: bitstring, aad_11: bitstring, info_8: bitstring) :=
+       find i'_1 = i' <= N suchthat defined(s[i']) && (pkgen(s[i']) = pk_5) then
+         if Length(m0) = Length(m1) then
+           k_3 <-R kemseed_t;
+           sk_4: skey_t <- skgen(s);
+           ce_1: kemciph_t <- AuthEncap_enc(k_3, pk_5, sk_4);
+           k'_3: kemkey_t <- cst_kemkey_t;
+           r_5: keys_t <- (x_1: bitstring <- info_8; {571}find [unique] u_10 = ri_8 <= Qdperuser, u_11 = ri_9 <= N suchthat defined(u_6[ri_8, ri_9], u_5[ri_8, ri_9], x[ri_8, ri_9], r_6[ri_8, ri_9]) && {580}((u_5[ri_8, ri_9] = ic) && (u_6[ri_8, ri_9] = i) && (x_1 = x[ri_8, ri_9])) then r_6[u_10, u_11] else r_7 <-R keys_t; r_7);
+           nonce_12: nonce_t <- get2(r_5);
+           key_10: key_t <- get1(r_5);
+           pt_8: bitstring <- test(b, m0, m1);
+           ct_9: bitstring <- Seal_inner(pt_8, aad_11, key_10, nonce_12);
+           return((ce_1, ct_9))
+         else
+           return(bottom)
+       else
+         return(bottom)
+     ))
+
+
+Applying simplify (non-expanded game)
+  - Simplification pass
+    - Replaced ((u_5[ri_8, ri_9] = ic) && (u_6[ri_8, ri_9] = i) && (x_1 = x[ri_8, ri_9])) with false at 580
+    - Remove branch 1 in find at 571
+    - Find at 571 removed (else branch kept if any)
 yields
 
 Game 22 is
@@ -1939,7 +1938,7 @@ Game 22 is
      ) | (
        foreach iad <= Qdperuser do
        Oadec(pk_4: pkey_t, enc_7: kemciph_t, c: bitstring, aad_10: bitstring, info_7: bitstring) :=
-       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], ce_1[u_2, u_3], i'_1[u_2, u_3], s[u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
+       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(ce_1[u_2, u_3], s[u_3], info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], i'_1[u_2, u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
          return(OpenAuth_None)
        else
          find u_7 = ri_3 <= Qeperuser, u_8 = ri_4 <= N suchthat defined(k'_4[ri_3, ri_4], ce[ri_3, ri_4], s[ri_4], u_9[ri_3, ri_4]) && (i = u_9[ri_3, ri_4]) && (pkgen(s[ri_4]) = pk_4) && (ce[ri_3, ri_4] = enc_7) then
@@ -1951,7 +1950,7 @@ Game 22 is
            else
              return(OpenAuth_Some(Context_Open_None))
          orfind u_5 = ri_1 <= Qcperuser, u_6 = ri_2 <= N suchthat defined(k'_3[ri_1, ri_2], ce_1[ri_1, ri_2], s[ri_2], i'_1[ri_1, ri_2]) && (i = i'_1[ri_1, ri_2]) && (pkgen(s[ri_2]) = pk_4) && (ce_1[ri_1, ri_2] = enc_7) then
-           r_4: keys_t <- (x: bitstring <- info_7; find [unique] u_12 = ri_12 <= Qdperuser, u_13 = ri_13 <= N suchthat defined(u_6, u_6[ri_12, ri_13], u_5, u_5[ri_12, ri_13], x[ri_12, ri_13], r_6[ri_12, ri_13]) && (u_5[ri_12, ri_13] = u_5) && (u_6[ri_12, ri_13] = u_6) && (x = x[ri_12, ri_13]) then r_6[u_12, u_13] orfind  suchthat defined(x_1[u_5, u_6], r_7[u_5, u_6]) && (x = x_1[u_5, u_6]) then r_7[u_5, u_6] else r_6 <-R keys_t; r_6);
+           r_4: keys_t <- (x: bitstring <- info_7; find [unique] u_12 = ri_12 <= Qdperuser, u_13 = ri_13 <= N suchthat defined(r_6[ri_12, ri_13], x[ri_12, ri_13], u_6[ri_12, ri_13], u_5[ri_12, ri_13]) && (u_5[ri_12, ri_13] = u_5) && (u_6[ri_12, ri_13] = u_6) && (x = x[ri_12, ri_13]) then r_6[u_12, u_13] orfind  suchthat defined(x_1[u_5, u_6], r_7[u_5, u_6]) && (x = x_1[u_5, u_6]) then r_7[u_5, u_6] else r_6 <-R keys_t; r_6);
            nonce_9: nonce_t <- get2(r_4);
            key_8: key_t <- get1(r_4);
            let injbot(pt_7: bitstring) = Open_inner(c, aad_10, key_8, nonce_9) in
@@ -1978,7 +1977,7 @@ Game 22 is
            sk_4: skey_t <- skgen(s);
            ce_1: kemciph_t <- AuthEncap_enc(k_3, pk_5, sk_4);
            k'_3: kemkey_t <- cst_kemkey_t;
-           r_5: keys_t <- (x_1: bitstring <- info_8; {575}find [unique] u_10 = ri_8 <= Qdperuser, u_11 = ri_9 <= N suchthat defined(u_6[ri_8, ri_9], u_5[ri_8, ri_9], x[ri_8, ri_9], r_6[ri_8, ri_9]) && {584}((u_5[ri_8, ri_9] = ic) && (u_6[ri_8, ri_9] = i) && (x_1 = x[ri_8, ri_9])) then r_6[u_10, u_11] orfind  suchthat defined(x_1, r_7) && {614}(x_1 = x_1) then r_7 else r_7 <-R keys_t; r_7);
+           r_5: keys_t <- (x_1: bitstring <- info_8; r_7 <-R keys_t; r_7);
            nonce_12: nonce_t <- get2(r_5);
            key_10: key_t <- get1(r_5);
            pt_8: bitstring <- test(b, m0, m1);
@@ -1991,11 +1990,8 @@ Game 22 is
      ))
 
 
-Applying simplify (non-expanded game)
-  - Simplification pass
-    - Replaced (x_1 = x_1) with true at 614
-    - Replaced ((u_5[ri_8, ri_9] = ic) && (u_6[ri_8, ri_9] = i) && (x_1 = x[ri_8, ri_9])) with false at 584
-    - Remove branch 1 in find at 575
+Applying expand
+  - Expand if/find/let
 yields
 
 Game 23 is
@@ -2032,100 +2028,7 @@ Game 23 is
      ) | (
        foreach iad <= Qdperuser do
        Oadec(pk_4: pkey_t, enc_7: kemciph_t, c: bitstring, aad_10: bitstring, info_7: bitstring) :=
-       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], ce_1[u_2, u_3], i'_1[u_2, u_3], s[u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
-         return(OpenAuth_None)
-       else
-         find u_7 = ri_3 <= Qeperuser, u_8 = ri_4 <= N suchthat defined(k'_4[ri_3, ri_4], ce[ri_3, ri_4], s[ri_4], u_9[ri_3, ri_4]) && (i = u_9[ri_3, ri_4]) && (pkgen(s[ri_4]) = pk_4) && (ce[ri_3, ri_4] = enc_7) then
-           r_4: keys_t <- KeySchedule_auth(k'_4[u_7, u_8], info_7);
-           nonce_9: nonce_t <- get2(r_4);
-           key_8: key_t <- get1(r_4);
-           let injbot(pt_7: bitstring) = Open_inner(c, aad_10, key_8, nonce_9) in
-             return(OpenAuth_Some(Context_Open_Some(pt_7)))
-           else
-             return(OpenAuth_Some(Context_Open_None))
-         orfind u_5 = ri_1 <= Qcperuser, u_6 = ri_2 <= N suchthat defined(k'_3[ri_1, ri_2], ce_1[ri_1, ri_2], s[ri_2], i'_1[ri_1, ri_2]) && (i = i'_1[ri_1, ri_2]) && (pkgen(s[ri_2]) = pk_4) && (ce_1[ri_1, ri_2] = enc_7) then
-           r_4: keys_t <- (x: bitstring <- info_7; {349}find [unique] u_12 = ri_12 <= Qdperuser, u_13 = ri_13 <= N suchthat defined(u_6, u_6[ri_12, ri_13], u_5, u_5[ri_12, ri_13], x[ri_12, ri_13], r_6[ri_12, ri_13]) && (u_5[ri_12, ri_13] = u_5) && (u_6[ri_12, ri_13] = u_6) && (x = x[ri_12, ri_13]) then r_6[u_12, u_13] orfind  suchthat defined(x_1[u_5, u_6], r_7[u_5, u_6]) && (x = x_1[u_5, u_6]) then r_7[u_5, u_6] else r_6 <-R keys_t; r_6);
-           nonce_9: nonce_t <- get2(r_4);
-           key_8: key_t <- get1(r_4);
-           let injbot(pt_7: bitstring) = Open_inner(c, aad_10, key_8, nonce_9) in
-             return(OpenAuth_Some(Context_Open_Some(pt_7)))
-           else
-             return(OpenAuth_Some(Context_Open_None))
-         else
-           let AuthDecap_Some(shared_secret_4: kemkey_t) = AuthDecap(enc_7, skgen(s), pk_4) in
-             r_4: keys_t <- KeySchedule_auth(shared_secret_4, info_7);
-             nonce_9: nonce_t <- get2(r_4);
-             key_8: key_t <- get1(r_4);
-             let injbot(pt_7: bitstring) = Open_inner(c, aad_10, key_8, nonce_9) in
-               return(OpenAuth_Some(Context_Open_Some(pt_7)))
-             else
-               return(OpenAuth_Some(Context_Open_None))
-           else
-             return(OpenAuth_None)
-     ) | (
-       foreach ic <= Qcperuser do
-       Ochall(pk_5: pkey_t, m0: bitstring, m1: bitstring, aad_11: bitstring, info_8: bitstring) :=
-       find i'_1 = i' <= N suchthat defined(s[i']) && (pkgen(s[i']) = pk_5) then
-         if Length(m0) = Length(m1) then
-           k_3 <-R kemseed_t;
-           sk_4: skey_t <- skgen(s);
-           ce_1: kemciph_t <- AuthEncap_enc(k_3, pk_5, sk_4);
-           k'_3: kemkey_t <- cst_kemkey_t;
-           r_5: keys_t <- (x_1: bitstring <- info_8; {575}if defined(x_1, r_7) then r_7 else r_7 <-R keys_t; r_7);
-           nonce_12: nonce_t <- get2(r_5);
-           key_10: key_t <- get1(r_5);
-           pt_8: bitstring <- test(b, m0, m1);
-           ct_9: bitstring <- Seal_inner(pt_8, aad_11, key_10, nonce_12);
-           return((ce_1, ct_9))
-         else
-           return(bottom)
-       else
-         return(bottom)
-     ))
-
-
-Applying expand
-  - Expand if/find/let
-    - Remove branch 1 in find at 575
-    - Find at 575 removed (else branch kept if any)
-    - Replaced defined condition u_6, u_6[ri_12, ri_13], u_5, u_5[ri_12, ri_13], x[ri_12, ri_13], r_6[ri_12, ri_13] with u_6[ri_12, ri_13], u_5[ri_12, ri_13], x[ri_12, ri_13], r_6[ri_12, ri_13] in find at 349
-yields
-
-Game 24 is
-     Ostart() :=
-     b <-R bool;
-     return();
-     foreach i <= N do
-     Osetup() :=
-     s <-R keypairseed_t;
-     return(pkgen(s));
-     ((
-       foreach iae <= Qeperuser do
-       Oaenc(pk_3: pkey_t, m: bitstring, aad_9: bitstring, info_6: bitstring) :=
-       find u_9 = ri_5 <= N suchthat defined(s[ri_5]) && (pk_3 = pkgen(s[ri_5])) then
-         k_7 <-R kemseed_t;
-         sk_3: skey_t <- skgen(s);
-         ce: kemciph_t <- AuthEncap_enc(k_7, pk_3, sk_3);
-         k'_4 <-R kemkey_t;
-         r_3: keys_t <- KeySchedule_auth(k'_4, info_6);
-         nonce_6: nonce_t <- get2(r_3);
-         key_6: key_t <- get1(r_3);
-         ct_7: bitstring <- Seal_inner(m, aad_9, key_6, nonce_6);
-         return(SealAuth_Some(ce, ct_7))
-       else
-         k_6 <-R kemseed_t;
-         sk_2: skey_t <- skgen(s);
-         enc_5: kemciph_t <- AuthEncap_enc(k_6, pk_3, sk_2);
-         shared_secret_3: kemkey_t <- AuthEncap_key(k_6, pk_3, sk_2);
-         r_3: keys_t <- KeySchedule_auth(shared_secret_3, info_6);
-         nonce_6: nonce_t <- get2(r_3);
-         key_6: key_t <- get1(r_3);
-         ct_7: bitstring <- Seal_inner(m, aad_9, key_6, nonce_6);
-         return(SealAuth_Some(enc_5, ct_7))
-     ) | (
-       foreach iad <= Qdperuser do
-       Oadec(pk_4: pkey_t, enc_7: kemciph_t, c: bitstring, aad_10: bitstring, info_7: bitstring) :=
-       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], ce_1[u_2, u_3], i'_1[u_2, u_3], s[u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
+       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(ce_1[u_2, u_3], s[u_3], info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], i'_1[u_2, u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
          return(OpenAuth_None)
        else
          find u_7 = ri_3 <= Qeperuser, u_8 = ri_4 <= N suchthat defined(k'_4[ri_3, ri_4], ce[ri_3, ri_4], s[ri_4], u_9[ri_3, ri_4]) && (i = u_9[ri_3, ri_4]) && (pkgen(s[ri_4]) = pk_4) && (ce[ri_3, ri_4] = enc_7) then
@@ -2138,7 +2041,7 @@ Game 24 is
              return(OpenAuth_Some(Context_Open_None))
          orfind u_5 = ri_1 <= Qcperuser, u_6 = ri_2 <= N suchthat defined(k'_3[ri_1, ri_2], ce_1[ri_1, ri_2], s[ri_2], i'_1[ri_1, ri_2]) && (i = i'_1[ri_1, ri_2]) && (pkgen(s[ri_2]) = pk_4) && (ce_1[ri_1, ri_2] = enc_7) then
            x: bitstring <- info_7;
-           find [unique] u_12 = ri_12 <= Qdperuser, u_13 = ri_13 <= N suchthat defined(u_6[ri_12, ri_13], u_5[ri_12, ri_13], x[ri_12, ri_13], r_6[ri_12, ri_13]) && (u_5[ri_12, ri_13] = u_5) && (u_6[ri_12, ri_13] = u_6) && (x = x[ri_12, ri_13]) then
+           find [unique] u_12 = ri_12 <= Qdperuser, u_13 = ri_13 <= N suchthat defined(r_6[ri_12, ri_13], x[ri_12, ri_13], u_6[ri_12, ri_13], u_5[ri_12, ri_13]) && (u_5[ri_12, ri_13] = u_5) && (u_6[ri_12, ri_13] = u_6) && (x = x[ri_12, ri_13]) then
              r_4: keys_t <- r_6[u_12, u_13];
              nonce_9: nonce_t <- get2(r_4);
              key_8: key_t <- get1(r_4);
@@ -2208,7 +2111,7 @@ Applying remove assignments of findcond
   - Remove assignments on r_4 (definition removed, all usages removed)
 yields
 
-Game 25 is
+Game 24 is
      Ostart() :=
      b <-R bool;
      return();
@@ -2242,7 +2145,7 @@ Game 25 is
      ) | (
        foreach iad <= Qdperuser do
        Oadec(pk_4: pkey_t, enc_7: kemciph_t, c: bitstring, aad_10: bitstring, info_7: bitstring) :=
-       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], ce_1[u_2, u_3], i'_1[u_2, u_3], s[u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
+       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(ce_1[u_2, u_3], s[u_3], info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], i'_1[u_2, u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
          return(OpenAuth_None)
        else
 {235}    find u_7 = ri_3 <= Qeperuser, u_8 = ri_4 <= N suchthat defined(k'_4[ri_3, ri_4], ce[ri_3, ri_4], s[ri_4], u_9[ri_3, ri_4]) && (i = u_9[ri_3, ri_4]) && (pkgen(s[ri_4]) = pk_4) && (ce[ri_3, ri_4] = enc_7) then
@@ -2253,9 +2156,9 @@ Game 25 is
              return(OpenAuth_Some(Context_Open_Some(pt_7)))
            else
              return(OpenAuth_Some(Context_Open_None))
-         orfind u_5 = ri_1 <= Qcperuser, u_6 = ri_2 <= N suchthat defined(ce_1[ri_1, ri_2], ce_1[ri_1, ri_2], s[ri_2], i'_1[ri_1, ri_2]) && (i = i'_1[ri_1, ri_2]) && (pkgen(s[ri_2]) = pk_4) && (ce_1[ri_1, ri_2] = enc_7) then
+         orfind u_5 = ri_1 <= Qcperuser, u_6 = ri_2 <= N suchthat defined(ce_1[ri_1, ri_2], s[ri_2], i'_1[ri_1, ri_2]) && (i = i'_1[ri_1, ri_2]) && (pkgen(s[ri_2]) = pk_4) && (ce_1[ri_1, ri_2] = enc_7) then
            x: bitstring <- cst_bitstring;
-{346}      find [unique] u_12 = ri_12 <= Qdperuser, u_13 = ri_13 <= N suchthat defined(info_7[ri_12, ri_13], x[ri_12, ri_13], u_6[ri_12, ri_13], u_5[ri_12, ri_13], r_6[ri_12, ri_13]) && (u_5[ri_12, ri_13] = u_5) && (u_6[ri_12, ri_13] = u_6) && (info_7 = info_7[ri_12, ri_13]) then
+{344}      find [unique] u_12 = ri_12 <= Qdperuser, u_13 = ri_13 <= N suchthat defined(info_7[ri_12, ri_13], x[ri_12, ri_13], r_6[ri_12, ri_13], u_6[ri_12, ri_13], u_5[ri_12, ri_13]) && (u_5[ri_12, ri_13] = u_5) && (u_6[ri_12, ri_13] = u_6) && (info_7 = info_7[ri_12, ri_13]) then
              nonce_9: nonce_t <- get2(r_6[u_12, u_13]);
              key_8: key_t <- get1(r_6[u_12, u_13]);
              let injbot(pt_7: bitstring) = Open_inner(c, aad_10, key_8, nonce_9) in
@@ -2311,13 +2214,13 @@ Game 25 is
 
 Applying simplify
   - Simplification pass
-    - Replaced defined condition info_8[u_5, u_6], ce_1[u_5, u_6], r_7[u_5, u_6] with an empty condition in find at 346
-    - In branch 1 of find at 346, substituting u_13 with i
-    - Replaced defined condition info_7[ri_12, ri_13], x[ri_12, ri_13], u_6[ri_12, ri_13], u_5[ri_12, ri_13], r_6[ri_12, ri_13] with r_6[ri_12], info_7[ri_12], u_6[ri_12], u_5[ri_12] in find at 346
-    - Replaced defined condition ce_1[ri_1, ri_2], ce_1[ri_1, ri_2], s[ri_2], i'_1[ri_1, ri_2] with r_7[ri_1, ri_2], info_8[ri_1, ri_2], ce_1[ri_1, ri_2], s[ri_2], i'_1[ri_1, ri_2] in find at 235
+    - Replaced defined condition info_8[u_5, u_6], ce_1[u_5, u_6], r_7[u_5, u_6] with an empty condition in find at 344
+    - In branch 1 of find at 344, substituting u_13 with i
+    - Replaced defined condition info_7[ri_12, ri_13], x[ri_12, ri_13], r_6[ri_12, ri_13], u_6[ri_12, ri_13], u_5[ri_12, ri_13] with r_6[ri_12], info_7[ri_12], u_6[ri_12], u_5[ri_12] in find at 344
+    - Replaced defined condition ce_1[ri_1, ri_2], s[ri_2], i'_1[ri_1, ri_2] with r_7[ri_1, ri_2], info_8[ri_1, ri_2], ce_1[ri_1, ri_2], s[ri_2], i'_1[ri_1, ri_2] in find at 235
 yields
 
-Game 26 is
+Game 25 is
      Ostart() :=
      b <-R bool;
      return();
@@ -2351,7 +2254,7 @@ Game 26 is
      ) | (
        foreach iad <= Qdperuser do
        Oadec(pk_4: pkey_t, enc_7: kemciph_t, c: bitstring, aad_10: bitstring, info_7: bitstring) :=
-       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], ce_1[u_2, u_3], i'_1[u_2, u_3], s[u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
+       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(ce_1[u_2, u_3], s[u_3], info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], i'_1[u_2, u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
          return(OpenAuth_None)
        else
          find u_7 = ri_3 <= Qeperuser, u_8 = ri_4 <= N suchthat defined(k'_4[ri_3, ri_4], ce[ri_3, ri_4], s[ri_4], u_9[ri_3, ri_4]) && (i = u_9[ri_3, ri_4]) && (pkgen(s[ri_4]) = pk_4) && (ce[ri_3, ri_4] = enc_7) then
@@ -2423,7 +2326,7 @@ Applying move all binders
   - Move assignment to x
 yields
 
-Game 27 is
+Game 26 is
      Ostart() :=
      b <-R bool;
      return();
@@ -2457,7 +2360,7 @@ Game 27 is
      ) | (
        foreach iad <= Qdperuser do
        Oadec(pk_4: pkey_t, enc_7: kemciph_t, c: bitstring, aad_10: bitstring, info_7: bitstring) :=
-       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], ce_1[u_2, u_3], i'_1[u_2, u_3], s[u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
+       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(ce_1[u_2, u_3], s[u_3], info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], i'_1[u_2, u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
          return(OpenAuth_None)
        else
          find u_7 = ri_3 <= Qeperuser, u_8 = ri_4 <= N suchthat defined(k'_4[ri_3, ri_4], ce[ri_3, ri_4], s[ri_4], u_9[ri_3, ri_4]) && (i = u_9[ri_3, ri_4]) && (pkgen(s[ri_4]) = pk_4) && (ce[ri_3, ri_4] = enc_7) then
@@ -2528,7 +2431,7 @@ Applying remove assignments of findcond
   - Remove assignments on u_13 (definition removed, all usages removed)
 yields
 
-Game 28 is
+Game 27 is
      Ostart() :=
      b <-R bool;
      return();
@@ -2562,7 +2465,7 @@ Game 28 is
      ) | (
        foreach iad <= Qdperuser do
        Oadec(pk_4: pkey_t, enc_7: kemciph_t, c: bitstring, aad_10: bitstring, info_7: bitstring) :=
-       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], ce_1[u_2, u_3], i'_1[u_2, u_3], s[u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
+       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(ce_1[u_2, u_3], s[u_3], info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], i'_1[u_2, u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
          return(OpenAuth_None)
        else
          find u_7 = ri_3 <= Qeperuser, u_8 = ri_4 <= N suchthat defined(k'_4[ri_3, ri_4], ce[ri_3, ri_4], s[ri_4], u_9[ri_3, ri_4]) && (i = u_9[ri_3, ri_4]) && (pkgen(s[ri_4]) = pk_4) && (ce[ri_3, ri_4] = enc_7) then
@@ -2632,7 +2535,7 @@ Applying equivalence splitter(split)
   - Equivalence splitter(split) with variables: r_7 -> r
 yields
 
-Game 29 is
+Game 28 is
      Ostart() :=
      b <-R bool;
      return();
@@ -2666,7 +2569,7 @@ Game 29 is
      ) | (
        foreach iad <= Qdperuser do
        Oadec(pk_4: pkey_t, enc_7: kemciph_t, c: bitstring, aad_10: bitstring, info_7: bitstring) :=
-       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], ce_1[u_2, u_3], i'_1[u_2, u_3], s[u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
+       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(ce_1[u_2, u_3], s[u_3], info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], i'_1[u_2, u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
          return(OpenAuth_None)
        else
          find u_7 = ri_3 <= Qeperuser, u_8 = ri_4 <= N suchthat defined(k'_4[ri_3, ri_4], ce[ri_3, ri_4], s[ri_4], u_9[ri_3, ri_4]) && (i = u_9[ri_3, ri_4]) && (pkgen(s[ri_4]) = pk_4) && (ce[ri_3, ri_4] = enc_7) then
@@ -2738,7 +2641,7 @@ Applying equivalence splitter(split)
   - Equivalence splitter(split) with variables: r_6 -> r
 yields
 
-Game 30 is
+Game 29 is
      Ostart() :=
      b <-R bool;
      return();
@@ -2772,7 +2675,7 @@ Game 30 is
      ) | (
        foreach iad <= Qdperuser do
        Oadec(pk_4: pkey_t, enc_7: kemciph_t, c: bitstring, aad_10: bitstring, info_7: bitstring) :=
-       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], ce_1[u_2, u_3], i'_1[u_2, u_3], s[u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
+       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(ce_1[u_2, u_3], s[u_3], info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], i'_1[u_2, u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
          return(OpenAuth_None)
        else
          find u_7 = ri_3 <= Qeperuser, u_8 = ri_4 <= N suchthat defined(k'_4[ri_3, ri_4], ce[ri_3, ri_4], s[ri_4], u_9[ri_3, ri_4]) && (i = u_9[ri_3, ri_4]) && (pkgen(s[ri_4]) = pk_4) && (ce[ri_3, ri_4] = enc_7) then
@@ -2855,7 +2758,7 @@ Applying remove assignments of findcond
   - Remove assignments on key_8 (definition removed, all usages removed)
 yields
 
-Game 31 is
+Game 30 is
      Ostart() :=
      b <-R bool;
      return();
@@ -2889,107 +2792,7 @@ Game 31 is
      ) | (
        foreach iad <= Qdperuser do
        Oadec(pk_4: pkey_t, enc_7: kemciph_t, c: bitstring, aad_10: bitstring, info_7: bitstring) :=
-       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], ce_1[u_2, u_3], i'_1[u_2, u_3], s[u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
-         return(OpenAuth_None)
-       else
-{235}    find u_7 = ri_3 <= Qeperuser, u_8 = ri_4 <= N suchthat defined(k'_4[ri_3, ri_4], ce[ri_3, ri_4], s[ri_4], u_9[ri_3, ri_4]) && (i = u_9[ri_3, ri_4]) && (pkgen(s[ri_4]) = pk_4) && (ce[ri_3, ri_4] = enc_7) then
-           r_4: keys_t <- KeySchedule_auth(k'_4[u_7, u_8], info_7);
-           nonce_9: nonce_t <- get2(r_4);
-           key_8: key_t <- get1(r_4);
-           let injbot(pt_7: bitstring) = Open_inner(c, aad_10, key_8, nonce_9) in
-             return(OpenAuth_Some(Context_Open_Some(pt_7)))
-           else
-             return(OpenAuth_Some(Context_Open_None))
-         orfind u_5 = ri_1 <= Qcperuser, u_6 = ri_2 <= N suchthat defined(part2[ri_1, ri_2], part1[ri_1, ri_2], part1[ri_1, ri_2], info_8[ri_1, ri_2], ce_1[ri_1, ri_2], s[ri_2], i'_1[ri_1, ri_2]) && (i = i'_1[ri_1, ri_2]) && (pkgen(s[ri_2]) = pk_4) && (ce_1[ri_1, ri_2] = enc_7) then
-{350}      find [unique] u_12 = ri_12 <= Qdperuser suchthat defined(part2_1[ri_12], part1_1[ri_12], part1_1[ri_12], info_7[ri_12], u_6[ri_12], u_5[ri_12]) && (u_5[ri_12] = u_5) && (u_6[ri_12] = u_6) && (info_7 = info_7[ri_12]) then
-             let injbot(pt_7: bitstring) = Open_inner(c, aad_10, part1_1[u_12], part2_1[u_12]) in
-               return(OpenAuth_Some(Context_Open_Some(pt_7)))
-             else
-               return(OpenAuth_Some(Context_Open_None))
-           orfind  suchthat info_7 = info_8[u_5, u_6] then
-             let injbot(pt_7: bitstring) = Open_inner(c, aad_10, part1[u_5, u_6], part2[u_5, u_6]) in
-               return(OpenAuth_Some(Context_Open_Some(pt_7)))
-             else
-               return(OpenAuth_Some(Context_Open_None))
-           else
-             part2_1 <-R nonce_t;
-             part1_1 <-R key_t;
-             let injbot(pt_7: bitstring) = Open_inner(c, aad_10, part1_1, part2_1) in
-               return(OpenAuth_Some(Context_Open_Some(pt_7)))
-             else
-               return(OpenAuth_Some(Context_Open_None))
-         else
-           let AuthDecap_Some(shared_secret_4: kemkey_t) = AuthDecap(enc_7, skgen(s), pk_4) in
-             r_4: keys_t <- KeySchedule_auth(shared_secret_4, info_7);
-             nonce_9: nonce_t <- get2(r_4);
-             key_8: key_t <- get1(r_4);
-             let injbot(pt_7: bitstring) = Open_inner(c, aad_10, key_8, nonce_9) in
-               return(OpenAuth_Some(Context_Open_Some(pt_7)))
-             else
-               return(OpenAuth_Some(Context_Open_None))
-           else
-             return(OpenAuth_None)
-     ) | (
-       foreach ic <= Qcperuser do
-       Ochall(pk_5: pkey_t, m0: bitstring, m1: bitstring, aad_11: bitstring, info_8: bitstring) :=
-       find i'_1 = i' <= N suchthat defined(s[i']) && (pkgen(s[i']) = pk_5) then
-         if Length(m0) = Length(m1) then
-           k_3 <-R kemseed_t;
-           sk_4: skey_t <- skgen(s);
-           ce_1: kemciph_t <- AuthEncap_enc(k_3, pk_5, sk_4);
-           part2 <-R nonce_t;
-           part1 <-R key_t;
-           pt_8: bitstring <- test(b, m0, m1);
-           ct_9: bitstring <- Seal_inner(pt_8, aad_11, part1, part2);
-           return((ce_1, ct_9))
-         else
-           return(bottom)
-       else
-         return(bottom)
-     ))
-
-
-Applying simplify
-  - Simplification pass
-    - Replaced defined condition part2_1[ri_12], part1_1[ri_12], part1_1[ri_12], info_7[ri_12], u_6[ri_12], u_5[ri_12] with part2_1[ri_12], part1_1[ri_12], info_7[ri_12], u_6[ri_12], u_5[ri_12] in find at 350
-    - Replaced defined condition part2[ri_1, ri_2], part1[ri_1, ri_2], part1[ri_1, ri_2], info_8[ri_1, ri_2], ce_1[ri_1, ri_2], s[ri_2], i'_1[ri_1, ri_2] with part2[ri_1, ri_2], part1[ri_1, ri_2], info_8[ri_1, ri_2], ce_1[ri_1, ri_2], s[ri_2], i'_1[ri_1, ri_2] in find at 235
-yields
-
-Game 32 is
-     Ostart() :=
-     b <-R bool;
-     return();
-     foreach i <= N do
-     Osetup() :=
-     s <-R keypairseed_t;
-     return(pkgen(s));
-     ((
-       foreach iae <= Qeperuser do
-       Oaenc(pk_3: pkey_t, m: bitstring, aad_9: bitstring, info_6: bitstring) :=
-       find u_9 = ri_5 <= N suchthat defined(s[ri_5]) && (pk_3 = pkgen(s[ri_5])) then
-         k_7 <-R kemseed_t;
-         sk_3: skey_t <- skgen(s);
-         ce: kemciph_t <- AuthEncap_enc(k_7, pk_3, sk_3);
-         k'_4 <-R kemkey_t;
-         r_3: keys_t <- KeySchedule_auth(k'_4, info_6);
-         nonce_6: nonce_t <- get2(r_3);
-         key_6: key_t <- get1(r_3);
-         ct_7: bitstring <- Seal_inner(m, aad_9, key_6, nonce_6);
-         return(SealAuth_Some(ce, ct_7))
-       else
-         k_6 <-R kemseed_t;
-         sk_2: skey_t <- skgen(s);
-         enc_5: kemciph_t <- AuthEncap_enc(k_6, pk_3, sk_2);
-         shared_secret_3: kemkey_t <- AuthEncap_key(k_6, pk_3, sk_2);
-         r_3: keys_t <- KeySchedule_auth(shared_secret_3, info_6);
-         nonce_6: nonce_t <- get2(r_3);
-         key_6: key_t <- get1(r_3);
-         ct_7: bitstring <- Seal_inner(m, aad_9, key_6, nonce_6);
-         return(SealAuth_Some(enc_5, ct_7))
-     ) | (
-       foreach iad <= Qdperuser do
-       Oadec(pk_4: pkey_t, enc_7: kemciph_t, c: bitstring, aad_10: bitstring, info_7: bitstring) :=
-       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], ce_1[u_2, u_3], i'_1[u_2, u_3], s[u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
+       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(ce_1[u_2, u_3], s[u_3], info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], i'_1[u_2, u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
          return(OpenAuth_None)
        else
          find u_7 = ri_3 <= Qeperuser, u_8 = ri_4 <= N suchthat defined(k'_4[ri_3, ri_4], ce[ri_3, ri_4], s[ri_4], u_9[ri_3, ri_4]) && (i = u_9[ri_3, ri_4]) && (pkgen(s[ri_4]) = pk_4) && (ce[ri_3, ri_4] = enc_7) then
@@ -3049,11 +2852,11 @@ Game 32 is
      ))
 
 
-Applying equivalence int_ctxt(Seal_inner) with part1 [probability Adv_ctxt(time(context for game 32) + time, #Ochall, #Oadec)]
+Applying equivalence int_ctxt(Seal_inner) with part1 [probability Adv_ctxt(time_3, #Ochall, #Oadec)]
   - Equivalence int_ctxt(Seal_inner) with variables: part2 -> n, part1 -> k_1
 yields
 
-Game 33 is
+Game 31 is
      Ostart() :=
      b <-R bool;
      return();
@@ -3087,7 +2890,7 @@ Game 33 is
      ) | (
        foreach iad <= Qdperuser do
        Oadec(pk_4: pkey_t, enc_7: kemciph_t, c: bitstring, aad_10: bitstring, info_7: bitstring) :=
-       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], ce_1[u_2, u_3], i'_1[u_2, u_3], s[u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
+       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(ce_1[u_2, u_3], s[u_3], info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], i'_1[u_2, u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
          return(OpenAuth_None)
        else
          find u_7 = ri_3 <= Qeperuser, u_8 = ri_4 <= N suchthat defined(k'_4[ri_3, ri_4], ce[ri_3, ri_4], s[ri_4], u_9[ri_3, ri_4]) && (i = u_9[ri_3, ri_4]) && (pkgen(s[ri_4]) = pk_4) && (ce[ri_3, ri_4] = enc_7) then
@@ -3154,7 +2957,7 @@ Applying expand
     - Remove else branch of let at 422
 yields
 
-Game 34 is
+Game 32 is
      Ostart() :=
      b <-R bool;
      return();
@@ -3188,7 +2991,7 @@ Game 34 is
      ) | (
        foreach iad <= Qdperuser do
        Oadec(pk_4: pkey_t, enc_7: kemciph_t, c: bitstring, aad_10: bitstring, info_7: bitstring) :=
-       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], ce_1[u_2, u_3], i'_1[u_2, u_3], s[u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
+       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(ce_1[u_2, u_3], s[u_3], info_8[u_2, u_3], aad_11[u_2, u_3], ct_9[u_2, u_3], i'_1[u_2, u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (ct_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
          return(OpenAuth_None)
        else
          find u_7 = ri_3 <= Qeperuser, u_8 = ri_4 <= N suchthat defined(k'_4[ri_3, ri_4], ce[ri_3, ri_4], s[ri_4], u_9[ri_3, ri_4]) && (i = u_9[ri_3, ri_4]) && (pkgen(s[ri_4]) = pk_4) && (ce[ri_3, ri_4] = enc_7) then
@@ -3263,7 +3066,7 @@ Applying remove assignments of findcond
   - Remove assignments on pt_7 (definition removed, all usages removed)
 yields
 
-Game 35 is
+Game 33 is
      Ostart() :=
      b <-R bool;
      return();
@@ -3297,7 +3100,7 @@ Game 35 is
      ) | (
        foreach iad <= Qdperuser do
        Oadec(pk_4: pkey_t, enc_7: kemciph_t, c: bitstring, aad_10: bitstring, info_7: bitstring) :=
-{174}  find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(r_8[u_2, u_3], r_8[u_2, u_3], info_8[u_2, u_3], aad_11[u_2, u_3], ce_1[u_2, u_3], i'_1[u_2, u_3], s[u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (r_8[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
+       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(r_8[u_2, u_3], ce_1[u_2, u_3], s[u_3], info_8[u_2, u_3], aad_11[u_2, u_3], i'_1[u_2, u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (r_8[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
          return(OpenAuth_None)
        else
          find u_7 = ri_3 <= Qeperuser, u_8 = ri_4 <= N suchthat defined(k'_4[ri_3, ri_4], ce[ri_3, ri_4], s[ri_4], u_9[ri_3, ri_4]) && (i = u_9[ri_3, ri_4]) && (pkgen(s[ri_4]) = pk_4) && (ce[ri_3, ri_4] = enc_7) then
@@ -3309,13 +3112,13 @@ Game 35 is
            else
              return(OpenAuth_Some(Context_Open_None))
          orfind u_5 = ri_1 <= Qcperuser, u_6 = ri_2 <= N suchthat defined(part1[ri_1, ri_2], info_8[ri_1, ri_2], ce_1[ri_1, ri_2], s[ri_2], i'_1[ri_1, ri_2]) && (i = i'_1[ri_1, ri_2]) && (pkgen(s[ri_2]) = pk_4) && (ce_1[ri_1, ri_2] = enc_7) then
-{348}      find [unique] u_12 = ri_12 <= Qdperuser suchthat defined(part2_1[ri_12], part1_1[ri_12], info_7[ri_12], u_6[ri_12], u_5[ri_12]) && (u_5[ri_12] = u_5) && (u_6[ri_12] = u_6) && (info_7 = info_7[ri_12]) then
+{346}      find [unique] u_12 = ri_12 <= Qdperuser suchthat defined(part2_1[ri_12], part1_1[ri_12], info_7[ri_12], u_6[ri_12], u_5[ri_12]) && (u_5[ri_12] = u_5) && (u_6[ri_12] = u_6) && (info_7 = info_7[ri_12]) then
              let injbot(pt_7: bitstring) = Open_inner(c, aad_10, part1_1[u_12], part2_1[u_12]) in
                return(OpenAuth_Some(Context_Open_Some(pt_7)))
              else
                return(OpenAuth_Some(Context_Open_None))
            orfind  suchthat info_7 = info_8[u_5, u_6] then
-{424}        if defined(pt_8[u_5, u_6], aad_11[u_5, u_6], pt_8[u_5, u_6], pt_8[u_5, u_6], r_8[u_5, u_6]) && (r_8[u_5, u_6] = c) && (aad_11[u_5, u_6] = aad_10) then
+{422}        if defined(aad_11[u_5, u_6], pt_8[u_5, u_6], r_8[u_5, u_6]) && (r_8[u_5, u_6] = c) && (aad_11[u_5, u_6] = aad_10) then
                return(OpenAuth_Some(Context_Open_Some(pt_8[u_5, u_6])))
              else
                return(OpenAuth_Some(Context_Open_None))
@@ -3359,11 +3162,10 @@ Game 35 is
 
 Applying simplify
   - Simplification pass
-    - Simplified find at 424 in branch of find at 348
-    - Replaced defined condition r_8[u_2, u_3], r_8[u_2, u_3], info_8[u_2, u_3], aad_11[u_2, u_3], ce_1[u_2, u_3], i'_1[u_2, u_3], s[u_3] with info_8[u_2, u_3], aad_11[u_2, u_3], r_8[u_2, u_3], ce_1[u_2, u_3], i'_1[u_2, u_3], s[u_3] in find at 174
+    - Simplified find at 422 in branch of find at 346
 yields
 
-Game 36 is
+Game 34 is
      Ostart() :=
      b <-R bool;
      return();
@@ -3397,7 +3199,7 @@ Game 36 is
      ) | (
        foreach iad <= Qdperuser do
        Oadec(pk_4: pkey_t, enc_7: kemciph_t, c: bitstring, aad_10: bitstring, info_7: bitstring) :=
-       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(info_8[u_2, u_3], aad_11[u_2, u_3], r_8[u_2, u_3], ce_1[u_2, u_3], i'_1[u_2, u_3], s[u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (r_8[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
+       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(r_8[u_2, u_3], ce_1[u_2, u_3], s[u_3], info_8[u_2, u_3], aad_11[u_2, u_3], i'_1[u_2, u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (r_8[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
          return(OpenAuth_None)
        else
          find u_7 = ri_3 <= Qeperuser, u_8 = ri_4 <= N suchthat defined(k'_4[ri_3, ri_4], ce[ri_3, ri_4], s[ri_4], u_9[ri_3, ri_4]) && (i = u_9[ri_3, ri_4]) && (pkgen(s[ri_4]) = pk_4) && (ce[ri_3, ri_4] = enc_7) then
@@ -3414,10 +3216,10 @@ Game 36 is
                return(OpenAuth_Some(Context_Open_Some(pt_7)))
              else
                return(OpenAuth_Some(Context_Open_None))
-           orfind  suchthat defined(pt_8[u_5, u_6], aad_11[u_5, u_6], pt_8[u_5, u_6], pt_8[u_5, u_6], r_8[u_5, u_6]) && {441}((info_7 = info_8[u_5, u_6]) && (r_8[u_5, u_6] = c) && (aad_11[u_5, u_6] = aad_10)) then
+           orfind  suchthat defined(aad_11[u_5, u_6], pt_8[u_5, u_6], r_8[u_5, u_6]) && {429}((info_7 = info_8[u_5, u_6]) && (r_8[u_5, u_6] = c) && (aad_11[u_5, u_6] = aad_10)) then
              return(OpenAuth_Some(Context_Open_Some(pt_8[u_5, u_6])))
            else
-{488}        if info_7 = info_8[u_5, u_6] then
+{476}        if info_7 = info_8[u_5, u_6] then
                return(OpenAuth_Some(Context_Open_None))
              else
                part2_1 <-R nonce_t;
@@ -3459,12 +3261,12 @@ Game 36 is
 
 Applying simplify
   - Simplification pass
-    - Transformed find at 488 into a test
-    - Replaced ((info_7 = info_8[u_5, u_6]) && (r_8[u_5, u_6] = c) && (aad_11[u_5, u_6] = aad_10)) with false at 441
+    - Transformed find at 476 into a test
+    - Replaced ((info_7 = info_8[u_5, u_6]) && (r_8[u_5, u_6] = c) && (aad_11[u_5, u_6] = aad_10)) with false at 429
     - Remove branch 2 in find at 346
 yields
 
-Game 37 is
+Game 35 is
      Ostart() :=
      b <-R bool;
      return();
@@ -3498,7 +3300,7 @@ Game 37 is
      ) | (
        foreach iad <= Qdperuser do
        Oadec(pk_4: pkey_t, enc_7: kemciph_t, c: bitstring, aad_10: bitstring, info_7: bitstring) :=
-       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(info_8[u_2, u_3], aad_11[u_2, u_3], r_8[u_2, u_3], ce_1[u_2, u_3], i'_1[u_2, u_3], s[u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (r_8[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
+       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(r_8[u_2, u_3], ce_1[u_2, u_3], s[u_3], info_8[u_2, u_3], aad_11[u_2, u_3], i'_1[u_2, u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (r_8[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
          return(OpenAuth_None)
        else
          find u_7 = ri_3 <= Qeperuser, u_8 = ri_4 <= N suchthat defined(k'_4[ri_3, ri_4], ce[ri_3, ri_4], s[ri_4], u_9[ri_3, ri_4]) && (i = u_9[ri_3, ri_4]) && (pkgen(s[ri_4]) = pk_4) && (ce[ri_3, ri_4] = enc_7) then
@@ -3556,11 +3358,11 @@ Game 37 is
      ))
 
 
-Applying equivalence ind_cpa(Seal_inner) [probability Adv_cpa(time(context for game 37) + time, #Ochall)]
+Applying equivalence ind_cpa(Seal_inner) [probability Adv_cpa(time_4, #Ochall)]
   - Equivalence ind_cpa(Seal_inner) with variables: part2 -> n, part1 -> k_1
 yields
 
-Game 38 is
+Game 36 is
      Ostart() :=
      b <-R bool;
      return();
@@ -3594,7 +3396,7 @@ Game 38 is
      ) | (
        foreach iad <= Qdperuser do
        Oadec(pk_4: pkey_t, enc_7: kemciph_t, c: bitstring, aad_10: bitstring, info_7: bitstring) :=
-       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(info_8[u_2, u_3], aad_11[u_2, u_3], r_8[u_2, u_3], ce_1[u_2, u_3], i'_1[u_2, u_3], s[u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (r_8[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
+       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(r_8[u_2, u_3], ce_1[u_2, u_3], s[u_3], info_8[u_2, u_3], aad_11[u_2, u_3], i'_1[u_2, u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (r_8[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
          return(OpenAuth_None)
        else
          find u_7 = ri_3 <= Qeperuser, u_8 = ri_4 <= N suchthat defined(k'_4[ri_3, ri_4], ce[ri_3, ri_4], s[ri_4], u_9[ri_3, ri_4]) && (i = u_9[ri_3, ri_4]) && (pkgen(s[ri_4]) = pk_4) && (ce[ri_3, ri_4] = enc_7) then
@@ -3657,7 +3459,7 @@ Applying expand
   - Expand if/find/let
 yields
 
-Game 39 is
+Game 37 is
      Ostart() :=
      b <-R bool;
      return();
@@ -3691,7 +3493,7 @@ Game 39 is
      ) | (
        foreach iad <= Qdperuser do
        Oadec(pk_4: pkey_t, enc_7: kemciph_t, c: bitstring, aad_10: bitstring, info_7: bitstring) :=
-       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(info_8[u_2, u_3], aad_11[u_2, u_3], r_8[u_2, u_3], ce_1[u_2, u_3], i'_1[u_2, u_3], s[u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (r_8[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
+       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(r_8[u_2, u_3], ce_1[u_2, u_3], s[u_3], info_8[u_2, u_3], aad_11[u_2, u_3], i'_1[u_2, u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (r_8[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
          return(OpenAuth_None)
        else
          find u_7 = ri_3 <= Qeperuser, u_8 = ri_4 <= N suchthat defined(k'_4[ri_3, ri_4], ce[ri_3, ri_4], s[ri_4], u_9[ri_3, ri_4]) && (i = u_9[ri_3, ri_4]) && (pkgen(s[ri_4]) = pk_4) && (ce[ri_3, ri_4] = enc_7) then
@@ -3760,7 +3562,7 @@ Applying remove assignments of findcond
   - Remove assignments on r_8 (definition removed, all usages removed)
 yields
 
-Game 40 is
+Game 38 is
      Ostart() :=
      b <-R bool;
      return();
@@ -3794,7 +3596,7 @@ Game 40 is
      ) | (
        foreach iad <= Qdperuser do
        Oadec(pk_4: pkey_t, enc_7: kemciph_t, c: bitstring, aad_10: bitstring, info_7: bitstring) :=
-{174}  find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(r_9[u_2, u_3], r_9[u_2, u_3], info_8[u_2, u_3], aad_11[u_2, u_3], ce_1[u_2, u_3], i'_1[u_2, u_3], s[u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (r_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
+       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(r_9[u_2, u_3], ce_1[u_2, u_3], s[u_3], info_8[u_2, u_3], aad_11[u_2, u_3], i'_1[u_2, u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (r_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
          return(OpenAuth_None)
        else
          find u_7 = ri_3 <= Qeperuser, u_8 = ri_4 <= N suchthat defined(k'_4[ri_3, ri_4], ce[ri_3, ri_4], s[ri_4], u_9[ri_3, ri_4]) && (i = u_9[ri_3, ri_4]) && (pkgen(s[ri_4]) = pk_4) && (ce[ri_3, ri_4] = enc_7) then
@@ -3843,7 +3645,7 @@ Game 40 is
            part2_2 <-R nonce_t;
            part1_2 <-R key_t;
            pt_8: bitstring <- test(b, m0, m1);
-           r_9: bitstring <- {573}enc'(Length(pt_8), aad_11, part1_2, part2_2);
+           r_9: bitstring <- {571}enc'(Length(pt_8), aad_11, part1_2, part2_2);
            return((ce_1, r_9))
          else
            return(bottom)
@@ -3854,11 +3656,10 @@ Game 40 is
 
 Applying simplify
   - Simplification pass
-    - Replaced enc'(Length(pt_8), aad_11, part1_2, part2_2) with enc'(Length(m0), aad_11, part1_2, part2_2) at 573
-    - Replaced defined condition r_9[u_2, u_3], r_9[u_2, u_3], info_8[u_2, u_3], aad_11[u_2, u_3], ce_1[u_2, u_3], i'_1[u_2, u_3], s[u_3] with info_8[u_2, u_3], aad_11[u_2, u_3], r_9[u_2, u_3], ce_1[u_2, u_3], i'_1[u_2, u_3], s[u_3] in find at 174
+    - Replaced enc'(Length(pt_8), aad_11, part1_2, part2_2) with enc'(Length(m0), aad_11, part1_2, part2_2) at 571
 yields
 
-Game 41 is
+Game 39 is
      Ostart() :=
      b <-R bool;
      return();
@@ -3892,7 +3693,7 @@ Game 41 is
      ) | (
        foreach iad <= Qdperuser do
        Oadec(pk_4: pkey_t, enc_7: kemciph_t, c: bitstring, aad_10: bitstring, info_7: bitstring) :=
-       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(info_8[u_2, u_3], aad_11[u_2, u_3], r_9[u_2, u_3], ce_1[u_2, u_3], i'_1[u_2, u_3], s[u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (r_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
+       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(r_9[u_2, u_3], ce_1[u_2, u_3], s[u_3], info_8[u_2, u_3], aad_11[u_2, u_3], i'_1[u_2, u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (r_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
          return(OpenAuth_None)
        else
          find u_7 = ri_3 <= Qeperuser, u_8 = ri_4 <= N suchthat defined(k'_4[ri_3, ri_4], ce[ri_3, ri_4], s[ri_4], u_9[ri_3, ri_4]) && (i = u_9[ri_3, ri_4]) && (pkgen(s[ri_4]) = pk_4) && (ce[ri_3, ri_4] = enc_7) then
@@ -3954,7 +3755,7 @@ Applying remove assignments of findcond
   - Remove assignments on pt_8 (definition removed, all usages removed)
 yields
 
-Game 42 is
+Game 40 is
      Ostart() :=
      b <-R bool;
      return();
@@ -3988,7 +3789,7 @@ Game 42 is
      ) | (
        foreach iad <= Qdperuser do
        Oadec(pk_4: pkey_t, enc_7: kemciph_t, c: bitstring, aad_10: bitstring, info_7: bitstring) :=
-       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(info_8[u_2, u_3], aad_11[u_2, u_3], r_9[u_2, u_3], ce_1[u_2, u_3], i'_1[u_2, u_3], s[u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (r_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
+       find u = u_2 <= Qcperuser, u_1 = u_3 <= N suchthat defined(r_9[u_2, u_3], ce_1[u_2, u_3], s[u_3], info_8[u_2, u_3], aad_11[u_2, u_3], i'_1[u_2, u_3]) && (pkgen(s[u_3]) = pk_4) && (i'_1[u_2, u_3] = i) && (ce_1[u_2, u_3] = enc_7) && (r_9[u_2, u_3] = c) && (aad_11[u_2, u_3] = aad_10) && (info_8[u_2, u_3] = info_7) then
          return(OpenAuth_None)
        else
          find u_7 = ri_3 <= Qeperuser, u_8 = ri_4 <= N suchthat defined(k'_4[ri_3, ri_4], ce[ri_3, ri_4], s[ri_4], u_9[ri_3, ri_4]) && (i = u_9[ri_3, ri_4]) && (pkgen(s[ri_4]) = pk_4) && (ce[ri_3, ri_4] = enc_7) then
@@ -4045,16 +3846,12 @@ Game 42 is
      ))
 
 
-Proved secrecy of b in game 42
-Adv[Game 1: secrecy of b] <= 2 * Adv_cpa(time_1, #Ochall) + 2 * Adv_ctxt(time_2, #Ochall, #Oadec) + 2 * Adv_PRF_KeySchedule(time_3, #Ochall, #Ochall + #Oadec) + 2 * Adv_Outsider_CCA(time_4, N, #Ochall + #Oaenc, #Oadec) + 6 * N * N * P_pk_coll + Adv[Game 42: secrecy of b]
-Adv[Game 42: secrecy of b] <= 0
-RESULT Proved secrecy of b up to probability 2 * Adv_cpa(time_1, #Ochall) + 2 * Adv_ctxt(time_2, #Ochall, #Oadec) + 2 * Adv_PRF_KeySchedule(time_3, #Ochall, #Ochall + #Oadec) + 2 * Adv_Outsider_CCA(time_4, N, #Ochall + #Oaenc, #Oadec) + 6 * N * N * P_pk_coll
-RESULT time_1 = time(context for game 37) + time
-RESULT time_2 = time(context for game 32) + time
-RESULT time_3 = time(context for game 21) + time
-RESULT time_4 = time(context for game 9) + time
-RESULT time(context for game 9) = (#Oaenc + #Ochall) * time(let AuthEncap_tuple) + #Oaenc * time(KeySchedule_auth, maxlength(game 9: info_6)) + (#Oaenc + #Oadec + #Ochall) * time(get2) + (#Oaenc + #Oadec + #Ochall) * time(get1) + #Oaenc * time(Seal_inner, maxlength(game 9: m), maxlength(game 9: aad_9)) + #Oaenc * time(SealAuth_Some, maxlength(game 9: ct_7)) + #Oadec * #Ochall * time(= bitstring, maxlength(game 9: ct_9), maxlength(game 9: c)) + #Oadec * #Ochall * time(= bitstring, maxlength(game 9: aad_11), maxlength(game 9: aad_10)) + #Oadec * #Ochall * time(= bitstring, maxlength(game 9: info_8), maxlength(game 9: info_7)) + #Oadec * time(let AuthDecap_Some) + #Oadec * time(KeySchedule_auth, maxlength(game 9: info_7)) + #Oadec * time(Open_inner, maxlength(game 9: c), maxlength(game 9: aad_10)) + #Oadec * time(let injbot, maxlength(game 9: pt_7)) + #Oadec * time(OpenAuth_Some, length(Context_Open_Some, maxlength(game 9: pt_7))) + #Oadec * time(Context_Open_Some, maxlength(game 9: pt_7)) + #Oadec * time(OpenAuth_Some, length(Context_Open_None)) + #Ochall * time(= bitstring, length(Length, maxlength(game 9: m0)), length(Length, maxlength(game 9: m1))) + #Ochall * time(Length, maxlength(game 9: m1)) + #Ochall * time(Length, maxlength(game 9: m0)) + #Ochall * time(KeySchedule_auth, maxlength(game 9: info_8)) + #Ochall * time(test, maxlength(game 9: m0), maxlength(game 9: m1)) + #Ochall * time(Seal_inner, maxlength(game 9: pt_8), maxlength(game 9: aad_11))
-RESULT time(context for game 21) = (N + #Oaenc * N + #Oadec * #Oaenc + 2 * #Oadec * #Ochall + #Ochall * N) * time(pkgen) + (#Oaenc + #Oadec + #Ochall) * time(skgen) + (#Oaenc + #Ochall) * time(AuthEncap_enc) + #Oaenc * time(AuthEncap_key) + #Oaenc * time(KeySchedule_auth, maxlength(game 21: info_6)) + (#Oaenc + #Oadec + #Ochall) * time(get2) + (#Oaenc + #Oadec + #Ochall) * time(get1) + #Oaenc * time(Seal_inner, maxlength(game 21: m), maxlength(game 21: aad_9)) + #Oaenc * time(SealAuth_Some, maxlength(game 21: ct_7)) + #Oadec * #Ochall * time(= bitstring, maxlength(game 21: ct_9), maxlength(game 21: c)) + #Oadec * #Ochall * time(= bitstring, maxlength(game 21: aad_11), maxlength(game 21: aad_10)) + #Oadec * #Ochall * time(= bitstring, maxlength(game 21: info_8), maxlength(game 21: info_7)) + #Oadec * time(AuthDecap) + #Oadec * time(let AuthDecap_Some) + #Oadec * time(KeySchedule_auth, maxlength(game 21: info_7)) + #Oadec * time(Open_inner, maxlength(game 21: c), maxlength(game 21: aad_10)) + #Oadec * time(let injbot, maxlength(game 21: pt_7)) + #Oadec * time(OpenAuth_Some, length(Context_Open_Some, maxlength(game 21: pt_7))) + #Oadec * time(Context_Open_Some, maxlength(game 21: pt_7)) + #Oadec * time(OpenAuth_Some, length(Context_Open_None)) + #Ochall * time(= bitstring, length(Length, maxlength(game 21: m0)), length(Length, maxlength(game 21: m1))) + #Ochall * time(Length, maxlength(game 21: m1)) + #Ochall * time(Length, maxlength(game 21: m0)) + #Ochall * time(test, maxlength(game 21: m0), maxlength(game 21: m1)) + #Ochall * time(Seal_inner, maxlength(game 21: pt_8), maxlength(game 21: aad_11))
-RESULT time(context for game 32) = (N + #Oaenc * N + #Oadec * #Oaenc + 2 * #Oadec * #Ochall + #Ochall * N) * time(pkgen) + (#Oaenc + #Oadec + #Ochall) * time(skgen) + (#Oaenc + #Ochall) * time(AuthEncap_enc) + #Oaenc * time(AuthEncap_key) + #Oaenc * time(KeySchedule_auth, maxlength(game 32: info_6)) + (#Oaenc + #Oadec) * time(get2) + (#Oaenc + #Oadec) * time(get1) + #Oaenc * time(Seal_inner, maxlength(game 32: m), maxlength(game 32: aad_9)) + #Oaenc * time(SealAuth_Some, maxlength(game 32: ct_7)) + #Oadec * #Ochall * time(= bitstring, maxlength(game 32: ct_9), maxlength(game 32: c)) + #Oadec * #Ochall * time(= bitstring, maxlength(game 32: aad_11), maxlength(game 32: aad_10)) + #Oadec * #Ochall * time(= bitstring, maxlength(game 32: info_8), maxlength(game 32: info_7)) + #Oadec * Qdperuser * time(= bitstring, maxlength(game 32: info_7), maxlength(game 32: info_7)) + #Oadec * time(= bitstring, maxlength(game 32: info_7), maxlength(game 32: info_8)) + #Oadec * time(AuthDecap) + #Oadec * time(let AuthDecap_Some) + #Oadec * time(KeySchedule_auth, maxlength(game 32: info_7)) + #Oadec * time(Open_inner, maxlength(game 32: c), maxlength(game 32: aad_10)) + #Oadec * time(let injbot, maxlength(game 32: pt_7)) + #Oadec * time(OpenAuth_Some, length(Context_Open_Some, maxlength(game 32: pt_7))) + #Oadec * time(Context_Open_Some, maxlength(game 32: pt_7)) + #Oadec * time(OpenAuth_Some, length(Context_Open_None)) + #Ochall * time(= bitstring, length(Length, maxlength(game 32: m0)), length(Length, maxlength(game 32: m1))) + #Ochall * time(Length, maxlength(game 32: m1)) + #Ochall * time(Length, maxlength(game 32: m0)) + #Ochall * time(test, maxlength(game 32: m0), maxlength(game 32: m1))
-RESULT time(context for game 37) = (N + #Oaenc * N + #Oadec * #Oaenc + 2 * #Oadec * #Ochall + #Ochall * N) * time(pkgen) + (#Oaenc + #Oadec + #Ochall) * time(skgen) + (#Oaenc + #Ochall) * time(AuthEncap_enc) + #Oaenc * time(AuthEncap_key) + #Oaenc * time(KeySchedule_auth, maxlength(game 37: info_6)) + (#Oaenc + #Oadec) * time(get2) + (#Oaenc + #Oadec) * time(get1) + #Oaenc * time(Seal_inner, maxlength(game 37: m), maxlength(game 37: aad_9)) + #Oaenc * time(SealAuth_Some, maxlength(game 37: ct_7)) + #Oadec * #Ochall * time(= bitstring, maxlength(game 37: r_8), maxlength(game 37: c)) + #Oadec * #Ochall * time(= bitstring, maxlength(game 37: aad_11), maxlength(game 37: aad_10)) + #Oadec * #Ochall * time(= bitstring, maxlength(game 37: info_8), maxlength(game 37: info_7)) + #Oadec * Qdperuser * time(= bitstring, maxlength(game 37: info_7), maxlength(game 37: info_7)) + #Oadec * time(= bitstring, maxlength(game 37: info_7), maxlength(game 37: info_8)) + #Oadec * time(AuthDecap) + #Oadec * time(let AuthDecap_Some) + #Oadec * time(KeySchedule_auth, maxlength(game 37: info_7)) + #Oadec * time(Open_inner, maxlength(game 37: c), maxlength(game 37: aad_10)) + #Oadec * time(let injbot, maxlength(game 37: pt_7)) + #Oadec * time(OpenAuth_Some, length(Context_Open_Some, maxlength(game 37: pt_7))) + #Oadec * time(Context_Open_Some, maxlength(game 37: pt_7)) + #Oadec * time(OpenAuth_Some, length(Context_Open_None)) + #Ochall * time(= bitstring, length(Length, maxlength(game 37: m0)), length(Length, maxlength(game 37: m1))) + #Ochall * time(Length, maxlength(game 37: m1)) + #Ochall * time(Length, maxlength(game 37: m0)) + #Ochall * time(test, maxlength(game 37: m0), maxlength(game 37: m1))
+Proved secrecy of b in game 40
+Adv[Game 1: secrecy of b] <= 2 * Adv_cpa(time_4, #Ochall) + 2 * Adv_ctxt(time_3, #Ochall, #Oadec) + 2 * Adv_PRF_KeySchedule(time_2, #Ochall, #Ochall + #Oadec) + 2 * Adv_Outsider_CCA(time_1, N, #Ochall + #Oaenc, #Oadec) + 6 * N^2 * P_pk_coll + Adv[Game 40: secrecy of b]
+Adv[Game 40: secrecy of b] <= 0
+RESULT Proved secrecy of b up to probability 2 * Adv_cpa(time_4, #Ochall) + 2 * Adv_ctxt(time_3, #Ochall, #Oadec) + 2 * Adv_PRF_KeySchedule(time_2, #Ochall, #Ochall + #Oadec) + 2 * Adv_Outsider_CCA(time_1, N, #Ochall + #Oaenc, #Oadec) + 6 * N^2 * P_pk_coll
+RESULT time_1 = time + time(context for game 9) = (#Oaenc + #Ochall) * time(let AuthEncap_tuple) + #Oaenc * time(KeySchedule_auth, maxlength(game 9: info_6)) + (#Oaenc + #Oadec + #Ochall) * time(get2) + (#Oaenc + #Oadec + #Ochall) * time(get1) + #Oaenc * time(Seal_inner, maxlength(game 9: m), maxlength(game 9: aad_9)) + #Oaenc * time(SealAuth_Some, maxlength(game 9: ct_7)) + #Oadec * #Ochall * time(= bitstring, maxlength(game 9: ct_9), maxlength(game 9: c)) + #Oadec * #Ochall * time(= bitstring, maxlength(game 9: aad_11), maxlength(game 9: aad_10)) + #Oadec * #Ochall * time(= bitstring, maxlength(game 9: info_8), maxlength(game 9: info_7)) + #Oadec * time(let AuthDecap_Some) + #Oadec * time(KeySchedule_auth, maxlength(game 9: info_7)) + #Oadec * time(Open_inner, maxlength(game 9: c), maxlength(game 9: aad_10)) + #Oadec * time(let injbot, maxlength(game 9: pt_7)) + #Oadec * time(OpenAuth_Some, length(Context_Open_Some, maxlength(game 9: pt_7))) + #Oadec * time(Context_Open_Some, maxlength(game 9: pt_7)) + #Oadec * time(OpenAuth_Some, length(Context_Open_None)) + #Ochall * time(= bitstring, length(Length, maxlength(game 9: m0)), length(Length, maxlength(game 9: m1))) + #Ochall * time(Length, maxlength(game 9: m1)) + #Ochall * time(Length, maxlength(game 9: m0)) + #Ochall * time(KeySchedule_auth, maxlength(game 9: info_8)) + #Ochall * time(test, maxlength(game 9: m0), maxlength(game 9: m1)) + #Ochall * time(Seal_inner, maxlength(game 9: pt_8), maxlength(game 9: aad_11)) + time
+RESULT time_2 = time + time(context for game 20) = (N + #Oaenc * N + #Oadec * #Oaenc + 2 * #Oadec * #Ochall + #Ochall * N) * time(pkgen) + (#Oaenc + #Oadec + #Ochall) * time(skgen) + (#Oaenc + #Ochall) * time(AuthEncap_enc) + #Oaenc * time(AuthEncap_key) + #Oaenc * time(KeySchedule_auth, maxlength(game 20: info_6)) + (#Oaenc + #Oadec + #Ochall) * time(get2) + (#Oaenc + #Oadec + #Ochall) * time(get1) + #Oaenc * time(Seal_inner, maxlength(game 20: m), maxlength(game 20: aad_9)) + #Oaenc * time(SealAuth_Some, maxlength(game 20: ct_7)) + #Oadec * #Ochall * time(= bitstring, maxlength(game 20: ct_9), maxlength(game 20: c)) + #Oadec * #Ochall * time(= bitstring, maxlength(game 20: aad_11), maxlength(game 20: aad_10)) + #Oadec * #Ochall * time(= bitstring, maxlength(game 20: info_8), maxlength(game 20: info_7)) + #Oadec * time(AuthDecap) + #Oadec * time(let AuthDecap_Some) + #Oadec * time(KeySchedule_auth, maxlength(game 20: info_7)) + #Oadec * time(Open_inner, maxlength(game 20: c), maxlength(game 20: aad_10)) + #Oadec * time(let injbot, maxlength(game 20: pt_7)) + #Oadec * time(OpenAuth_Some, length(Context_Open_Some, maxlength(game 20: pt_7))) + #Oadec * time(Context_Open_Some, maxlength(game 20: pt_7)) + #Oadec * time(OpenAuth_Some, length(Context_Open_None)) + #Ochall * time(= bitstring, length(Length, maxlength(game 20: m0)), length(Length, maxlength(game 20: m1))) + #Ochall * time(Length, maxlength(game 20: m1)) + #Ochall * time(Length, maxlength(game 20: m0)) + #Ochall * time(test, maxlength(game 20: m0), maxlength(game 20: m1)) + #Ochall * time(Seal_inner, maxlength(game 20: pt_8), maxlength(game 20: aad_11)) + time
+RESULT time_3 = time + time(context for game 30) = (N + #Oaenc * N + #Oadec * #Oaenc + 2 * #Oadec * #Ochall + #Ochall * N) * time(pkgen) + (#Oaenc + #Oadec + #Ochall) * time(skgen) + (#Oaenc + #Ochall) * time(AuthEncap_enc) + #Oaenc * time(AuthEncap_key) + #Oaenc * time(KeySchedule_auth, maxlength(game 30: info_6)) + (#Oaenc + #Oadec) * time(get2) + (#Oaenc + #Oadec) * time(get1) + #Oaenc * time(Seal_inner, maxlength(game 30: m), maxlength(game 30: aad_9)) + #Oaenc * time(SealAuth_Some, maxlength(game 30: ct_7)) + #Oadec * #Ochall * time(= bitstring, maxlength(game 30: ct_9), maxlength(game 30: c)) + #Oadec * #Ochall * time(= bitstring, maxlength(game 30: aad_11), maxlength(game 30: aad_10)) + #Oadec * #Ochall * time(= bitstring, maxlength(game 30: info_8), maxlength(game 30: info_7)) + #Oadec * Qdperuser * time(= bitstring, maxlength(game 30: info_7), maxlength(game 30: info_7)) + #Oadec * time(= bitstring, maxlength(game 30: info_7), maxlength(game 30: info_8)) + #Oadec * time(AuthDecap) + #Oadec * time(let AuthDecap_Some) + #Oadec * time(KeySchedule_auth, maxlength(game 30: info_7)) + #Oadec * time(Open_inner, maxlength(game 30: c), maxlength(game 30: aad_10)) + #Oadec * time(let injbot, maxlength(game 30: pt_7)) + #Oadec * time(OpenAuth_Some, length(Context_Open_Some, maxlength(game 30: pt_7))) + #Oadec * time(Context_Open_Some, maxlength(game 30: pt_7)) + #Oadec * time(OpenAuth_Some, length(Context_Open_None)) + #Ochall * time(= bitstring, length(Length, maxlength(game 30: m0)), length(Length, maxlength(game 30: m1))) + #Ochall * time(Length, maxlength(game 30: m1)) + #Ochall * time(Length, maxlength(game 30: m0)) + #Ochall * time(test, maxlength(game 30: m0), maxlength(game 30: m1)) + time
+RESULT time_4 = time + time(context for game 35) = (N + #Oaenc * N + #Oadec * #Oaenc + 2 * #Oadec * #Ochall + #Ochall * N) * time(pkgen) + (#Oaenc + #Oadec + #Ochall) * time(skgen) + (#Oaenc + #Ochall) * time(AuthEncap_enc) + #Oaenc * time(AuthEncap_key) + #Oaenc * time(KeySchedule_auth, maxlength(game 35: info_6)) + (#Oaenc + #Oadec) * time(get2) + (#Oaenc + #Oadec) * time(get1) + #Oaenc * time(Seal_inner, maxlength(game 35: m), maxlength(game 35: aad_9)) + #Oaenc * time(SealAuth_Some, maxlength(game 35: ct_7)) + #Oadec * #Ochall * time(= bitstring, maxlength(game 35: r_8), maxlength(game 35: c)) + #Oadec * #Ochall * time(= bitstring, maxlength(game 35: aad_11), maxlength(game 35: aad_10)) + #Oadec * #Ochall * time(= bitstring, maxlength(game 35: info_8), maxlength(game 35: info_7)) + #Oadec * Qdperuser * time(= bitstring, maxlength(game 35: info_7), maxlength(game 35: info_7)) + #Oadec * time(= bitstring, maxlength(game 35: info_7), maxlength(game 35: info_8)) + #Oadec * time(AuthDecap) + #Oadec * time(let AuthDecap_Some) + #Oadec * time(KeySchedule_auth, maxlength(game 35: info_7)) + #Oadec * time(Open_inner, maxlength(game 35: c), maxlength(game 35: aad_10)) + #Oadec * time(let injbot, maxlength(game 35: pt_7)) + #Oadec * time(OpenAuth_Some, length(Context_Open_Some, maxlength(game 35: pt_7))) + #Oadec * time(Context_Open_Some, maxlength(game 35: pt_7)) + #Oadec * time(OpenAuth_Some, length(Context_Open_None)) + #Ochall * time(= bitstring, length(Length, maxlength(game 35: m0)), length(Length, maxlength(game 35: m1))) + #Ochall * time(Length, maxlength(game 35: m1)) + #Ochall * time(Length, maxlength(game 35: m0)) + #Ochall * time(test, maxlength(game 35: m0), maxlength(game 35: m1)) + time
 All queries proved.

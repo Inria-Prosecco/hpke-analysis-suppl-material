@@ -9,6 +9,31 @@ Game 2 is
        return();
        foreach i_1 <= Nperkey do
        Oprf(info_4: bitstring) :=
+       find [unique?] j_1 = j <= Nperkey suchthat defined(info_4[j], r[j]) && (info_4[j] = info_4) then
+         return(r[j_1])
+       else
+         r <-R keys_t;
+         return(r)
+     ) | (
+       OH() :=
+       return(cr_key_3)
+     ))
+
+
+Applying expand get, insert and prove unique annotations
+  - Proved that [unique] annotations are correct
+yields
+
+Game 3 is
+     Ostart() :=
+     cr_key_3 <-R cr_key_t;
+     return(cr_key_3);
+     ((
+       foreach ikey_1 <= Nkey do
+       Ok() :=
+       return();
+       foreach i_1 <= Nperkey do
+       Oprf(info_4: bitstring) :=
        find [unique] j_1 = j <= Nperkey suchthat defined(info_4[j], r[j]) && (info_4[j] = info_4) then
          return(r[j_1])
        else
@@ -42,7 +67,7 @@ Applying expand
   - Expand if/find/let
 yields
 
-Game 3 is
+Game 4 is
      Ostart() :=
      cr_key_2 <-R cr_key_t;
      return(cr_key_2);
@@ -88,7 +113,7 @@ Applying remove assignments of findcond
   - Remove assignments on IKM (definition removed, all usages removed)
 yields
 
-Game 4 is
+Game 5 is
      Ostart() :=
      cr_key_2 <-R cr_key_t;
      return(cr_key_2);
@@ -133,7 +158,7 @@ Applying remove assignments of binder psk
   - Remove assignments on psk (definition removed, all usages removed)
 yields
 
-Game 5 is
+Game 6 is
      Ostart() :=
      cr_key_2 <-R cr_key_t;
      return(cr_key_2);
@@ -177,7 +202,7 @@ Applying remove assignments of binder psk_id
   - Remove assignments on psk_id (definition removed, all usages removed)
 yields
 
-Game 6 is
+Game 7 is
      Ostart() :=
      cr_key_2 <-R cr_key_t;
      return(cr_key_2);
@@ -220,7 +245,7 @@ Applying remove assignments of binder labeled_IKM
   - Remove assignments on labeled_IKM (definition removed, all usages removed)
 yields
 
-Game 7 is
+Game 8 is
      Ostart() :=
      cr_key_2 <-R cr_key_t;
      return(cr_key_2);
@@ -262,7 +287,7 @@ Applying remove assignments of binder label_7
   - Remove assignments on label_7 (definition removed, all usages removed)
 yields
 
-Game 8 is
+Game 9 is
      Ostart() :=
      cr_key_2 <-R cr_key_t;
      return(cr_key_2);
@@ -302,7 +327,7 @@ Game 8 is
 Applying insert instruction sec: extract_t <- Extract_PRF(k, concat_PRF(RFCXXXX, suite_id, label_secret, default_psk)) at occurrence 11
 yields
 
-Game 9 is
+Game 10 is
      Ostart() :=
      cr_key_2 <-R cr_key_t;
      return(cr_key_2);
@@ -345,7 +370,7 @@ Applying use variable(s) sec
     - Extract_PRF(k, concat_PRF(RFCXXXX, suite_id, label_secret, default_psk)) replaced with sec at 84
 yields
 
-Game 10 is
+Game 11 is
      Ostart() :=
      cr_key_2 <-R cr_key_t;
      return(cr_key_2);
@@ -389,7 +414,7 @@ Applying insert instruction find [unique] l_1 = l <= Nperkey suchthat
       then else else_br <- true at occurrence 26
 yields
 
-Game 11 is
+Game 12 is
      Ostart() :=
      cr_key_2 <-R cr_key_t;
      return(cr_key_2);
@@ -453,7 +478,7 @@ Game 11 is
 Applying insert instruction r_1 <- concat(key, base_nonce) at occurrence 293
 yields
 
-Game 12 is
+Game 13 is
      Ostart() :=
      cr_key_2 <-R cr_key_t;
      return(cr_key_2);
@@ -520,7 +545,7 @@ Applying use variable(s) r_1
     - concat(key, base_nonce) replaced with r_1 at 303
 yields
 
-Game 13 is
+Game 14 is
      Ostart() :=
      cr_key_2 <-R cr_key_t;
      return(cr_key_2);
@@ -585,7 +610,7 @@ Game 13 is
 Applying replace term at occurrence 152 with r_1[l_1]
 yields
 
-Game 14 is
+Game 15 is
      Ostart() :=
      cr_key_2 <-R cr_key_t;
      return(cr_key_2);
@@ -671,7 +696,7 @@ Applying remove assignments of findcond
   - Remove assignments on label_6 (definition removed, all usages removed)
 yields
 
-Game 15 is
+Game 16 is
      Ostart() :=
      cr_key_2 <-R cr_key_t;
      return(cr_key_2);
@@ -712,18 +737,18 @@ Game 15 is
      ))
 
 
-Applying equivalence prf(Extract_PRF) [probability P_PRF_Extract(time(context for game 15) + time, Nkey, Nkey)]
+Applying equivalence prf(Extract_PRF) [probability P_PRF_Extract(time_1, Nkey, Nkey)]
   - Equivalence prf(Extract_PRF) with variables: k -> k_2
 yields
 
-Game 16 is
+Game 17 is
      Ostart() :=
      cr_key_2 <-R cr_key_t;
      return(cr_key_2);
      ((
        foreach ikey <= Nkey do
        Ok() :=
-       sec: extract_t <- (x: bitstring <- concat_PRF(RFCXXXX, suite_id, label_secret, default_psk); if defined(x, r_2) && {20}(x = x) then r_2 else r_2 <-R extract_t; r_2);
+       sec: extract_t <- (x: bitstring <- concat_PRF(RFCXXXX, suite_id, label_secret, default_psk); {17}find [unique]  else r_2 <-R extract_t; r_2);
        return();
        foreach i <= Nperkey do
        Oprf(info_3: bitstring) :=
@@ -758,17 +783,17 @@ Game 16 is
 
 Applying simplify (non-expanded game)
   - Simplification pass
-    - Replaced (x = x) with true at 20
+    - Find at 17 removed (else branch kept if any)
 yields
 
-Game 17 is
+Game 18 is
      Ostart() :=
      cr_key_2 <-R cr_key_t;
      return(cr_key_2);
      ((
        foreach ikey <= Nkey do
        Ok() :=
-       sec: extract_t <- (x: bitstring <- concat_PRF(RFCXXXX, suite_id, label_secret, default_psk); {17}if defined(x, r_2) then r_2 else r_2 <-R extract_t; r_2);
+       sec: extract_t <- (x: bitstring <- concat_PRF(RFCXXXX, suite_id, label_secret, default_psk); r_2 <-R extract_t; r_2);
        return();
        foreach i <= Nperkey do
        Oprf(info_3: bitstring) :=
@@ -803,11 +828,9 @@ Game 17 is
 
 Applying expand
   - Expand if/find/let
-    - Remove branch 1 in find at 17
-    - Find at 17 removed (else branch kept if any)
 yields
 
-Game 18 is
+Game 19 is
      Ostart() :=
      cr_key_2 <-R cr_key_t;
      return(cr_key_2);
@@ -854,7 +877,7 @@ Applying remove assignments of findcond
   - Remove assignments on sec (definition removed, all usages removed)
 yields
 
-Game 19 is
+Game 20 is
      Ostart() :=
      cr_key_2 <-R cr_key_t;
      return(cr_key_2);
@@ -894,11 +917,11 @@ Game 19 is
      ))
 
 
-Applying equivalence prf(Expand_PRF) [probability P_PRF_Expand(time(context for game 19) + time, Nkey, 2 * #Oprf)]
+Applying equivalence prf(Expand_PRF) [probability P_PRF_Expand(time_2, Nkey, 2 * #Oprf)]
   - Equivalence prf(Expand_PRF) with variables: r_2 -> k_2
 yields
 
-Game 20 is
+Game 21 is
      Ostart() :=
      cr_key_2 <-R cr_key_t;
      return(cr_key_2);
@@ -945,7 +968,7 @@ Applying simplify (non-expanded game)
     - Remove branch 1 in find at 176
 yields
 
-Game 21 is
+Game 22 is
      Ostart() :=
      cr_key_2 <-R cr_key_t;
      return(cr_key_2);
@@ -988,7 +1011,7 @@ Applying expand
   - Expand if/find/let
 yields
 
-Game 22 is
+Game 23 is
      Ostart() :=
      cr_key_2 <-R cr_key_t;
      return(cr_key_2);
@@ -1058,7 +1081,7 @@ Applying remove assignments of findcond
   - Remove assignments on x_2 (definition kept, array references kept)
 yields
 
-Game 23 is
+Game 24 is
      Ostart() :=
      cr_key_2 <-R cr_key_t;
      return(cr_key_2);
@@ -1084,13 +1107,13 @@ Game 23 is
          label_8: label_expand_t <- label_key;
          L_2: length_t <- Nk;
          labeledInfo: bitstring <- concat_Expand(L_2, RFCXXXX, suite_id, label_8, key_schedule_context);
-{110}    find [unique] u_3 = ri_7 <= Nperkey suchthat defined(labeledInfo[ri_7], labeledInfo[ri_7], r_3[ri_7]) && {117}(labeledInfo = labeledInfo[ri_7]) then
+{110}    find [unique] u_3 = ri_7 <= Nperkey suchthat defined(labeledInfo[ri_7], r_3[ri_7]) && {115}(labeledInfo = labeledInfo[ri_7]) then
            key: key_t <- truncate_to_Nk(r_3[u_3]);
            label_9: label_expand_t <- label_base_nonce;
            L_3: length_t <- Nn;
            labeledInfo_1: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
            x_2: bitstring <- labeledInfo_1;
-{152}      find [unique] u = ri_1 <= Nperkey suchthat defined(x_2[ri_1], r_4[ri_1]) && {157}(labeledInfo_1 = x_2[ri_1]) then
+{150}      find [unique] u = ri_1 <= Nperkey suchthat defined(x_2[ri_1], r_4[ri_1]) && {155}(labeledInfo_1 = x_2[ri_1]) then
              base_nonce: nonce_t <- truncate_to_Nn(r_4[u]);
              r_1: keys_t <- concat(key, base_nonce);
              return(r_1)
@@ -1106,7 +1129,7 @@ Game 23 is
            L_3: length_t <- Nn;
            labeledInfo_1: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
            x_2: bitstring <- labeledInfo_1;
-{241}      find [unique] u = ri_1 <= Nperkey suchthat defined(x_2[ri_1], r_4[ri_1]) && {246}(labeledInfo_1 = x_2[ri_1]) then
+{239}      find [unique] u = ri_1 <= Nperkey suchthat defined(x_2[ri_1], r_4[ri_1]) && {244}(labeledInfo_1 = x_2[ri_1]) then
              base_nonce: nonce_t <- truncate_to_Nn(r_4[u]);
              r_1: keys_t <- concat(key, base_nonce);
              return(r_1)
@@ -1123,15 +1146,15 @@ Game 23 is
 
 Applying simplify
   - Simplification pass
-    - Replaced (labeledInfo_1 = x_2[ri_1]) with (info_hash = info_hash[ri_1]) at 246
-    - Replaced defined condition x_2[ri_1], r_4[ri_1] with r_4[ri_1], info_hash[ri_1] in find at 241
-    - Replaced (labeledInfo = labeledInfo[ri_7]) with (info_hash = info_hash[ri_7]) at 117
-    - Replaced (labeledInfo_1 = x_2[ri_1]) with (info_hash = info_hash[ri_1]) at 157
-    - Replaced defined condition x_2[ri_1], r_4[ri_1] with r_4[ri_1], info_hash[ri_1] in find at 152
-    - Replaced defined condition labeledInfo[ri_7], labeledInfo[ri_7], r_3[ri_7] with r_3[ri_7], info_hash[ri_7] in find at 110
+    - Replaced (labeledInfo_1 = x_2[ri_1]) with (info_hash = info_hash[ri_1]) at 244
+    - Replaced defined condition x_2[ri_1], r_4[ri_1] with r_4[ri_1], info_hash[ri_1] in find at 239
+    - Replaced (labeledInfo = labeledInfo[ri_7]) with (info_hash = info_hash[ri_7]) at 115
+    - Replaced (labeledInfo_1 = x_2[ri_1]) with (info_hash = info_hash[ri_1]) at 155
+    - Replaced defined condition x_2[ri_1], r_4[ri_1] with r_4[ri_1], info_hash[ri_1] in find at 150
+    - Replaced defined condition labeledInfo[ri_7], r_3[ri_7] with r_3[ri_7], info_hash[ri_7] in find at 110
 yields
 
-Game 24 is
+Game 25 is
      Ostart() :=
      cr_key_2 <-R cr_key_t;
      return(cr_key_2);
@@ -1210,7 +1233,7 @@ Applying move all binders
   - Move assignment to mode
 yields
 
-Game 25 is
+Game 26 is
      Ostart() :=
      cr_key_2 <-R cr_key_t;
      return(cr_key_2);
@@ -1267,7 +1290,7 @@ Applying remove assignments of findcond
   - Remove assignments on label_5 (definition removed, all usages removed)
 yields
 
-Game 26 is
+Game 27 is
      Ostart() :=
      cr_key_2 <-R cr_key_t;
      return(cr_key_2);
@@ -1313,7 +1336,7 @@ Game 26 is
      ))
 
 
-Applying simplify [probability P_hashcoll(time + time(context for game 26))]
+Applying simplify [probability P_hashcoll(time_3)]
   - Simplification pass
     - Replaced (info_hash = info_hash[ri_1]) with (info_3 = info_3[ri_1]) at 147
     - Remove branch 1 in find at 142
@@ -1323,7 +1346,7 @@ Applying simplify [probability P_hashcoll(time + time(context for game 26))]
     - Find at 59 removed (else branch kept if any)
 yields
 
-Game 27 is
+Game 28 is
      Ostart() :=
      cr_key_2 <-R cr_key_t;
      return(cr_key_2);
@@ -1356,7 +1379,7 @@ Applying equivalence truncate(truncate_to_Nk)
   - Equivalence truncate(truncate_to_Nk) with variables: r_3 -> h
 yields
 
-Game 28 is
+Game 29 is
      Ostart() :=
      cr_key_2 <-R cr_key_t;
      return(cr_key_2);
@@ -1393,7 +1416,7 @@ Applying remove assignments of findcond
   - Remove assignments on label_6 (definition removed, all usages removed)
 yields
 
-Game 29 is
+Game 30 is
      Ostart() :=
      cr_key_2 <-R cr_key_t;
      return(cr_key_2);
@@ -1421,7 +1444,7 @@ Applying equivalence truncate(truncate_to_Nn)
   - Equivalence truncate(truncate_to_Nn) with variables: r_4 -> h
 yields
 
-Game 30 is
+Game 31 is
      Ostart() :=
      cr_key_2 <-R cr_key_t;
      return(cr_key_2);
@@ -1449,7 +1472,7 @@ Applying remove assignments of findcond
   - Remove assignments on base_nonce (definition removed, all usages removed)
 yields
 
-Game 31 is
+Game 32 is
      Ostart() :=
      cr_key_2 <-R cr_key_t;
      return(cr_key_2);
@@ -1476,7 +1499,7 @@ Applying equivalence concat_random
   - Equivalence concat_random with variables: k_2 -> k2, k_1 -> k1
 yields
 
-Game 32 is
+Game 33 is
      Ostart() :=
      cr_key_2 <-R cr_key_t;
      return(cr_key_2);
@@ -1502,32 +1525,6 @@ Applying remove assignments of findcond
   - Remove assignments on r_1 (definition removed, all usages removed)
 yields
 
-Game 33 is
-     Ostart() :=
-     cr_key_2 <-R cr_key_t;
-     return(cr_key_2);
-     ((
-       foreach ikey <= Nkey do
-       Ok() :=
-       return();
-       foreach i <= Nperkey do
-       Oprf(info_3: bitstring) :=
- {16}  find [unique] l_1 = l <= Nperkey suchthat defined(k_3[l], k_3[l], info_3[l]) && (info_3[l] = info_3) then
-         return(k_3[l_1])
-       else
-         k_3 <-R keys_t;
-         return(k_3)
-     ) | (
-       OH() :=
-       return(cr_key_2)
-     ))
-
-
-Applying simplify
-  - Simplification pass
-    - Replaced defined condition k_3[l], k_3[l], info_3[l] with k_3[l], info_3[l] in find at 16
-yields
-
 Game 34 is
      Ostart() :=
      cr_key_2 <-R cr_key_t;
@@ -1550,16 +1547,13 @@ Game 34 is
 
 
 Proved indistinguishability between game 34 and game 2
-Game 34 is the same as game 2.
-Adv[Game 2: indistinguishability from game 2] <= 0 + Adv[Game 2: indistinguishability from game 2]
-Adv[Game 2: indistinguishability from game 2] <= 0
-Adv[Game 1: indistinguishability from game 34] <= P_hashcoll(time_1) + P_PRF_Expand(time_2, Nkey, 2 * #Oprf) + P_PRF_Extract(time_3, Nkey, Nkey) + Adv[Game 34: indistinguishability from game 34]
+Game 34 is the same as game 3.
+Adv[Game 2: indistinguishability from game 3] <= 0 + Adv[Game 3: indistinguishability from game 3]
+Adv[Game 3: indistinguishability from game 3] <= 0
+Adv[Game 1: indistinguishability from game 34] <= P_hashcoll(time_3) + P_PRF_Expand(time_2, Nkey, 2 * #Oprf) + P_PRF_Extract(time_1, Nkey, Nkey) + Adv[Game 34: indistinguishability from game 34]
 Adv[Game 34: indistinguishability from game 34] <= 0
-RESULT Proved indistinguishability between game 1 and game 2 up to probability P_hashcoll(time_1) + P_PRF_Expand(time_2, Nkey, 2 * #Oprf) + P_PRF_Extract(time_3, Nkey, Nkey)
-RESULT time_1 = time + time(context for game 26)
-RESULT time_2 = time(context for game 19) + time
-RESULT time_3 = time(context for game 15) + time
-RESULT time(context for game 15) = Nkey * time(concat_PRF, length(default_psk)) + #Oprf * Nperkey * time(= bitstring, maxlength(game 15: info_3), maxlength(game 15: info_3)) + #Oprf * time(concat_CR, length(default_psk_id)) + #Oprf * time(Extract_CR, maxlength(game 15: labeled_input)) + #Oprf * time(concat_CR, maxlength(game 15: info_3)) + #Oprf * time(Extract_CR, maxlength(game 15: labeled_input_1)) + #Oprf * time(concat_KeySched) + #Oprf * time(truncate_to_Nk) + #Oprf * time(Expand_PRF, maxlength(game 15: labeledInfo)) + 2 * #Oprf * time(concat_Expand, maxlength(game 15: key_schedule_context)) + #Oprf * time(truncate_to_Nn) + #Oprf * time(Expand_PRF, maxlength(game 15: labeledInfo_1)) + #Oprf * time(concat)
-RESULT time(context for game 19) = #Oprf * Nperkey * time(= bitstring, maxlength(game 19: info_3), maxlength(game 19: info_3)) + #Oprf * time(concat_CR, length(default_psk_id)) + #Oprf * time(Extract_CR, maxlength(game 19: labeled_input)) + #Oprf * time(concat_CR, maxlength(game 19: info_3)) + #Oprf * time(Extract_CR, maxlength(game 19: labeled_input_1)) + #Oprf * time(concat_KeySched) + #Oprf * time(truncate_to_Nk) + 2 * #Oprf * time(concat_Expand, maxlength(game 19: key_schedule_context)) + #Oprf * time(truncate_to_Nn) + #Oprf * time(concat)
-RESULT time(context for game 26) = #Oprf * Nperkey * time(= bitstring, maxlength(game 26: info_3), maxlength(game 26: info_3)) + #Oprf * time(concat_CR, maxlength(game 26: info_3)) + #Oprf * time(Extract_CR, maxlength(game 26: labeled_input_1)) + #Oprf * time(truncate_to_Nk) + #Oprf * time(truncate_to_Nn) + #Oprf * time(concat)
+RESULT Proved indistinguishability between game 1 and game 2 up to probability P_hashcoll(time_3) + P_PRF_Expand(time_2, Nkey, 2 * #Oprf) + P_PRF_Extract(time_1, Nkey, Nkey)
+RESULT time_1 = time + time(context for game 16) = Nkey * time(concat_PRF, length(default_psk)) + #Oprf * Nperkey * time(= bitstring, maxlength(game 16: info_3), maxlength(game 16: info_3)) + #Oprf * time(concat_CR, length(default_psk_id)) + #Oprf * time(Extract_CR, maxlength(game 16: labeled_input)) + #Oprf * time(concat_CR, maxlength(game 16: info_3)) + #Oprf * time(Extract_CR, maxlength(game 16: labeled_input_1)) + #Oprf * time(concat_KeySched) + #Oprf * time(truncate_to_Nk) + #Oprf * time(Expand_PRF, maxlength(game 16: labeledInfo)) + 2 * #Oprf * time(concat_Expand, maxlength(game 16: key_schedule_context)) + #Oprf * time(truncate_to_Nn) + #Oprf * time(Expand_PRF, maxlength(game 16: labeledInfo_1)) + #Oprf * time(concat) + time
+RESULT time_2 = time + time(context for game 20) = #Oprf * Nperkey * time(= bitstring, maxlength(game 20: info_3), maxlength(game 20: info_3)) + #Oprf * time(concat_CR, length(default_psk_id)) + #Oprf * time(Extract_CR, maxlength(game 20: labeled_input)) + #Oprf * time(concat_CR, maxlength(game 20: info_3)) + #Oprf * time(Extract_CR, maxlength(game 20: labeled_input_1)) + #Oprf * time(concat_KeySched) + #Oprf * time(truncate_to_Nk) + 2 * #Oprf * time(concat_Expand, maxlength(game 20: key_schedule_context)) + #Oprf * time(truncate_to_Nn) + #Oprf * time(concat) + time
+RESULT time_3 = time + time(game 27) = time + #Oprf * Nperkey * time(= bitstring, maxlength(game 27: info_3), maxlength(game 27: info_3)) + #Oprf * time(concat_CR, maxlength(game 27: info_3)) + #Oprf * time(Extract_CR, maxlength(game 27: labeled_input_1)) + #Oprf * time(truncate_to_Nk) + #Oprf * time(truncate_to_Nn) + #Oprf * time(concat)
 All queries proved.

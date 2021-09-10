@@ -895,7 +895,7 @@ Game 15 is
       ))
 
 
-Applying replace term at occurrence 319 with zz_10[ie1_2, i1_8] [probability N * N * PCollKey]
+Applying replace term at occurrence 319 with zz_10[ie1_2, i1_8] [probability N^2 * PCollKey]
 yields
 
 Game 16 is
@@ -1041,7 +1041,7 @@ Game 17 is
       ))
 
 
-Applying simplify [probability N * N * PCollKey]
+Applying simplify [probability N^2 * PCollKey]
   - Simplification pass
     - Replaced ((exp(g, sk) = pk_R[ie1_3, i1_9]) && (pk_S = exp(g, sk[i1_9])) && (enc_8[ie1_3, i1_9] = enc_2)) with ((i = i1_6[ie1_3, i1_9]) && (pk_S = exp(g, sk[i1_9])) && (enc_8[ie1_3, i1_9] = enc_2)) at 226
     - Replaced enc_2 with Serialize(pkE_10[ie1_2, i1_8]) at 252
@@ -1280,7 +1280,7 @@ Game 21 is
             kemContext_10: GGG_t <- concatContext(pkE_10, pk_R, pkS_4);
             key_5: extract_key_t <- concatExtract(RFCXXXX, suite_id, label_eae_prk, dh_10);
             info_5: expand_info_t <- concatExpand(I2OSP2(Nsecret), RFCXXXX, suite_id, label_shared_secret, kemContext_10);
-            zz_10: eae_output_t <- (x_O_1: eae_input_t <- eae_input(lbytes_empty, key_5, info_5); {104}find [unique] u_38 = ri_38 <= Qeperuser, u_39 = ri_39 <= N suchthat defined(x_O[ri_38, ri_39], r[ri_38, ri_39]) && (x_O_1 = x_O[ri_38, ri_39]) then r[u_38, u_39] orfind u_36 = ri_36 <= Qeperuser, u_37 = ri_37 <= N suchthat defined(x_O_1[ri_36, ri_37], r_1[ri_36, ri_37]) && (x_O_1 = x_O_1[ri_36, ri_37]) then r_1[u_36, u_37] orfind u_34 = ri_34 <= Qdperuser, u_35 = ri_35 <= N suchthat defined(x_O_2[ri_34, ri_35], r_2[ri_34, ri_35]) && (x_O_1 = x_O_2[ri_34, ri_35]) then r_2[u_34, u_35] orfind u_33 = ri_33 <= Qh suchthat defined(x_O_3[ri_33], r_3[ri_33]) && (x_O_1 = x_O_3[ri_33]) then r_3[u_33] orfind u_32 = ri_32 <= Qh suchthat defined(x_O_4[ri_32], r_4[ri_32]) && {173}(x_O_1 = x_O_4[ri_32]) then r_4[u_32] else r_1 <-R eae_output_t; r_1);
+            zz_10: eae_output_t <- (x_O_1: eae_input_t <- eae_input(lbytes_empty, key_5, info_5); {104}find [unique] u_38 = ri_38 <= Qeperuser, u_39 = ri_39 <= N suchthat defined(x_O[ri_38, ri_39], r[ri_38, ri_39]) && {109}(x_O_1 = x_O[ri_38, ri_39]) then r[u_38, u_39] orfind u_36 = ri_36 <= Qeperuser, u_37 = ri_37 <= N suchthat defined(x_O_1[ri_36, ri_37], r_1[ri_36, ri_37]) && (x_O_1 = x_O_1[ri_36, ri_37]) then r_1[u_36, u_37] orfind u_34 = ri_34 <= Qdperuser, u_35 = ri_35 <= N suchthat defined(x_O_2[ri_34, ri_35], r_2[ri_34, ri_35]) && (x_O_1 = x_O_2[ri_34, ri_35]) then r_2[u_34, u_35] orfind u_33 = ri_33 <= Qh suchthat defined(x_O_3[ri_33], r_3[ri_33]) && (x_O_1 = x_O_3[ri_33]) then r_3[u_33] orfind u_32 = ri_32 <= Qh suchthat defined(x_O_4[ri_32], r_4[ri_32]) && {173}(x_O_1 = x_O_4[ri_32]) then r_4[u_32] else r_1 <-R eae_output_t; r_1);
             return(AuthEncap_tuple(zz_10, enc_8))
           else
             z_6 <-R Z_t;
@@ -1291,7 +1291,7 @@ Game 21 is
             kemContext_11: GGG_t <- concatContext(pkE_11, pk_R, pkS_5);
             key_6: extract_key_t <- concatExtract(RFCXXXX, suite_id, label_eae_prk, dh_11);
             info_6: expand_info_t <- concatExpand(I2OSP2(Nsecret), RFCXXXX, suite_id, label_shared_secret, kemContext_11);
-            zz_11: eae_output_t <- (x_O: eae_input_t <- eae_input(lbytes_empty, key_6, info_6); {276}find [unique] u_30 = ri_30 <= Qeperuser, u_31 = ri_31 <= N suchthat defined(x_O[ri_30, ri_31], r[ri_30, ri_31]) && (x_O = x_O[ri_30, ri_31]) then r[u_30, u_31] orfind u_28 = ri_28 <= Qeperuser, u_29 = ri_29 <= N suchthat defined(x_O_1[ri_28, ri_29], r_1[ri_28, ri_29]) && (x_O = x_O_1[ri_28, ri_29]) then r_1[u_28, u_29] orfind u_26 = ri_26 <= Qdperuser, u_27 = ri_27 <= N suchthat defined(x_O_2[ri_26, ri_27], r_2[ri_26, ri_27]) && (x_O = x_O_2[ri_26, ri_27]) then r_2[u_26, u_27] orfind u_25 = ri_25 <= Qh suchthat defined(x_O_3[ri_25], r_3[ri_25]) && (x_O = x_O_3[ri_25]) then r_3[u_25] orfind u_24 = ri_24 <= Qh suchthat defined(x_O_4[ri_24], r_4[ri_24]) && {345}(x_O = x_O_4[ri_24]) then r_4[u_24] else r <-R eae_output_t; r);
+            zz_11: eae_output_t <- (x_O: eae_input_t <- eae_input(lbytes_empty, key_6, info_6); {276}find [unique] u_30 = ri_30 <= Qeperuser, u_31 = ri_31 <= N suchthat defined(x_O[ri_30, ri_31], r[ri_30, ri_31]) && (x_O = x_O[ri_30, ri_31]) then r[u_30, u_31] orfind u_28 = ri_28 <= Qeperuser, u_29 = ri_29 <= N suchthat defined(x_O_1[ri_28, ri_29], r_1[ri_28, ri_29]) && {299}(x_O = x_O_1[ri_28, ri_29]) then r_1[u_28, u_29] orfind u_26 = ri_26 <= Qdperuser, u_27 = ri_27 <= N suchthat defined(x_O_2[ri_26, ri_27], r_2[ri_26, ri_27]) && (x_O = x_O_2[ri_26, ri_27]) then r_2[u_26, u_27] orfind u_25 = ri_25 <= Qh suchthat defined(x_O_3[ri_25], r_3[ri_25]) && (x_O = x_O_3[ri_25]) then r_3[u_25] orfind u_24 = ri_24 <= Qh suchthat defined(x_O_4[ri_24], r_4[ri_24]) && {345}(x_O = x_O_4[ri_24]) then r_4[u_24] else r <-R eae_output_t; r);
             return(AuthEncap_tuple(zz_11, enc_9))
         ) | (
           foreach id <= Qdperuser do
@@ -1323,12 +1323,16 @@ Game 21 is
       ))
 
 
-Applying simplify (non-expanded game) [probability N * N * PCollKey]
+Applying simplify (non-expanded game) [probability (4 * #OAEncap^2 + N^2) * PCollKey]
   - Simplification pass
     - Replaced (x_O_1 = x_O_4[ri_32]) with false at 173
     - Remove branch 5 in find at 104
+    - Replaced (x_O_1 = x_O[ri_38, ri_39]) with false at 109
+    - Remove branch 1 in find at 104
     - Replaced (x_O = x_O_4[ri_24]) with false at 345
     - Remove branch 5 in find at 276
+    - Replaced (x_O = x_O_1[ri_28, ri_29]) with false at 299
+    - Remove branch 2 in find at 276
     - Replaced (x_O_2 = x_O_4[ri_16]) with false at 553
     - Remove branch 5 in find at 484
     - Replaced (x_O_3 = x_O_4[ri_8]) with false at 662
@@ -1363,7 +1367,7 @@ Game 22 is
             kemContext_10: GGG_t <- concatContext(pkE_10, pk_R, pkS_4);
             key_5: extract_key_t <- concatExtract(RFCXXXX, suite_id, label_eae_prk, dh_10);
             info_5: expand_info_t <- concatExpand(I2OSP2(Nsecret), RFCXXXX, suite_id, label_shared_secret, kemContext_10);
-            zz_10: eae_output_t <- (x_O_1: eae_input_t <- eae_input(lbytes_empty, key_5, info_5); {104}find [unique] u_38 = ri_38 <= Qeperuser, u_39 = ri_39 <= N suchthat defined(x_O[ri_38, ri_39], r[ri_38, ri_39]) && (x_O_1 = x_O[ri_38, ri_39]) then r[u_38, u_39] orfind u_36 = ri_36 <= Qeperuser, u_37 = ri_37 <= N suchthat defined(x_O_1[ri_36, ri_37], r_1[ri_36, ri_37]) && (x_O_1 = x_O_1[ri_36, ri_37]) then r_1[u_36, u_37] orfind u_34 = ri_34 <= Qdperuser, u_35 = ri_35 <= N suchthat defined(x_O_2[ri_34, ri_35], r_2[ri_34, ri_35]) && (x_O_1 = x_O_2[ri_34, ri_35]) then r_2[u_34, u_35] orfind u_33 = ri_33 <= Qh suchthat defined(x_O_3[ri_33], r_3[ri_33]) && (x_O_1 = x_O_3[ri_33]) then r_3[u_33] else r_1 <-R eae_output_t; r_1);
+            zz_10: eae_output_t <- (x_O_1: eae_input_t <- eae_input(lbytes_empty, key_5, info_5); {104}find [unique] u_36 = ri_36 <= Qeperuser, u_37 = ri_37 <= N suchthat defined(x_O_1[ri_36, ri_37], r_1[ri_36, ri_37]) && (x_O_1 = x_O_1[ri_36, ri_37]) then r_1[u_36, u_37] orfind u_34 = ri_34 <= Qdperuser, u_35 = ri_35 <= N suchthat defined(x_O_2[ri_34, ri_35], r_2[ri_34, ri_35]) && (x_O_1 = x_O_2[ri_34, ri_35]) then r_2[u_34, u_35] orfind u_33 = ri_33 <= Qh suchthat defined(x_O_3[ri_33], r_3[ri_33]) && (x_O_1 = x_O_3[ri_33]) then r_3[u_33] else r_1 <-R eae_output_t; r_1);
             return(AuthEncap_tuple(zz_10, enc_8))
           else
             z_6 <-R Z_t;
@@ -1374,7 +1378,7 @@ Game 22 is
             kemContext_11: GGG_t <- concatContext(pkE_11, pk_R, pkS_5);
             key_6: extract_key_t <- concatExtract(RFCXXXX, suite_id, label_eae_prk, dh_11);
             info_6: expand_info_t <- concatExpand(I2OSP2(Nsecret), RFCXXXX, suite_id, label_shared_secret, kemContext_11);
-            zz_11: eae_output_t <- (x_O: eae_input_t <- eae_input(lbytes_empty, key_6, info_6); {264}find [unique] u_30 = ri_30 <= Qeperuser, u_31 = ri_31 <= N suchthat defined(x_O[ri_30, ri_31], r[ri_30, ri_31]) && (x_O = x_O[ri_30, ri_31]) then r[u_30, u_31] orfind u_28 = ri_28 <= Qeperuser, u_29 = ri_29 <= N suchthat defined(x_O_1[ri_28, ri_29], r_1[ri_28, ri_29]) && (x_O = x_O_1[ri_28, ri_29]) then r_1[u_28, u_29] orfind u_26 = ri_26 <= Qdperuser, u_27 = ri_27 <= N suchthat defined(x_O_2[ri_26, ri_27], r_2[ri_26, ri_27]) && (x_O = x_O_2[ri_26, ri_27]) then r_2[u_26, u_27] orfind u_25 = ri_25 <= Qh suchthat defined(x_O_3[ri_25], r_3[ri_25]) && (x_O = x_O_3[ri_25]) then r_3[u_25] else r <-R eae_output_t; r);
+            zz_11: eae_output_t <- (x_O: eae_input_t <- eae_input(lbytes_empty, key_6, info_6); {246}find [unique] u_30 = ri_30 <= Qeperuser, u_31 = ri_31 <= N suchthat defined(x_O[ri_30, ri_31], r[ri_30, ri_31]) && (x_O = x_O[ri_30, ri_31]) then r[u_30, u_31] orfind u_26 = ri_26 <= Qdperuser, u_27 = ri_27 <= N suchthat defined(x_O_2[ri_26, ri_27], r_2[ri_26, ri_27]) && (x_O = x_O_2[ri_26, ri_27]) then r_2[u_26, u_27] orfind u_25 = ri_25 <= Qh suchthat defined(x_O_3[ri_25], r_3[ri_25]) && (x_O = x_O_3[ri_25]) then r_3[u_25] else r <-R eae_output_t; r);
             return(AuthEncap_tuple(zz_11, enc_9))
         ) | (
           foreach id <= Qdperuser do
@@ -1388,7 +1392,7 @@ Game 22 is
               kemContext_3: GGG_t <- concatContext(pkE_3, pkR_1, pk_S);
               key_1: extract_key_t <- concatExtract(RFCXXXX, suite_id, label_eae_prk, dh_3);
               info_1: expand_info_t <- concatExpand(I2OSP2(Nsecret), RFCXXXX, suite_id, label_shared_secret, kemContext_3);
-              zz_3: eae_output_t <- (x_O_2: eae_input_t <- eae_input(lbytes_empty, key_1, info_1); {460}find [unique] u_22 = ri_22 <= Qeperuser, u_23 = ri_23 <= N suchthat defined(x_O[ri_22, ri_23], r[ri_22, ri_23]) && (x_O_2 = x_O[ri_22, ri_23]) then r[u_22, u_23] orfind u_20 = ri_20 <= Qeperuser, u_21 = ri_21 <= N suchthat defined(x_O_1[ri_20, ri_21], r_1[ri_20, ri_21]) && (x_O_2 = x_O_1[ri_20, ri_21]) then r_1[u_20, u_21] orfind u_18 = ri_18 <= Qdperuser, u_19 = ri_19 <= N suchthat defined(x_O_2[ri_18, ri_19], r_2[ri_18, ri_19]) && (x_O_2 = x_O_2[ri_18, ri_19]) then r_2[u_18, u_19] orfind u_17 = ri_17 <= Qh suchthat defined(x_O_3[ri_17], r_3[ri_17]) && (x_O_2 = x_O_3[ri_17]) then r_3[u_17] else r_2 <-R eae_output_t; r_2);
+              zz_3: eae_output_t <- (x_O_2: eae_input_t <- eae_input(lbytes_empty, key_1, info_1); {424}find [unique] u_22 = ri_22 <= Qeperuser, u_23 = ri_23 <= N suchthat defined(x_O[ri_22, ri_23], r[ri_22, ri_23]) && (x_O_2 = x_O[ri_22, ri_23]) then r[u_22, u_23] orfind u_20 = ri_20 <= Qeperuser, u_21 = ri_21 <= N suchthat defined(x_O_1[ri_20, ri_21], r_1[ri_20, ri_21]) && (x_O_2 = x_O_1[ri_20, ri_21]) then r_1[u_20, u_21] orfind u_18 = ri_18 <= Qdperuser, u_19 = ri_19 <= N suchthat defined(x_O_2[ri_18, ri_19], r_2[ri_18, ri_19]) && (x_O_2 = x_O_2[ri_18, ri_19]) then r_2[u_18, u_19] orfind u_17 = ri_17 <= Qh suchthat defined(x_O_3[ri_17], r_3[ri_17]) && (x_O_2 = x_O_3[ri_17]) then r_3[u_17] else r_2 <-R eae_output_t; r_2);
               return(AuthDecap_Some(zz_3))
             else
               return(AuthDecap_None)
@@ -1406,12 +1410,12 @@ Game 22 is
       ))
 
 
-Applying expand [probability (4 * #OAEncap * Qeperuser + #OAEncap * N + N * N) * PCollKey]
+Applying expand [probability (2 * #OAEncap^2 + #OAEncap * N + #OAEncap * #OADecap + N^2) * PCollKey]
   - Expand if/find/let
-    - Remove branch 1 in find at 460
-    - Remove branch 3 in find at 264
-    - Remove branch 2 in find at 264
-    - Remove branch 1 in find at 264
+    - Remove branch 2 in find at 424
+    - Remove branch 1 in find at 424
+    - Remove branch 2 in find at 246
+    - Remove branch 1 in find at 246
     - Remove branch 2 in find at 104
     - Remove branch 1 in find at 104
 yields
@@ -1437,10 +1441,7 @@ Game 23 is
             key_5: extract_key_t <- concatExtract(RFCXXXX, suite_id, label_eae_prk, dh_10);
             info_5: expand_info_t <- concatExpand(I2OSP2(Nsecret), RFCXXXX, suite_id, label_shared_secret, kemContext_10);
             x_O_1: eae_input_t <- eae_input(lbytes_empty, key_5, info_5);
-            find [unique] u_34 = ri_34 <= Qdperuser, u_35 = ri_35 <= N suchthat defined(x_O_2[ri_34, ri_35], r_2[ri_34, ri_35]) && (x_O_1 = x_O_2[ri_34, ri_35]) then
-              zz_10: eae_output_t <- r_2[u_34, u_35];
-              return(AuthEncap_tuple(zz_10, enc_8))
-            orfind u_33 = ri_33 <= Qh suchthat defined(x_O_3[ri_33], r_3[ri_33]) && (x_O_1 = x_O_3[ri_33]) then
+            find [unique] u_33 = ri_33 <= Qh suchthat defined(x_O_3[ri_33], r_3[ri_33]) && (x_O_1 = x_O_3[ri_33]) then
               zz_10: eae_output_t <- r_3[u_33];
               return(AuthEncap_tuple(zz_10, enc_8))
             else
@@ -1477,10 +1478,7 @@ Game 23 is
               key_1: extract_key_t <- concatExtract(RFCXXXX, suite_id, label_eae_prk, dh_3);
               info_1: expand_info_t <- concatExpand(I2OSP2(Nsecret), RFCXXXX, suite_id, label_shared_secret, kemContext_3);
               x_O_2: eae_input_t <- eae_input(lbytes_empty, key_1, info_1);
-              find [unique] u_20 = ri_20 <= Qeperuser, u_21 = ri_21 <= N suchthat defined(x_O_1[ri_20, ri_21], r_1[ri_20, ri_21]) && (x_O_2 = x_O_1[ri_20, ri_21]) then
-                zz_3: eae_output_t <- r_1[u_20, u_21];
-                return(AuthDecap_Some(zz_3))
-              orfind u_18 = ri_18 <= Qdperuser, u_19 = ri_19 <= N suchthat defined(x_O_2[ri_18, ri_19], r_2[ri_18, ri_19]) && (x_O_2 = x_O_2[ri_18, ri_19]) then
+              find [unique] u_18 = ri_18 <= Qdperuser, u_19 = ri_19 <= N suchthat defined(x_O_2[ri_18, ri_19], r_2[ri_18, ri_19]) && (x_O_2 = x_O_2[ri_18, ri_19]) then
                 zz_3: eae_output_t <- r_2[u_18, u_19];
                 return(AuthDecap_Some(zz_3))
               orfind u_17 = ri_17 <= Qh suchthat defined(x_O_3[ri_17], r_3[ri_17]) && (x_O_2 = x_O_3[ri_17]) then
@@ -1528,10 +1526,8 @@ Applying remove assignments of findcond
   - Remove assignments on zz_3 (definition removed, all usages removed)
   - Remove assignments on zz_3 (definition removed, all usages removed)
   - Remove assignments on zz_3 (definition removed, all usages removed)
-  - Remove assignments on zz_3 (definition removed, all usages removed)
   - Remove assignments on zz_11 (definition removed, all usages removed)
   - Remove assignments on zz_11 (definition removed, all usages removed)
-  - Remove assignments on zz_10 (definition kept, array references kept)
   - Remove assignments on zz_10 (definition kept, array references kept)
   - Remove assignments on zz_10 (definition kept, array references kept)
 yields
@@ -1557,10 +1553,7 @@ Game 24 is
             key_5: extract_key_t <- concatExtract(RFCXXXX, suite_id, label_eae_prk, dh_10);
             info_5: expand_info_t <- concatExpand(I2OSP2(Nsecret), RFCXXXX, suite_id, label_shared_secret, kemContext_10);
             x_O_1: eae_input_t <- eae_input(lbytes_empty, key_5, info_5);
- {103}      find [unique] u_34 = ri_34 <= Qdperuser, u_35 = ri_35 <= N suchthat defined(x_O_2[ri_34, ri_35], r_2[ri_34, ri_35]) && {108}(x_O_1 = x_O_2[ri_34, ri_35]) then
-              zz_10: eae_output_t <- r_2[u_34, u_35];
-              return(AuthEncap_tuple(r_2[u_34, u_35], enc_8))
-            orfind u_33 = ri_33 <= Qh suchthat defined(x1[ri_33], x_O_3[ri_33], r_3[ri_33]) && {141}(x_O_1 = x1[ri_33]) then
+ {103}      find [unique] u_33 = ri_33 <= Qh suchthat defined(x1[ri_33], x_O_3[ri_33], r_3[ri_33]) && {107}(x_O_1 = x1[ri_33]) then
               zz_10: eae_output_t <- r_3[u_33];
               return(AuthEncap_tuple(r_3[u_33], enc_8))
             else
@@ -1577,7 +1570,7 @@ Game 24 is
             key_6: extract_key_t <- concatExtract(RFCXXXX, suite_id, label_eae_prk, dh_11);
             info_6: expand_info_t <- concatExpand(I2OSP2(Nsecret), RFCXXXX, suite_id, label_shared_secret, kemContext_11);
             x_O: eae_input_t <- eae_input(lbytes_empty, key_6, info_6);
- {258}      find [unique] u_25 = ri_25 <= Qh suchthat defined(x1[ri_25], x_O_3[ri_25], r_3[ri_25]) && {262}(x_O = x1[ri_25]) then
+ {224}      find [unique] u_25 = ri_25 <= Qh suchthat defined(x1[ri_25], x_O_3[ri_25], r_3[ri_25]) && {228}(x_O = x1[ri_25]) then
               return(AuthEncap_tuple(r_3[u_25], enc_9))
             else
               r <-R eae_output_t;
@@ -1595,11 +1588,9 @@ Game 24 is
               key_1: extract_key_t <- concatExtract(RFCXXXX, suite_id, label_eae_prk, dh_3);
               info_1: expand_info_t <- concatExpand(I2OSP2(Nsecret), RFCXXXX, suite_id, label_shared_secret, kemContext_3);
               x_O_2: eae_input_t <- eae_input(lbytes_empty, key_1, info_1);
- {404}        find [unique] u_20 = ri_20 <= Qeperuser, u_21 = ri_21 <= N suchthat defined(x_O_1[ri_20, ri_21], r_1[ri_20, ri_21]) && {409}(x_O_2 = x_O_1[ri_20, ri_21]) then
-                return(AuthDecap_Some(r_1[u_20, u_21]))
-              orfind u_18 = ri_18 <= Qdperuser, u_19 = ri_19 <= N suchthat defined(x_O_2[ri_18, ri_19], r_2[ri_18, ri_19]) && {431}(x_O_2 = x_O_2[ri_18, ri_19]) then
+ {370}        find [unique] u_18 = ri_18 <= Qdperuser, u_19 = ri_19 <= N suchthat defined(x_O_2[ri_18, ri_19], r_2[ri_18, ri_19]) && {375}(x_O_2 = x_O_2[ri_18, ri_19]) then
                 return(AuthDecap_Some(r_2[u_18, u_19]))
-              orfind u_17 = ri_17 <= Qh suchthat defined(x1[ri_17], x_O_3[ri_17], r_3[ri_17]) && {452}(x_O_2 = x1[ri_17]) then
+              orfind u_17 = ri_17 <= Qh suchthat defined(x1[ri_17], x_O_3[ri_17], r_3[ri_17]) && {396}(x_O_2 = x1[ri_17]) then
                 return(AuthDecap_Some(r_3[u_17]))
               else
                 r_2 <-R eae_output_t;
@@ -1615,20 +1606,20 @@ Game 24 is
         OH(x1: eae_input_t) :=
         let eae_input(salt: extract_salt_t, concatExtract(protocol1: label_protocol_t, suite1: suite_id_t, label1: label_extract_t, concatDH(dh1: G_t, dh2: G_t)), concatExpand(l: two_byte_t, protocol2: label_protocol_t, suite2: suite_id_t, label2: label_expand_t, concatContext(pkE': G_t, pkR': G_t, pkS': G_t))) = x1 in
           x_O_3: eae_input_t <- cst_eae_input_t;
- {501}    find [unique] u_14 = ri_14 <= Qeperuser, u_15 = ri_15 <= N suchthat defined(x_O[ri_14, ri_15], r[ri_14, ri_15]) && {506}(x1 = x_O[ri_14, ri_15]) then
+ {445}    find [unique] u_14 = ri_14 <= Qeperuser, u_15 = ri_15 <= N suchthat defined(x_O[ri_14, ri_15], r[ri_14, ri_15]) && {450}(x1 = x_O[ri_14, ri_15]) then
             return(r[u_14, u_15])
-          orfind u_12 = ri_12 <= Qeperuser, u_13 = ri_13 <= N suchthat defined(x_O_1[ri_12, ri_13], r_1[ri_12, ri_13]) && {524}(x1 = x_O_1[ri_12, ri_13]) then
+          orfind u_12 = ri_12 <= Qeperuser, u_13 = ri_13 <= N suchthat defined(x_O_1[ri_12, ri_13], r_1[ri_12, ri_13]) && {468}(x1 = x_O_1[ri_12, ri_13]) then
             return(r_1[u_12, u_13])
-          orfind u_10 = ri_10 <= Qdperuser, u_11 = ri_11 <= N suchthat defined(x_O_2[ri_10, ri_11], r_2[ri_10, ri_11]) && {542}(x1 = x_O_2[ri_10, ri_11]) then
+          orfind u_10 = ri_10 <= Qdperuser, u_11 = ri_11 <= N suchthat defined(x_O_2[ri_10, ri_11], r_2[ri_10, ri_11]) && {486}(x1 = x_O_2[ri_10, ri_11]) then
             return(r_2[u_10, u_11])
-          orfind u_9 = ri_9 <= Qh suchthat defined(x1[ri_9], x_O_3[ri_9], r_3[ri_9]) && {559}(x1 = x1[ri_9]) then
+          orfind u_9 = ri_9 <= Qh suchthat defined(x1[ri_9], x_O_3[ri_9], r_3[ri_9]) && {503}(x1 = x1[ri_9]) then
             return(r_3[u_9])
           else
             r_3 <-R eae_output_t;
             return(r_3)
         else
           x_O_4: eae_input_t <- cst_eae_input_t;
- {579}    find [unique] u = ri <= Qh suchthat defined(x1[ri], x_O_4[ri], r_4[ri]) && (x1 = x1[ri]) then
+ {523}    find [unique] u = ri <= Qh suchthat defined(x1[ri], x_O_4[ri], r_4[ri]) && (x1 = x1[ri]) then
             return(r_4[u])
           else
             r_4 <-R eae_output_t;
@@ -1636,31 +1627,26 @@ Game 24 is
       ))
 
 
-Applying simplify [probability 4 * N * N * PCollKey]
+Applying simplify [probability N^2 * PCollKey]
   - Simplification pass
-    - Replaced defined condition x1[ri], x_O_4[ri], r_4[ri] with r_4[ri], x1[ri] in find at 579
-    - Replaced (x1 = x1[ri_9]) with ((pkS' = pkS'[ri_9]) && (pkR' = pkR'[ri_9]) && (pkE' = pkE'[ri_9]) && (label2 = label2[ri_9]) && (suite2 = suite2[ri_9]) && (protocol2 = protocol2[ri_9]) && (l = l[ri_9]) && (dh2 = dh2[ri_9]) && (dh1 = dh1[ri_9]) && (label1 = label1[ri_9]) && (suite1 = suite1[ri_9]) && (protocol1 = protocol1[ri_9]) && (salt = salt[ri_9])) at 559
-    - Replaced defined condition x1[ri_9], x_O_3[ri_9], r_3[ri_9] with r_3[ri_9], salt[ri_9], protocol1[ri_9], suite1[ri_9], label1[ri_9], dh1[ri_9], dh2[ri_9], l[ri_9], protocol2[ri_9], suite2[ri_9], label2[ri_9], pkE'[ri_9], pkR'[ri_9], pkS'[ri_9] in find at 501
-    - Replaced (x1 = x_O_2[ri_10, ri_11]) with ((pkS' = pk_S[ri_10, ri_11]) && (pkR' = pkR_1[ri_10, ri_11]) && (pkE' = pkE_3[ri_10, ri_11]) && (label2 = label_shared_secret) && (suite2 = suite_id) && (protocol2 = RFCXXXX) && (l = I2OSP2(Nsecret)) && (dh2 = exp(pk_S[ri_10, ri_11], sk[ri_11])) && (dh1 = exp(pkE_3[ri_10, ri_11], sk[ri_11])) && (label1 = label_eae_prk) && (suite1 = suite_id) && (protocol1 = RFCXXXX) && (salt = lbytes_empty)) at 542
-    - Replaced defined condition x_O_2[ri_10, ri_11], r_2[ri_10, ri_11] with r_2[ri_10, ri_11], sk[ri_11], pkE_3[ri_10, ri_11], pkR_1[ri_10, ri_11], pk_S[ri_10, ri_11] in find at 501
-    - Replaced (x1 = x_O_1[ri_12, ri_13]) with ((pkS' = pkS_4[ri_12, ri_13]) && (pkR' = pk_R[ri_12, ri_13]) && (pkE' = pkE_10[ri_12, ri_13]) && (label2 = label_shared_secret) && (suite2 = suite_id) && (protocol2 = RFCXXXX) && (l = I2OSP2(Nsecret)) && (dh2 = exp(g, mult(sk[i1_6[ri_12, ri_13]], sk[ri_13]))) && (dh1 = exp(g, mult(sk[i1_6[ri_12, ri_13]], z_5[ri_12, ri_13]))) && (label1 = label_eae_prk) && (suite1 = suite_id) && (protocol1 = RFCXXXX) && (salt = lbytes_empty)) at 524
-    - Replaced defined condition x_O_1[ri_12, ri_13], r_1[ri_12, ri_13] with r_1[ri_12, ri_13], z_5[ri_12, ri_13], sk[ri_13], sk[i1_6[ri_12, ri_13]], pkE_10[ri_12, ri_13], pk_R[ri_12, ri_13], pkS_4[ri_12, ri_13] in find at 501
-    - Replaced (x1 = x_O[ri_14, ri_15]) with ((pkS' = pkS_5[ri_14, ri_15]) && (pkR' = pk_R[ri_14, ri_15]) && (pkE' = pkE_11[ri_14, ri_15]) && (label2 = label_shared_secret) && (suite2 = suite_id) && (protocol2 = RFCXXXX) && (l = I2OSP2(Nsecret)) && (dh2 = exp(pk_R[ri_14, ri_15], sk[ri_15])) && (dh1 = exp(pk_R[ri_14, ri_15], z_6[ri_14, ri_15])) && (label1 = label_eae_prk) && (suite1 = suite_id) && (protocol1 = RFCXXXX) && (salt = lbytes_empty)) at 506
-    - Replaced defined condition x_O[ri_14, ri_15], r[ri_14, ri_15] with r[ri_14, ri_15], z_6[ri_14, ri_15], sk[ri_15], pkE_11[ri_14, ri_15], pk_R[ri_14, ri_15], pkS_5[ri_14, ri_15] in find at 501
-    - Replaced (x_O_2 = x1[ri_17]) with ((pk_S = pkS'[ri_17]) && (pkR_1 = pkR'[ri_17]) && (pkE_3 = pkE'[ri_17]) && (label_shared_secret = label2[ri_17]) && (suite_id = suite2[ri_17]) && (RFCXXXX = protocol2[ri_17]) && (I2OSP2(Nsecret) = l[ri_17]) && (exp(pk_S, sk) = dh2[ri_17]) && (exp(pkE_3, sk) = dh1[ri_17]) && (label_eae_prk = label1[ri_17]) && (suite_id = suite1[ri_17]) && (RFCXXXX = protocol1[ri_17]) && (lbytes_empty = salt[ri_17])) at 452
-    - Replaced defined condition x1[ri_17], x_O_3[ri_17], r_3[ri_17] with r_3[ri_17], salt[ri_17], protocol1[ri_17], suite1[ri_17], label1[ri_17], dh1[ri_17], dh2[ri_17], l[ri_17], protocol2[ri_17], suite2[ri_17], label2[ri_17], pkE'[ri_17], pkR'[ri_17], pkS'[ri_17] in find at 404
-    - Replaced (x_O_2 = x_O_2[ri_18, ri_19]) with ((pk_S = pk_S[ri_18, ri_19]) && (i = ri_19) && (pkE_3 = pkE_3[ri_18, ri_19])) at 431
-    - In branch 2 of find at 404, substituting u_19 with i
-    - Replaced defined condition x_O_2[ri_18, ri_19], r_2[ri_18, ri_19] with r_2[ri_18], pkE_3[ri_18], pk_S[ri_18] in find at 404
-    - Replaced (x_O_2 = x_O_1[ri_20, ri_21]) with ((pk_S = pkS_4[ri_20, ri_21]) && (i = i1_6[ri_20, ri_21]) && (pkE_3 = pkE_10[ri_20, ri_21])) at 409
-    - Remove branch 1 in find at 404
-    - Replaced (x_O = x1[ri_25]) with ((pkS_5 = pkS'[ri_25]) && (pk_R = pkR'[ri_25]) && (pkE_11 = pkE'[ri_25]) && (label_shared_secret = label2[ri_25]) && (suite_id = suite2[ri_25]) && (RFCXXXX = protocol2[ri_25]) && (I2OSP2(Nsecret) = l[ri_25]) && (exp(pk_R, sk) = dh2[ri_25]) && (exp(pk_R, z_6) = dh1[ri_25]) && (label_eae_prk = label1[ri_25]) && (suite_id = suite1[ri_25]) && (RFCXXXX = protocol1[ri_25]) && (lbytes_empty = salt[ri_25])) at 262
-    - Replaced defined condition x1[ri_25], x_O_3[ri_25], r_3[ri_25] with r_3[ri_25], salt[ri_25], protocol1[ri_25], suite1[ri_25], label1[ri_25], dh1[ri_25], dh2[ri_25], l[ri_25], protocol2[ri_25], suite2[ri_25], label2[ri_25], pkE'[ri_25], pkR'[ri_25], pkS'[ri_25] in find at 258
-    - Replaced (x_O_1 = x1[ri_33]) with ((pkS_4 = pkS'[ri_33]) && (pk_R = pkR'[ri_33]) && (pkE_10 = pkE'[ri_33]) && (label_shared_secret = label2[ri_33]) && (suite_id = suite2[ri_33]) && (RFCXXXX = protocol2[ri_33]) && (I2OSP2(Nsecret) = l[ri_33]) && (exp(g, mult(sk[i1_6], sk)) = dh2[ri_33]) && (exp(g, mult(sk[i1_6], z_5)) = dh1[ri_33]) && (label_eae_prk = label1[ri_33]) && (suite_id = suite1[ri_33]) && (RFCXXXX = protocol1[ri_33]) && (lbytes_empty = salt[ri_33])) at 141
+    - Replaced defined condition x1[ri], x_O_4[ri], r_4[ri] with r_4[ri], x1[ri] in find at 523
+    - Replaced (x1 = x1[ri_9]) with ((pkS' = pkS'[ri_9]) && (pkR' = pkR'[ri_9]) && (pkE' = pkE'[ri_9]) && (label2 = label2[ri_9]) && (suite2 = suite2[ri_9]) && (protocol2 = protocol2[ri_9]) && (l = l[ri_9]) && (dh2 = dh2[ri_9]) && (dh1 = dh1[ri_9]) && (label1 = label1[ri_9]) && (suite1 = suite1[ri_9]) && (protocol1 = protocol1[ri_9]) && (salt = salt[ri_9])) at 503
+    - Replaced defined condition x1[ri_9], x_O_3[ri_9], r_3[ri_9] with r_3[ri_9], salt[ri_9], protocol1[ri_9], suite1[ri_9], label1[ri_9], dh1[ri_9], dh2[ri_9], l[ri_9], protocol2[ri_9], suite2[ri_9], label2[ri_9], pkE'[ri_9], pkR'[ri_9], pkS'[ri_9] in find at 445
+    - Replaced (x1 = x_O_2[ri_10, ri_11]) with ((pkS' = pk_S[ri_10, ri_11]) && (pkR' = pkR_1[ri_10, ri_11]) && (pkE' = pkE_3[ri_10, ri_11]) && (label2 = label_shared_secret) && (suite2 = suite_id) && (protocol2 = RFCXXXX) && (l = I2OSP2(Nsecret)) && (dh2 = exp(pk_S[ri_10, ri_11], sk[ri_11])) && (dh1 = exp(pkE_3[ri_10, ri_11], sk[ri_11])) && (label1 = label_eae_prk) && (suite1 = suite_id) && (protocol1 = RFCXXXX) && (salt = lbytes_empty)) at 486
+    - Replaced defined condition x_O_2[ri_10, ri_11], r_2[ri_10, ri_11] with r_2[ri_10, ri_11], sk[ri_11], pkE_3[ri_10, ri_11], pkR_1[ri_10, ri_11], pk_S[ri_10, ri_11] in find at 445
+    - Replaced (x1 = x_O_1[ri_12, ri_13]) with ((pkS' = pkS_4[ri_12, ri_13]) && (pkR' = pk_R[ri_12, ri_13]) && (pkE' = pkE_10[ri_12, ri_13]) && (label2 = label_shared_secret) && (suite2 = suite_id) && (protocol2 = RFCXXXX) && (l = I2OSP2(Nsecret)) && (dh2 = exp(g, mult(sk[i1_6[ri_12, ri_13]], sk[ri_13]))) && (dh1 = exp(g, mult(sk[i1_6[ri_12, ri_13]], z_5[ri_12, ri_13]))) && (label1 = label_eae_prk) && (suite1 = suite_id) && (protocol1 = RFCXXXX) && (salt = lbytes_empty)) at 468
+    - Replaced defined condition x_O_1[ri_12, ri_13], r_1[ri_12, ri_13] with r_1[ri_12, ri_13], z_5[ri_12, ri_13], sk[ri_13], sk[i1_6[ri_12, ri_13]], pkE_10[ri_12, ri_13], pk_R[ri_12, ri_13], pkS_4[ri_12, ri_13] in find at 445
+    - Replaced (x1 = x_O[ri_14, ri_15]) with ((pkS' = pkS_5[ri_14, ri_15]) && (pkR' = pk_R[ri_14, ri_15]) && (pkE' = pkE_11[ri_14, ri_15]) && (label2 = label_shared_secret) && (suite2 = suite_id) && (protocol2 = RFCXXXX) && (l = I2OSP2(Nsecret)) && (dh2 = exp(pk_R[ri_14, ri_15], sk[ri_15])) && (dh1 = exp(pk_R[ri_14, ri_15], z_6[ri_14, ri_15])) && (label1 = label_eae_prk) && (suite1 = suite_id) && (protocol1 = RFCXXXX) && (salt = lbytes_empty)) at 450
+    - Replaced defined condition x_O[ri_14, ri_15], r[ri_14, ri_15] with r[ri_14, ri_15], z_6[ri_14, ri_15], sk[ri_15], pkE_11[ri_14, ri_15], pk_R[ri_14, ri_15], pkS_5[ri_14, ri_15] in find at 445
+    - Replaced (x_O_2 = x1[ri_17]) with ((pk_S = pkS'[ri_17]) && (pkR_1 = pkR'[ri_17]) && (pkE_3 = pkE'[ri_17]) && (label_shared_secret = label2[ri_17]) && (suite_id = suite2[ri_17]) && (RFCXXXX = protocol2[ri_17]) && (I2OSP2(Nsecret) = l[ri_17]) && (exp(pk_S, sk) = dh2[ri_17]) && (exp(pkE_3, sk) = dh1[ri_17]) && (label_eae_prk = label1[ri_17]) && (suite_id = suite1[ri_17]) && (RFCXXXX = protocol1[ri_17]) && (lbytes_empty = salt[ri_17])) at 396
+    - Replaced defined condition x1[ri_17], x_O_3[ri_17], r_3[ri_17] with r_3[ri_17], salt[ri_17], protocol1[ri_17], suite1[ri_17], label1[ri_17], dh1[ri_17], dh2[ri_17], l[ri_17], protocol2[ri_17], suite2[ri_17], label2[ri_17], pkE'[ri_17], pkR'[ri_17], pkS'[ri_17] in find at 370
+    - Replaced (x_O_2 = x_O_2[ri_18, ri_19]) with ((pk_S = pk_S[ri_18, ri_19]) && (i = ri_19) && (pkE_3 = pkE_3[ri_18, ri_19])) at 375
+    - In branch 1 of find at 370, substituting u_19 with i
+    - Replaced defined condition x_O_2[ri_18, ri_19], r_2[ri_18, ri_19] with r_2[ri_18], pkE_3[ri_18], pk_S[ri_18] in find at 370
+    - Replaced (x_O = x1[ri_25]) with ((pkS_5 = pkS'[ri_25]) && (pk_R = pkR'[ri_25]) && (pkE_11 = pkE'[ri_25]) && (label_shared_secret = label2[ri_25]) && (suite_id = suite2[ri_25]) && (RFCXXXX = protocol2[ri_25]) && (I2OSP2(Nsecret) = l[ri_25]) && (exp(pk_R, sk) = dh2[ri_25]) && (exp(pk_R, z_6) = dh1[ri_25]) && (label_eae_prk = label1[ri_25]) && (suite_id = suite1[ri_25]) && (RFCXXXX = protocol1[ri_25]) && (lbytes_empty = salt[ri_25])) at 228
+    - Replaced defined condition x1[ri_25], x_O_3[ri_25], r_3[ri_25] with r_3[ri_25], salt[ri_25], protocol1[ri_25], suite1[ri_25], label1[ri_25], dh1[ri_25], dh2[ri_25], l[ri_25], protocol2[ri_25], suite2[ri_25], label2[ri_25], pkE'[ri_25], pkR'[ri_25], pkS'[ri_25] in find at 224
+    - Replaced (x_O_1 = x1[ri_33]) with ((pkS_4 = pkS'[ri_33]) && (pk_R = pkR'[ri_33]) && (pkE_10 = pkE'[ri_33]) && (label_shared_secret = label2[ri_33]) && (suite_id = suite2[ri_33]) && (RFCXXXX = protocol2[ri_33]) && (I2OSP2(Nsecret) = l[ri_33]) && (exp(g, mult(sk[i1_6], sk)) = dh2[ri_33]) && (exp(g, mult(sk[i1_6], z_5)) = dh1[ri_33]) && (label_eae_prk = label1[ri_33]) && (suite_id = suite1[ri_33]) && (RFCXXXX = protocol1[ri_33]) && (lbytes_empty = salt[ri_33])) at 107
     - Replaced defined condition x1[ri_33], x_O_3[ri_33], r_3[ri_33] with r_3[ri_33], salt[ri_33], protocol1[ri_33], suite1[ri_33], label1[ri_33], dh1[ri_33], dh2[ri_33], l[ri_33], protocol2[ri_33], suite2[ri_33], label2[ri_33], pkE'[ri_33], pkR'[ri_33], pkS'[ri_33] in find at 103
-    - Replaced (x_O_1 = x_O_2[ri_34, ri_35]) with ((pkS_4 = pk_S[ri_34, ri_35]) && (i1_6 = ri_35) && (pkE_10 = pkE_3[ri_34, ri_35])) at 108
-    - In branch 1 of find at 103, substituting u_35 with i1_6
-    - Replaced defined condition x_O_2[ri_34, ri_35], r_2[ri_34, ri_35] with r_2[ri_34, i1_6], pkE_3[ri_34, i1_6], pk_S[ri_34, i1_6] in find at 103
 yields
 
 Game 25 is
@@ -1684,11 +1670,7 @@ Game 25 is
             key_5: extract_key_t <- concatExtract(RFCXXXX, suite_id, label_eae_prk, dh_10);
             info_5: expand_info_t <- concatExpand(I2OSP2(Nsecret), RFCXXXX, suite_id, label_shared_secret, kemContext_10);
             x_O_1: eae_input_t <- eae_input(lbytes_empty, key_5, info_5);
- {103}      find [unique] u_34 = ri_34 <= Qdperuser suchthat defined(r_2[ri_34, i1_6], pkE_3[ri_34, i1_6], pk_S[ri_34, i1_6]) && {116}((pkS_4 = pk_S[ri_34, i1_6]) && (i1_6 = i1_6) && (pkE_10 = pkE_3[ri_34, i1_6])) then
-              u_35 <= N <- i1_6;
-              zz_10: eae_output_t <- r_2[u_34, i1_6];
-              return(AuthEncap_tuple(r_2[u_34, i1_6], enc_8))
-            orfind u_33 = ri_33 <= Qh suchthat defined(r_3[ri_33], salt[ri_33], protocol1[ri_33], suite1[ri_33], label1[ri_33], dh1[ri_33], dh2[ri_33], l[ri_33], protocol2[ri_33], suite2[ri_33], label2[ri_33], pkE'[ri_33], pkR'[ri_33], pkS'[ri_33]) && (pkS_4 = pkS'[ri_33]) && (pk_R = pkR'[ri_33]) && (pkE_10 = pkE'[ri_33]) && (label_shared_secret = label2[ri_33]) && (suite_id = suite2[ri_33]) && (RFCXXXX = protocol2[ri_33]) && (I2OSP2(Nsecret) = l[ri_33]) && (exp(g, mult(sk[i1_6], sk)) = dh2[ri_33]) && (exp(g, mult(sk[i1_6], z_5)) = dh1[ri_33]) && (label_eae_prk = label1[ri_33]) && (suite_id = suite1[ri_33]) && (RFCXXXX = protocol1[ri_33]) && (lbytes_empty = salt[ri_33]) then
+            find [unique] u_33 = ri_33 <= Qh suchthat defined(r_3[ri_33], salt[ri_33], protocol1[ri_33], suite1[ri_33], label1[ri_33], dh1[ri_33], dh2[ri_33], l[ri_33], protocol2[ri_33], suite2[ri_33], label2[ri_33], pkE'[ri_33], pkR'[ri_33], pkS'[ri_33]) && (pkS_4 = pkS'[ri_33]) && (pk_R = pkR'[ri_33]) && (pkE_10 = pkE'[ri_33]) && (label_shared_secret = label2[ri_33]) && (suite_id = suite2[ri_33]) && (RFCXXXX = protocol2[ri_33]) && (I2OSP2(Nsecret) = l[ri_33]) && (exp(g, mult(sk[i1_6], sk)) = dh2[ri_33]) && (exp(g, mult(sk[i1_6], z_5)) = dh1[ri_33]) && (label_eae_prk = label1[ri_33]) && (suite_id = suite1[ri_33]) && (RFCXXXX = protocol1[ri_33]) && (lbytes_empty = salt[ri_33]) then
               zz_10: eae_output_t <- r_3[u_33];
               return(AuthEncap_tuple(r_3[u_33], enc_8))
             else
@@ -1723,7 +1705,7 @@ Game 25 is
               key_1: extract_key_t <- concatExtract(RFCXXXX, suite_id, label_eae_prk, dh_3);
               info_1: expand_info_t <- concatExpand(I2OSP2(Nsecret), RFCXXXX, suite_id, label_shared_secret, kemContext_3);
               x_O_2: eae_input_t <- eae_input(lbytes_empty, key_1, info_1);
-              find [unique] u_18 = ri_18 <= Qdperuser suchthat defined(r_2[ri_18], pkE_3[ri_18], pk_S[ri_18]) && {624}((pk_S = pk_S[ri_18]) && (i = i) && (pkE_3 = pkE_3[ri_18])) then
+              find [unique] u_18 = ri_18 <= Qdperuser suchthat defined(r_2[ri_18], pkE_3[ri_18], pk_S[ri_18]) && {557}((pk_S = pk_S[ri_18]) && (i = i) && (pkE_3 = pkE_3[ri_18])) then
                 u_19 <= N <- i;
                 return(AuthDecap_Some(r_2[u_18]))
               orfind u_17 = ri_17 <= Qh suchthat defined(r_3[ri_17], salt[ri_17], protocol1[ri_17], suite1[ri_17], label1[ri_17], dh1[ri_17], dh2[ri_17], l[ri_17], protocol2[ri_17], suite2[ri_17], label2[ri_17], pkE'[ri_17], pkR'[ri_17], pkS'[ri_17]) && (pk_S = pkS'[ri_17]) && (pkR_1 = pkR'[ri_17]) && (pkE_3 = pkE'[ri_17]) && (label_shared_secret = label2[ri_17]) && (suite_id = suite2[ri_17]) && (RFCXXXX = protocol2[ri_17]) && (I2OSP2(Nsecret) = l[ri_17]) && (exp(pk_S, sk) = dh2[ri_17]) && (exp(pkE_3, sk) = dh1[ri_17]) && (label_eae_prk = label1[ri_17]) && (suite_id = suite1[ri_17]) && (RFCXXXX = protocol1[ri_17]) && (lbytes_empty = salt[ri_17]) then
@@ -1763,11 +1745,9 @@ Game 25 is
       ))
 
 
-Applying simplify [probability #OAEncap * Qdperuser * PCollKey]
+Applying simplify
   - Simplification pass
-    - Replaced ((pk_S = pk_S[ri_18]) && (i = i) && (pkE_3 = pkE_3[ri_18])) with ((pk_S = pk_S[ri_18]) && (pkE_3 = pkE_3[ri_18])) at 624
-    - Replaced ((pkS_4 = pk_S[ri_34, i1_6]) && (i1_6 = i1_6) && (pkE_10 = pkE_3[ri_34, i1_6])) with false at 116
-    - Remove branch 1 in find at 103
+    - Replaced ((pk_S = pk_S[ri_18]) && (i = i) && (pkE_3 = pkE_3[ri_18])) with ((pk_S = pk_S[ri_18]) && (pkE_3 = pkE_3[ri_18])) at 557
 yields
 
 Game 26 is
@@ -2050,7 +2030,7 @@ Game 28 is
       ))
 
 
-Applying equivalence gdh(exp) with variables: sk -> a, z_5 -> b [probability Adv_GDH(time(context for game 28) + time + (1 + #OAEncap + N) * time(exp), 2 * Qh * Qdperuser + N * #OAEncap + N * #OADecap + 3 * Qh * N) + (#OAEncap + N) * PDistRerandom + (N * N + 2 * #OAEncap * Qeperuser) * PCollKey]
+Applying equivalence gdh(exp) with variables: sk -> a, z_5 -> b [probability Adv_GDH(time_1, 5 * Qh) + (#OAEncap + N) * PDistRerandom + (2 * #OAEncap^2 + N^2) * PCollKey]
   - Equivalence gdh(exp) with variables: sk -> a, z_5 -> b
 yields
 
@@ -2065,12 +2045,12 @@ Game 29 is
         ((
           foreach ie <= Qeperuser do
           OAEncap(pk_R: G_t) :=
-          find i1_6 = i1_7 <= N suchthat defined(sk[i1_7]) && (m_1: G_t <- pk_R; m'_1: G_t <- g; (m_1 = exp(m'_1, sk[i1_7]))) then
+          find i1_6 = i1_7 <= N suchthat defined(sk[i1_7]) && (m_1: G_t <- pk_R; (m_1 = exp(g, sk[i1_7]))) then
             z_5 <-R Z_t;
             pkE_10: G_t <- exp(g, z_5);
             enc_8: bitstring <- Serialize(pkE_10);
             pkS_4: G_t <- exp(g, sk);
-  {54}      find [unique] u_33 = ri_33 <= Qh suchthat defined(r_3[ri_33], salt[ri_33], protocol1[ri_33], suite1[ri_33], label1[ri_33], dh1[ri_33], dh2[ri_33], l[ri_33], protocol2[ri_33], suite2[ri_33], label2[ri_33], pkE'[ri_33], pkR'[ri_33], pkS'[ri_33]) && (pkS_4 = pkS'[ri_33]) && (pk_R = pkR'[ri_33]) && (pkE_10 = pkE'[ri_33]) && (label_shared_secret = label2[ri_33]) && (suite_id = suite2[ri_33]) && (RFCXXXX = protocol2[ri_33]) && (I2OSP2(Nsecret) = l[ri_33]) && (m_9: G_t <- dh2[ri_33]; (m_9 = exp(g, mult(sk[i1_6], sk)))) && (m_4: G_t <- dh1[ri_33]; false) && (label_eae_prk = label1[ri_33]) && (suite_id = suite1[ri_33]) && (RFCXXXX = protocol1[ri_33]) && (lbytes_empty = salt[ri_33]) then
+  {49}      find [unique] u_33 = ri_33 <= Qh suchthat defined(r_3[ri_33], salt[ri_33], protocol1[ri_33], suite1[ri_33], label1[ri_33], dh1[ri_33], dh2[ri_33], l[ri_33], protocol2[ri_33], suite2[ri_33], label2[ri_33], pkE'[ri_33], pkR'[ri_33], pkS'[ri_33]) && (pkS_4 = pkS'[ri_33]) && (pk_R = pkR'[ri_33]) && (pkE_10 = pkE'[ri_33]) && (label_shared_secret = label2[ri_33]) && (suite_id = suite2[ri_33]) && (RFCXXXX = protocol2[ri_33]) && (I2OSP2(Nsecret) = l[ri_33]) && (m_10: G_t <- dh2[ri_33]; (m_10 = exp(g, mult(sk[i1_6], sk)))) && (m_5: G_t <- dh1[ri_33]; false) && (label_eae_prk = label1[ri_33]) && (suite_id = suite1[ri_33]) && (RFCXXXX = protocol1[ri_33]) && (lbytes_empty = salt[ri_33]) then
               zz_10: eae_output_t <- r_3[u_33];
               return(AuthEncap_tuple(r_3[u_33], enc_8))
             else
@@ -2090,14 +2070,14 @@ Game 29 is
         ) | (
           foreach id <= Qdperuser do
           OADecap(pk_S: G_t, enc_2: bitstring) :=
-          find ie1_2 = ie1_3 <= Qeperuser, i1_8 = i1_9 <= N suchthat defined(zz_10[ie1_3, i1_9], enc_8[ie1_3, i1_9], sk[i1_9], i1_6[ie1_3, i1_9]) && (i = i1_6[ie1_3, i1_9]) && (m_12: G_t <- pk_S; m'_5: G_t <- g; (m_12 = exp(m'_5, sk[i1_9]))) && (enc_8[ie1_3, i1_9] = enc_2) then
+          find ie1_2 = ie1_3 <= Qeperuser, i1_8 = i1_9 <= N suchthat defined(zz_10[ie1_3, i1_9], enc_8[ie1_3, i1_9], sk[i1_9], i1_6[ie1_3, i1_9]) && (i = i1_6[ie1_3, i1_9]) && (m_13: G_t <- pk_S; (m_13 = exp(g, sk[i1_9]))) && (enc_8[ie1_3, i1_9] = enc_2) then
             return(AuthDecap_Some(zz_10[ie1_2, i1_8]))
           else
             let Serialize(pkE_3: G_t) = enc_2 in
               pkR_1: G_t <- exp(g, sk);
               find [unique] u_18 = ri_18 <= Qdperuser suchthat defined(r_2[ri_18], pkE_3[ri_18], pk_S[ri_18]) && (pk_S = pk_S[ri_18]) && (pkE_3 = pkE_3[ri_18]) then
                 return(AuthDecap_Some(r_2[u_18]))
-              orfind u_17 = ri_17 <= Qh suchthat defined(r_3[ri_17], salt[ri_17], protocol1[ri_17], suite1[ri_17], label1[ri_17], dh1[ri_17], dh2[ri_17], l[ri_17], protocol2[ri_17], suite2[ri_17], label2[ri_17], pkE'[ri_17], pkR'[ri_17], pkS'[ri_17]) && (pk_S = pkS'[ri_17]) && (pkR_1 = pkR'[ri_17]) && (pkE_3 = pkE'[ri_17]) && (label_shared_secret = label2[ri_17]) && (suite_id = suite2[ri_17]) && (RFCXXXX = protocol2[ri_17]) && (I2OSP2(Nsecret) = l[ri_17]) && (m_11: G_t <- dh2[ri_17]; m'_4: G_t <- pk_S; (m_11 = exp(m'_4, sk))) && (m_10: G_t <- dh1[ri_17]; m'_3: G_t <- pkE_3; (m_10 = exp(m'_3, sk))) && (label_eae_prk = label1[ri_17]) && (suite_id = suite1[ri_17]) && (RFCXXXX = protocol1[ri_17]) && (lbytes_empty = salt[ri_17]) then
+              orfind u_17 = ri_17 <= Qh suchthat defined(r_3[ri_17], salt[ri_17], protocol1[ri_17], suite1[ri_17], label1[ri_17], dh1[ri_17], dh2[ri_17], l[ri_17], protocol2[ri_17], suite2[ri_17], label2[ri_17], pkE'[ri_17], pkR'[ri_17], pkS'[ri_17]) && (pk_S = pkS'[ri_17]) && (pkR_1 = pkR'[ri_17]) && (pkE_3 = pkE'[ri_17]) && (label_shared_secret = label2[ri_17]) && (suite_id = suite2[ri_17]) && (RFCXXXX = protocol2[ri_17]) && (I2OSP2(Nsecret) = l[ri_17]) && (m_12: G_t <- dh2[ri_17]; m'_3: G_t <- pk_S; (m_12 = exp(m'_3, sk))) && (m_11: G_t <- dh1[ri_17]; m'_2: G_t <- pkE_3; (m_11 = exp(m'_2, sk))) && (label_eae_prk = label1[ri_17]) && (suite_id = suite1[ri_17]) && (RFCXXXX = protocol1[ri_17]) && (lbytes_empty = salt[ri_17]) then
                 return(AuthDecap_Some(r_3[u_17]))
               else
                 r_2 <-R eae_output_t;
@@ -2112,11 +2092,11 @@ Game 29 is
         foreach iH <= Qh do
         OH(x1: eae_input_t) :=
         let eae_input(salt: extract_salt_t, concatExtract(protocol1: label_protocol_t, suite1: suite_id_t, label1: label_extract_t, concatDH(dh1: G_t, dh2: G_t)), concatExpand(l: two_byte_t, protocol2: label_protocol_t, suite2: suite_id_t, label2: label_expand_t, concatContext(pkE': G_t, pkR': G_t, pkS': G_t))) = x1 in
- {586}    find [unique] u_14 = ri_14 <= Qeperuser, u_15 = ri_15 <= N suchthat defined(r[ri_14, ri_15], z_6[ri_14, ri_15], sk[ri_15], pkE_11[ri_14, ri_15], pk_R[ri_14, ri_15], pkS_5[ri_14, ri_15]) && (pkS' = pkS_5[ri_14, ri_15]) && (pkR' = pk_R[ri_14, ri_15]) && (pkE' = pkE_11[ri_14, ri_15]) && (label2 = label_shared_secret) && (suite2 = suite_id) && (protocol2 = RFCXXXX) && (l = I2OSP2(Nsecret)) && (m_13: G_t <- dh2; m'_6: G_t <- pk_R[ri_14, ri_15]; (m_13 = exp(m'_6, sk[ri_15]))) && (dh1 = exp(pk_R[ri_14, ri_15], z_6[ri_14, ri_15])) && (label1 = label_eae_prk) && (suite1 = suite_id) && (protocol1 = RFCXXXX) && (salt = lbytes_empty) then
+ {575}    find [unique] u_14 = ri_14 <= Qeperuser, u_15 = ri_15 <= N suchthat defined(r[ri_14, ri_15], z_6[ri_14, ri_15], sk[ri_15], pkE_11[ri_14, ri_15], pk_R[ri_14, ri_15], pkS_5[ri_14, ri_15]) && (pkS' = pkS_5[ri_14, ri_15]) && (pkR' = pk_R[ri_14, ri_15]) && (pkE' = pkE_11[ri_14, ri_15]) && (label2 = label_shared_secret) && (suite2 = suite_id) && (protocol2 = RFCXXXX) && (l = I2OSP2(Nsecret)) && (m_14: G_t <- dh2; m'_4: G_t <- pk_R[ri_14, ri_15]; (m_14 = exp(m'_4, sk[ri_15]))) && (dh1 = exp(pk_R[ri_14, ri_15], z_6[ri_14, ri_15])) && (label1 = label_eae_prk) && (suite1 = suite_id) && (protocol1 = RFCXXXX) && (salt = lbytes_empty) then
             return(r[u_14, u_15])
-          orfind u_12 = ri_12 <= Qeperuser, u_13 = ri_13 <= N suchthat defined(r_1[ri_12, ri_13], sk[ri_13], sk[i1_6[ri_12, ri_13]], pkE_10[ri_12, ri_13], pk_R[ri_12, ri_13], pkS_4[ri_12, ri_13]) && (pkS' = pkS_4[ri_12, ri_13]) && (pkR' = pk_R[ri_12, ri_13]) && (pkE' = pkE_10[ri_12, ri_13]) && (label2 = label_shared_secret) && (suite2 = suite_id) && (protocol2 = RFCXXXX) && (l = I2OSP2(Nsecret)) && (m_20: G_t <- dh2; (m_20 = exp(g, mult(sk[i1_6[ri_12, ri_13]], sk[ri_13])))) && (m_15: G_t <- dh1; false) && (label1 = label_eae_prk) && (suite1 = suite_id) && (protocol1 = RFCXXXX) && (salt = lbytes_empty) then
+          orfind u_12 = ri_12 <= Qeperuser, u_13 = ri_13 <= N suchthat defined(r_1[ri_12, ri_13], sk[ri_13], sk[i1_6[ri_12, ri_13]], pkE_10[ri_12, ri_13], pk_R[ri_12, ri_13], pkS_4[ri_12, ri_13]) && (pkS' = pkS_4[ri_12, ri_13]) && (pkR' = pk_R[ri_12, ri_13]) && (pkE' = pkE_10[ri_12, ri_13]) && (label2 = label_shared_secret) && (suite2 = suite_id) && (protocol2 = RFCXXXX) && (l = I2OSP2(Nsecret)) && (m_21: G_t <- dh2; (m_21 = exp(g, mult(sk[i1_6[ri_12, ri_13]], sk[ri_13])))) && (m_16: G_t <- dh1; false) && (label1 = label_eae_prk) && (suite1 = suite_id) && (protocol1 = RFCXXXX) && (salt = lbytes_empty) then
             return(r_1[u_12, u_13])
-          orfind u_10 = ri_10 <= Qdperuser, u_11 = ri_11 <= N suchthat defined(r_2[ri_10, ri_11], sk[ri_11], pkE_3[ri_10, ri_11], pkR_1[ri_10, ri_11], pk_S[ri_10, ri_11]) && (pkS' = pk_S[ri_10, ri_11]) && (pkR' = pkR_1[ri_10, ri_11]) && (pkE' = pkE_3[ri_10, ri_11]) && (label2 = label_shared_secret) && (suite2 = suite_id) && (protocol2 = RFCXXXX) && (l = I2OSP2(Nsecret)) && (m_22: G_t <- dh2; m'_8: G_t <- pk_S[ri_10, ri_11]; (m_22 = exp(m'_8, sk[ri_11]))) && (m_21: G_t <- dh1; m'_7: G_t <- pkE_3[ri_10, ri_11]; (m_21 = exp(m'_7, sk[ri_11]))) && (label1 = label_eae_prk) && (suite1 = suite_id) && (protocol1 = RFCXXXX) && (salt = lbytes_empty) then
+          orfind u_10 = ri_10 <= Qdperuser, u_11 = ri_11 <= N suchthat defined(r_2[ri_10, ri_11], sk[ri_11], pkE_3[ri_10, ri_11], pkR_1[ri_10, ri_11], pk_S[ri_10, ri_11]) && (pkS' = pk_S[ri_10, ri_11]) && (pkR' = pkR_1[ri_10, ri_11]) && (pkE' = pkE_3[ri_10, ri_11]) && (label2 = label_shared_secret) && (suite2 = suite_id) && (protocol2 = RFCXXXX) && (l = I2OSP2(Nsecret)) && (m_23: G_t <- dh2; m'_6: G_t <- pk_S[ri_10, ri_11]; (m_23 = exp(m'_6, sk[ri_11]))) && (m_22: G_t <- dh1; m'_5: G_t <- pkE_3[ri_10, ri_11]; (m_22 = exp(m'_5, sk[ri_11]))) && (label1 = label_eae_prk) && (suite1 = suite_id) && (protocol1 = RFCXXXX) && (salt = lbytes_empty) then
             return(r_2[u_10, u_11])
           orfind u_9 = ri_9 <= Qh suchthat defined(r_3[ri_9], salt[ri_9], protocol1[ri_9], suite1[ri_9], label1[ri_9], dh1[ri_9], dh2[ri_9], l[ri_9], protocol2[ri_9], suite2[ri_9], label2[ri_9], pkE'[ri_9], pkR'[ri_9], pkS'[ri_9]) && (pkS' = pkS'[ri_9]) && (pkR' = pkR'[ri_9]) && (pkE' = pkE'[ri_9]) && (label2 = label2[ri_9]) && (suite2 = suite2[ri_9]) && (protocol2 = protocol2[ri_9]) && (l = l[ri_9]) && (dh2 = dh2[ri_9]) && (dh1 = dh1[ri_9]) && (label1 = label1[ri_9]) && (suite1 = suite1[ri_9]) && (protocol1 = protocol1[ri_9]) && (salt = salt[ri_9]) then
             return(r_3[u_9])
@@ -2134,9 +2114,9 @@ Game 29 is
 
 Applying expand
   - Expand if/find/let
-    - Remove branch 2 in find at 586
-    - Remove branch 1 in find at 54
-    - Find at 54 removed (else branch kept if any)
+    - Remove branch 2 in find at 575
+    - Remove branch 1 in find at 49
+    - Find at 49 removed (else branch kept if any)
 yields
 
 Game 30 is
@@ -2150,7 +2130,7 @@ Game 30 is
         ((
           foreach ie <= Qeperuser do
           OAEncap(pk_R: G_t) :=
-          find i1_6 = i1_7 <= N suchthat defined(sk[i1_7]) && (m_1: G_t <- pk_R; m'_1: G_t <- g; (m_1 = exp(m'_1, sk[i1_7]))) then
+          find i1_6 = i1_7 <= N suchthat defined(sk[i1_7]) && (m_1: G_t <- pk_R; (m_1 = exp(g, sk[i1_7]))) then
             z_5 <-R Z_t;
             pkE_10: G_t <- exp(g, z_5);
             enc_8: bitstring <- Serialize(pkE_10);
@@ -2171,14 +2151,14 @@ Game 30 is
         ) | (
           foreach id <= Qdperuser do
           OADecap(pk_S: G_t, enc_2: bitstring) :=
-          find ie1_2 = ie1_3 <= Qeperuser, i1_8 = i1_9 <= N suchthat defined(zz_10[ie1_3, i1_9], enc_8[ie1_3, i1_9], sk[i1_9], i1_6[ie1_3, i1_9]) && (m_12: G_t <- pk_S; m'_5: G_t <- g; ((i = i1_6[ie1_3, i1_9]) && (m_12 = exp(m'_5, sk[i1_9])) && (enc_8[ie1_3, i1_9] = enc_2))) then
+          find ie1_2 = ie1_3 <= Qeperuser, i1_8 = i1_9 <= N suchthat defined(zz_10[ie1_3, i1_9], enc_8[ie1_3, i1_9], sk[i1_9], i1_6[ie1_3, i1_9]) && (m_13: G_t <- pk_S; ((i = i1_6[ie1_3, i1_9]) && (m_13 = exp(g, sk[i1_9])) && (enc_8[ie1_3, i1_9] = enc_2))) then
             return(AuthDecap_Some(zz_10[ie1_2, i1_8]))
           else
             let Serialize(pkE_3: G_t) = enc_2 in
               pkR_1: G_t <- exp(g, sk);
               find [unique] u_18 = ri_18 <= Qdperuser suchthat defined(r_2[ri_18], pkE_3[ri_18], pk_S[ri_18]) && (pk_S = pk_S[ri_18]) && (pkE_3 = pkE_3[ri_18]) then
                 return(AuthDecap_Some(r_2[u_18]))
-              orfind u_17 = ri_17 <= Qh suchthat defined(r_3[ri_17], salt[ri_17], protocol1[ri_17], suite1[ri_17], label1[ri_17], dh1[ri_17], dh2[ri_17], l[ri_17], protocol2[ri_17], suite2[ri_17], label2[ri_17], pkE'[ri_17], pkR'[ri_17], pkS'[ri_17]) && (m_11: G_t <- dh2[ri_17]; m'_4: G_t <- pk_S; m_10: G_t <- dh1[ri_17]; m'_3: G_t <- pkE_3; ((pk_S = pkS'[ri_17]) && (pkR_1 = pkR'[ri_17]) && (pkE_3 = pkE'[ri_17]) && (label_shared_secret = label2[ri_17]) && (suite_id = suite2[ri_17]) && (RFCXXXX = protocol2[ri_17]) && (I2OSP2(Nsecret) = l[ri_17]) && (m_11 = exp(m'_4, sk)) && (m_10 = exp(m'_3, sk)) && (label_eae_prk = label1[ri_17]) && (suite_id = suite1[ri_17]) && (RFCXXXX = protocol1[ri_17]) && (lbytes_empty = salt[ri_17]))) then
+              orfind u_17 = ri_17 <= Qh suchthat defined(r_3[ri_17], salt[ri_17], protocol1[ri_17], suite1[ri_17], label1[ri_17], dh1[ri_17], dh2[ri_17], l[ri_17], protocol2[ri_17], suite2[ri_17], label2[ri_17], pkE'[ri_17], pkR'[ri_17], pkS'[ri_17]) && (m_12: G_t <- dh2[ri_17]; m'_3: G_t <- pk_S; m_11: G_t <- dh1[ri_17]; m'_2: G_t <- pkE_3; ((pk_S = pkS'[ri_17]) && (pkR_1 = pkR'[ri_17]) && (pkE_3 = pkE'[ri_17]) && (label_shared_secret = label2[ri_17]) && (suite_id = suite2[ri_17]) && (RFCXXXX = protocol2[ri_17]) && (I2OSP2(Nsecret) = l[ri_17]) && (m_12 = exp(m'_3, sk)) && (m_11 = exp(m'_2, sk)) && (label_eae_prk = label1[ri_17]) && (suite_id = suite1[ri_17]) && (RFCXXXX = protocol1[ri_17]) && (lbytes_empty = salt[ri_17]))) then
                 return(AuthDecap_Some(r_3[u_17]))
               else
                 r_2 <-R eae_output_t;
@@ -2193,9 +2173,9 @@ Game 30 is
         foreach iH <= Qh do
         OH(x1: eae_input_t) :=
         let eae_input(salt: extract_salt_t, concatExtract(protocol1: label_protocol_t, suite1: suite_id_t, label1: label_extract_t, concatDH(dh1: G_t, dh2: G_t)), concatExpand(l: two_byte_t, protocol2: label_protocol_t, suite2: suite_id_t, label2: label_expand_t, concatContext(pkE': G_t, pkR': G_t, pkS': G_t))) = x1 in
-          find [unique] u_14 = ri_14 <= Qeperuser, u_15 = ri_15 <= N suchthat defined(r[ri_14, ri_15], z_6[ri_14, ri_15], sk[ri_15], pkE_11[ri_14, ri_15], pk_R[ri_14, ri_15], pkS_5[ri_14, ri_15]) && (m_13: G_t <- dh2; m'_6: G_t <- pk_R[ri_14, ri_15]; ((pkS' = pkS_5[ri_14, ri_15]) && (pkR' = pk_R[ri_14, ri_15]) && (pkE' = pkE_11[ri_14, ri_15]) && (label2 = label_shared_secret) && (suite2 = suite_id) && (protocol2 = RFCXXXX) && (l = I2OSP2(Nsecret)) && (m_13 = exp(m'_6, sk[ri_15])) && (dh1 = exp(pk_R[ri_14, ri_15], z_6[ri_14, ri_15])) && (label1 = label_eae_prk) && (suite1 = suite_id) && (protocol1 = RFCXXXX) && (salt = lbytes_empty))) then
+          find [unique] u_14 = ri_14 <= Qeperuser, u_15 = ri_15 <= N suchthat defined(r[ri_14, ri_15], z_6[ri_14, ri_15], sk[ri_15], pkE_11[ri_14, ri_15], pk_R[ri_14, ri_15], pkS_5[ri_14, ri_15]) && (m_14: G_t <- dh2; m'_4: G_t <- pk_R[ri_14, ri_15]; ((pkS' = pkS_5[ri_14, ri_15]) && (pkR' = pk_R[ri_14, ri_15]) && (pkE' = pkE_11[ri_14, ri_15]) && (label2 = label_shared_secret) && (suite2 = suite_id) && (protocol2 = RFCXXXX) && (l = I2OSP2(Nsecret)) && (m_14 = exp(m'_4, sk[ri_15])) && (dh1 = exp(pk_R[ri_14, ri_15], z_6[ri_14, ri_15])) && (label1 = label_eae_prk) && (suite1 = suite_id) && (protocol1 = RFCXXXX) && (salt = lbytes_empty))) then
             return(r[u_14, u_15])
-          orfind u_10 = ri_10 <= Qdperuser, u_11 = ri_11 <= N suchthat defined(r_2[ri_10, ri_11], sk[ri_11], pkE_3[ri_10, ri_11], pkR_1[ri_10, ri_11], pk_S[ri_10, ri_11]) && (m_22: G_t <- dh2; m'_8: G_t <- pk_S[ri_10, ri_11]; m_21: G_t <- dh1; m'_7: G_t <- pkE_3[ri_10, ri_11]; ((pkS' = pk_S[ri_10, ri_11]) && (pkR' = pkR_1[ri_10, ri_11]) && (pkE' = pkE_3[ri_10, ri_11]) && (label2 = label_shared_secret) && (suite2 = suite_id) && (protocol2 = RFCXXXX) && (l = I2OSP2(Nsecret)) && (m_22 = exp(m'_8, sk[ri_11])) && (m_21 = exp(m'_7, sk[ri_11])) && (label1 = label_eae_prk) && (suite1 = suite_id) && (protocol1 = RFCXXXX) && (salt = lbytes_empty))) then
+          orfind u_10 = ri_10 <= Qdperuser, u_11 = ri_11 <= N suchthat defined(r_2[ri_10, ri_11], sk[ri_11], pkE_3[ri_10, ri_11], pkR_1[ri_10, ri_11], pk_S[ri_10, ri_11]) && (m_23: G_t <- dh2; m'_6: G_t <- pk_S[ri_10, ri_11]; m_22: G_t <- dh1; m'_5: G_t <- pkE_3[ri_10, ri_11]; ((pkS' = pk_S[ri_10, ri_11]) && (pkR' = pkR_1[ri_10, ri_11]) && (pkE' = pkE_3[ri_10, ri_11]) && (label2 = label_shared_secret) && (suite2 = suite_id) && (protocol2 = RFCXXXX) && (l = I2OSP2(Nsecret)) && (m_23 = exp(m'_6, sk[ri_11])) && (m_22 = exp(m'_5, sk[ri_11])) && (label1 = label_eae_prk) && (suite1 = suite_id) && (protocol1 = RFCXXXX) && (salt = lbytes_empty))) then
             return(r_2[u_10, u_11])
           orfind u_9 = ri_9 <= Qh suchthat defined(r_3[ri_9], salt[ri_9], protocol1[ri_9], suite1[ri_9], label1[ri_9], dh1[ri_9], dh2[ri_9], l[ri_9], protocol2[ri_9], suite2[ri_9], label2[ri_9], pkE'[ri_9], pkR'[ri_9], pkS'[ri_9]) && (pkS' = pkS'[ri_9]) && (pkR' = pkR'[ri_9]) && (pkE' = pkE'[ri_9]) && (label2 = label2[ri_9]) && (suite2 = suite2[ri_9]) && (protocol2 = protocol2[ri_9]) && (l = l[ri_9]) && (dh2 = dh2[ri_9]) && (dh1 = dh1[ri_9]) && (label1 = label1[ri_9]) && (suite1 = suite1[ri_9]) && (protocol1 = protocol1[ri_9]) && (salt = salt[ri_9]) then
             return(r_3[u_9])
@@ -2212,102 +2192,25 @@ Game 30 is
 
 
 Applying remove assignments of findcond
-  - Remove assignments on m_13 (definition removed, all usages removed)
+  - Remove assignments on m_14 (definition removed, all usages removed)
+  - Remove assignments on m'_4 (definition removed, all usages removed)
+  - Remove assignments on m_23 (definition removed, all usages removed)
   - Remove assignments on m'_6 (definition removed, all usages removed)
   - Remove assignments on m_22 (definition removed, all usages removed)
-  - Remove assignments on m'_8 (definition removed, all usages removed)
-  - Remove assignments on m_21 (definition removed, all usages removed)
-  - Remove assignments on m'_7 (definition removed, all usages removed)
-  - Remove assignments on m_11 (definition removed, all usages removed)
-  - Remove assignments on m'_4 (definition removed, all usages removed)
-  - Remove assignments on m_10 (definition removed, all usages removed)
-  - Remove assignments on m'_3 (definition removed, all usages removed)
-  - Remove assignments on m_12 (definition removed, all usages removed)
   - Remove assignments on m'_5 (definition removed, all usages removed)
+  - Remove assignments on m_12 (definition removed, all usages removed)
+  - Remove assignments on m'_3 (definition removed, all usages removed)
+  - Remove assignments on m_11 (definition removed, all usages removed)
+  - Remove assignments on m'_2 (definition removed, all usages removed)
+  - Remove assignments on m_13 (definition removed, all usages removed)
   - Remove assignments on m (definition removed, all usages removed)
   - Remove assignments on m' (definition removed, all usages removed)
   - Remove assignments on pkS_4 (definition removed, all usages removed)
   - Remove assignments on zz_10 (definition removed, all usages removed)
   - Remove assignments on m_1 (definition removed, all usages removed)
-  - Remove assignments on m'_1 (definition removed, all usages removed)
 yields
 
 Game 31 is
-      Ostart() :=
-      return();
-      ((
-        foreach i <= N do
-        Osetup() :=
-        sk <-R Z_t;
-        return();
-        ((
-          foreach ie <= Qeperuser do
-          OAEncap(pk_R: G_t) :=
-          find i1_6 = i1_7 <= N suchthat defined(sk[i1_7]) && (pk_R = exp(g, sk[i1_7])) then
-            z_5 <-R Z_t;
-            pkE_10: G_t <- exp(g, z_5);
-            enc_8: bitstring <- Serialize(pkE_10);
-            r_1 <-R eae_output_t;
-            return(AuthEncap_tuple(r_1, enc_8))
-          else
-            z_6 <-R Z_t;
-            pkE_11: G_t <- exp(g, z_6);
-            enc_9: bitstring <- Serialize(pkE_11);
-            pkS_5: G_t <- exp(g, sk);
-            find [unique] u_25 = ri_25 <= Qh suchthat defined(r_3[ri_25], salt[ri_25], protocol1[ri_25], suite1[ri_25], label1[ri_25], dh1[ri_25], dh2[ri_25], l[ri_25], protocol2[ri_25], suite2[ri_25], label2[ri_25], pkE'[ri_25], pkR'[ri_25], pkS'[ri_25]) && (pkS_5 = pkS'[ri_25]) && (pk_R = pkR'[ri_25]) && (pkE_11 = pkE'[ri_25]) && (label_shared_secret = label2[ri_25]) && (suite_id = suite2[ri_25]) && (RFCXXXX = protocol2[ri_25]) && (I2OSP2(Nsecret) = l[ri_25]) && (dh2[ri_25] = exp(pk_R, sk)) && (exp(pk_R, z_6) = dh1[ri_25]) && (label_eae_prk = label1[ri_25]) && (suite_id = suite1[ri_25]) && (RFCXXXX = protocol1[ri_25]) && (lbytes_empty = salt[ri_25]) then
-              return(AuthEncap_tuple(r_3[u_25], enc_9))
-            else
-              r <-R eae_output_t;
-              return(AuthEncap_tuple(r, enc_9))
-        ) | (
-          foreach id <= Qdperuser do
-          OADecap(pk_S: G_t, enc_2: bitstring) :=
- {195}    find ie1_2 = ie1_3 <= Qeperuser, i1_8 = i1_9 <= N suchthat defined(r_1[ie1_3, i1_9], r_1[ie1_3, i1_9], enc_8[ie1_3, i1_9], sk[i1_9], i1_6[ie1_3, i1_9]) && (i = i1_6[ie1_3, i1_9]) && (pk_S = exp(g, sk[i1_9])) && (enc_8[ie1_3, i1_9] = enc_2) then
-            return(AuthDecap_Some(r_1[ie1_2, i1_8]))
-          else
-            let Serialize(pkE_3: G_t) = enc_2 in
-              pkR_1: G_t <- exp(g, sk);
-              find [unique] u_18 = ri_18 <= Qdperuser suchthat defined(r_2[ri_18], pkE_3[ri_18], pk_S[ri_18]) && (pk_S = pk_S[ri_18]) && (pkE_3 = pkE_3[ri_18]) then
-                return(AuthDecap_Some(r_2[u_18]))
-              orfind u_17 = ri_17 <= Qh suchthat defined(r_3[ri_17], salt[ri_17], protocol1[ri_17], suite1[ri_17], label1[ri_17], dh1[ri_17], dh2[ri_17], l[ri_17], protocol2[ri_17], suite2[ri_17], label2[ri_17], pkE'[ri_17], pkR'[ri_17], pkS'[ri_17]) && (pk_S = pkS'[ri_17]) && (pkR_1 = pkR'[ri_17]) && (pkE_3 = pkE'[ri_17]) && (label_shared_secret = label2[ri_17]) && (suite_id = suite2[ri_17]) && (RFCXXXX = protocol2[ri_17]) && (I2OSP2(Nsecret) = l[ri_17]) && (dh2[ri_17] = exp(pk_S, sk)) && (dh1[ri_17] = exp(pkE_3, sk)) && (label_eae_prk = label1[ri_17]) && (suite_id = suite1[ri_17]) && (RFCXXXX = protocol1[ri_17]) && (lbytes_empty = salt[ri_17]) then
-                return(AuthDecap_Some(r_3[u_17]))
-              else
-                r_2 <-R eae_output_t;
-                return(AuthDecap_Some(r_2))
-            else
-              return(AuthDecap_None)
-        ) | (
-          Opk() :=
-          return(exp(g, sk))
-        ))
-      ) | (
-        foreach iH <= Qh do
-        OH(x1: eae_input_t) :=
-        let eae_input(salt: extract_salt_t, concatExtract(protocol1: label_protocol_t, suite1: suite_id_t, label1: label_extract_t, concatDH(dh1: G_t, dh2: G_t)), concatExpand(l: two_byte_t, protocol2: label_protocol_t, suite2: suite_id_t, label2: label_expand_t, concatContext(pkE': G_t, pkR': G_t, pkS': G_t))) = x1 in
-          find [unique] u_14 = ri_14 <= Qeperuser, u_15 = ri_15 <= N suchthat defined(r[ri_14, ri_15], z_6[ri_14, ri_15], sk[ri_15], pkE_11[ri_14, ri_15], pk_R[ri_14, ri_15], pkS_5[ri_14, ri_15]) && (pkS' = pkS_5[ri_14, ri_15]) && (pkR' = pk_R[ri_14, ri_15]) && (pkE' = pkE_11[ri_14, ri_15]) && (label2 = label_shared_secret) && (suite2 = suite_id) && (protocol2 = RFCXXXX) && (l = I2OSP2(Nsecret)) && (dh2 = exp(pk_R[ri_14, ri_15], sk[ri_15])) && (dh1 = exp(pk_R[ri_14, ri_15], z_6[ri_14, ri_15])) && (label1 = label_eae_prk) && (suite1 = suite_id) && (protocol1 = RFCXXXX) && (salt = lbytes_empty) then
-            return(r[u_14, u_15])
-          orfind u_10 = ri_10 <= Qdperuser, u_11 = ri_11 <= N suchthat defined(r_2[ri_10, ri_11], sk[ri_11], pkE_3[ri_10, ri_11], pkR_1[ri_10, ri_11], pk_S[ri_10, ri_11]) && (pkS' = pk_S[ri_10, ri_11]) && (pkR' = pkR_1[ri_10, ri_11]) && (pkE' = pkE_3[ri_10, ri_11]) && (label2 = label_shared_secret) && (suite2 = suite_id) && (protocol2 = RFCXXXX) && (l = I2OSP2(Nsecret)) && (dh2 = exp(pk_S[ri_10, ri_11], sk[ri_11])) && (dh1 = exp(pkE_3[ri_10, ri_11], sk[ri_11])) && (label1 = label_eae_prk) && (suite1 = suite_id) && (protocol1 = RFCXXXX) && (salt = lbytes_empty) then
-            return(r_2[u_10, u_11])
-          orfind u_9 = ri_9 <= Qh suchthat defined(r_3[ri_9], salt[ri_9], protocol1[ri_9], suite1[ri_9], label1[ri_9], dh1[ri_9], dh2[ri_9], l[ri_9], protocol2[ri_9], suite2[ri_9], label2[ri_9], pkE'[ri_9], pkR'[ri_9], pkS'[ri_9]) && (pkS' = pkS'[ri_9]) && (pkR' = pkR'[ri_9]) && (pkE' = pkE'[ri_9]) && (label2 = label2[ri_9]) && (suite2 = suite2[ri_9]) && (protocol2 = protocol2[ri_9]) && (l = l[ri_9]) && (dh2 = dh2[ri_9]) && (dh1 = dh1[ri_9]) && (label1 = label1[ri_9]) && (suite1 = suite1[ri_9]) && (protocol1 = protocol1[ri_9]) && (salt = salt[ri_9]) then
-            return(r_3[u_9])
-          else
-            r_3 <-R eae_output_t;
-            return(r_3)
-        else
-          find [unique] u = ri <= Qh suchthat defined(r_4[ri], x1[ri]) && (x1 = x1[ri]) then
-            return(r_4[u])
-          else
-            r_4 <-R eae_output_t;
-            return(r_4)
-      ))
-
-
-Applying simplify
-  - Simplification pass
-    - Replaced defined condition r_1[ie1_3, i1_9], r_1[ie1_3, i1_9], enc_8[ie1_3, i1_9], sk[i1_9], i1_6[ie1_3, i1_9] with r_1[ie1_3, i1_9], enc_8[ie1_3, i1_9], sk[i1_9], i1_6[ie1_3, i1_9] in find at 195
-yields
-
-Game 32 is
       Ostart() :=
       return();
       ((
@@ -2377,7 +2280,7 @@ Game 32 is
       ))
 
 Initial state
-Game 33 is
+Game 32 is
       Ostart() :=
       key_extr_11 <-R hash_key_t;
       return();
@@ -2415,7 +2318,7 @@ Game 33 is
       ))
 
 
-Applying expand
+Applying expand [probability N^2 * PCollKey]
   - Expand if/find/let
     - Simplify pattern (skE_1: Z_t, pkE_7: G_t) (tuple expanded) at 143
     - Remove else branch of let at 143
@@ -2425,7 +2328,7 @@ Applying expand
     - Remove else branch of let at 33
 yields
 
-Game 34 is
+Game 33 is
       Ostart() :=
       key_extr_11 <-R hash_key_t;
       return();
@@ -2512,6 +2415,68 @@ Applying remove assignments of findcond
   - Remove assignments on pkS_3 (definition removed, all usages removed)
 yields
 
+Game 34 is
+      Ostart() :=
+      key_extr_11 <-R hash_key_t;
+      return();
+      ((
+        foreach i_1 <= N do
+        Osetup() :=
+        sk_1 <-R Z_t;
+        return();
+        ((
+          foreach ie_1 <= Qeperuser do
+          OAEncap(pk_R_1: G_t) :=
+          find i1_4 = i1 <= N suchthat defined(sk_1[i1]) && (pk_R_1 = exp(g, sk_1[i1])) then
+            z_1 <-R Z_t;
+            pkE_8: G_t <- exp(g, z_1);
+            enc_7: bitstring <- Serialize(pkE_8);
+            k' <-R eae_output_t;
+            return(AuthEncap_tuple(k', enc_7))
+          else
+            z_1 <-R Z_t;
+            pkE_7: G_t <- exp(g, z_1);
+            dh_7: GG_t <- concatDH(exp(pk_R_1, z_1), exp(pk_R_1, sk_1));
+            enc_6: bitstring <- Serialize(pkE_7);
+            pkS_2: G_t <- exp(g, sk_1);
+            kemContext_7: GGG_t <- concatContext(pkE_7, pk_R_1, pkS_2);
+            key_2: extract_key_t <- concatExtract(RFCXXXX, suite_id, label_eae_prk, dh_7);
+            info_2: expand_info_t <- concatExpand(I2OSP2(Nsecret), RFCXXXX, suite_id, label_shared_secret, kemContext_7);
+            zz_7: eae_output_t <- ExtractAndExpand_inner(key_extr_11, eae_input(lbytes_empty, key_2, info_2));
+            return(AuthEncap_tuple(zz_7, enc_6))
+        ) | (
+          foreach id_1 <= Qdperuser do
+          OADecap(pk_S_1: G_t, cd: bitstring) :=
+ {147}    find ie1_1 = ie1 <= Qeperuser, i1_5 = i1_2 <= N suchthat defined(enc_7[ie1, i1_2], sk_1[i1_2], pk_R_1[ie1, i1_2], k'[ie1, i1_2]) && {155}((exp(g, sk_1) = pk_R_1[ie1, i1_2]) && (exp(g, sk_1[i1_2]) = pk_S_1) && (enc_7[ie1, i1_2] = cd)) then
+            return(AuthDecap_Some(k'[ie1_1, i1_5]))
+          else
+            let Serialize(pkE_9: G_t) = cd in
+              dh_9: GG_t <- concatDH(exp(pkE_9, sk_1), exp(pk_S_1, sk_1));
+              pkR_4: G_t <- exp(g, sk_1);
+              kemContext_9: GGG_t <- concatContext(pkE_9, pkR_4, pk_S_1);
+              key_4: extract_key_t <- concatExtract(RFCXXXX, suite_id, label_eae_prk, dh_9);
+              info_4: expand_info_t <- concatExpand(I2OSP2(Nsecret), RFCXXXX, suite_id, label_shared_secret, kemContext_9);
+              zz_9: eae_output_t <- ExtractAndExpand_inner(key_extr_11, eae_input(lbytes_empty, key_4, info_4));
+              return(AuthDecap_Some(zz_9))
+            else
+              return(AuthDecap_None)
+        ) | (
+          Opk() :=
+          return(exp(g, sk_1))
+        ))
+      ) | (
+        foreach iH_1 <= Qh do
+        OH(x1_1: eae_input_t) :=
+        return(ExtractAndExpand_inner(key_extr_11, x1_1))
+      ))
+
+
+Applying simplify [probability N^2 * PCollKey]
+  - Simplification pass
+    - Replaced ((exp(g, sk_1) = pk_R_1[ie1, i1_2]) && (exp(g, sk_1[i1_2]) = pk_S_1) && (enc_7[ie1, i1_2] = cd)) with ((i_1 = i1_4[ie1, i1_2]) && (exp(g, sk_1[i1_2]) = pk_S_1) && (enc_7[ie1, i1_2] = cd)) at 155
+    - Replaced defined condition enc_7[ie1, i1_2], sk_1[i1_2], pk_R_1[ie1, i1_2], k'[ie1, i1_2] with k'[ie1, i1_2], enc_7[ie1, i1_2], sk_1[i1_2], i1_4[ie1, i1_2] in find at 147
+yields
+
 Game 35 is
       Ostart() :=
       key_extr_11 <-R hash_key_t;
@@ -2544,68 +2509,7 @@ Game 35 is
         ) | (
           foreach id_1 <= Qdperuser do
           OADecap(pk_S_1: G_t, cd: bitstring) :=
- {147}    find ie1_1 = ie1 <= Qeperuser, i1_5 = i1_2 <= N suchthat defined(enc_7[ie1, i1_2], enc_7[ie1, i1_2], sk_1[i1_2], pk_R_1[ie1, i1_2], k'[ie1, i1_2]) && (exp(g, sk_1) = pk_R_1[ie1, i1_2]) && (exp(g, sk_1[i1_2]) = pk_S_1) && (enc_7[ie1, i1_2] = cd) then
-            return(AuthDecap_Some(k'[ie1_1, i1_5]))
-          else
-            let Serialize(pkE_9: G_t) = cd in
-              dh_9: GG_t <- concatDH(exp(pkE_9, sk_1), exp(pk_S_1, sk_1));
-              pkR_4: G_t <- exp(g, sk_1);
-              kemContext_9: GGG_t <- concatContext(pkE_9, pkR_4, pk_S_1);
-              key_4: extract_key_t <- concatExtract(RFCXXXX, suite_id, label_eae_prk, dh_9);
-              info_4: expand_info_t <- concatExpand(I2OSP2(Nsecret), RFCXXXX, suite_id, label_shared_secret, kemContext_9);
-              zz_9: eae_output_t <- ExtractAndExpand_inner(key_extr_11, eae_input(lbytes_empty, key_4, info_4));
-              return(AuthDecap_Some(zz_9))
-            else
-              return(AuthDecap_None)
-        ) | (
-          Opk() :=
-          return(exp(g, sk_1))
-        ))
-      ) | (
-        foreach iH_1 <= Qh do
-        OH(x1_1: eae_input_t) :=
-        return(ExtractAndExpand_inner(key_extr_11, x1_1))
-      ))
-
-
-Applying simplify
-  - Simplification pass
-    - Replaced defined condition enc_7[ie1, i1_2], enc_7[ie1, i1_2], sk_1[i1_2], pk_R_1[ie1, i1_2], k'[ie1, i1_2] with k'[ie1, i1_2], enc_7[ie1, i1_2], sk_1[i1_2], pk_R_1[ie1, i1_2] in find at 147
-yields
-
-Game 36 is
-      Ostart() :=
-      key_extr_11 <-R hash_key_t;
-      return();
-      ((
-        foreach i_1 <= N do
-        Osetup() :=
-        sk_1 <-R Z_t;
-        return();
-        ((
-          foreach ie_1 <= Qeperuser do
-          OAEncap(pk_R_1: G_t) :=
-          find i1_4 = i1 <= N suchthat defined(sk_1[i1]) && (pk_R_1 = exp(g, sk_1[i1])) then
-            z_1 <-R Z_t;
-            pkE_8: G_t <- exp(g, z_1);
-            enc_7: bitstring <- Serialize(pkE_8);
-            k' <-R eae_output_t;
-            return(AuthEncap_tuple(k', enc_7))
-          else
-            z_1 <-R Z_t;
-            pkE_7: G_t <- exp(g, z_1);
-            dh_7: GG_t <- concatDH(exp(pk_R_1, z_1), exp(pk_R_1, sk_1));
-            enc_6: bitstring <- Serialize(pkE_7);
-            pkS_2: G_t <- exp(g, sk_1);
-            kemContext_7: GGG_t <- concatContext(pkE_7, pk_R_1, pkS_2);
-            key_2: extract_key_t <- concatExtract(RFCXXXX, suite_id, label_eae_prk, dh_7);
-            info_2: expand_info_t <- concatExpand(I2OSP2(Nsecret), RFCXXXX, suite_id, label_shared_secret, kemContext_7);
-            zz_7: eae_output_t <- ExtractAndExpand_inner(key_extr_11, eae_input(lbytes_empty, key_2, info_2));
-            return(AuthEncap_tuple(zz_7, enc_6))
-        ) | (
-          foreach id_1 <= Qdperuser do
-          OADecap(pk_S_1: G_t, cd: bitstring) :=
-          find ie1_1 = ie1 <= Qeperuser, i1_5 = i1_2 <= N suchthat defined(k'[ie1, i1_2], enc_7[ie1, i1_2], sk_1[i1_2], pk_R_1[ie1, i1_2]) && (exp(g, sk_1) = pk_R_1[ie1, i1_2]) && (exp(g, sk_1[i1_2]) = pk_S_1) && (enc_7[ie1, i1_2] = cd) then
+          find ie1_1 = ie1 <= Qeperuser, i1_5 = i1_2 <= N suchthat defined(k'[ie1, i1_2], enc_7[ie1, i1_2], sk_1[i1_2], i1_4[ie1, i1_2]) && (i_1 = i1_4[ie1, i1_2]) && (exp(g, sk_1[i1_2]) = pk_S_1) && (enc_7[ie1, i1_2] = cd) then
             return(AuthDecap_Some(k'[ie1_1, i1_5]))
           else
             let Serialize(pkE_9: G_t) = cd in
@@ -2631,6 +2535,76 @@ Game 36 is
 
 Applying remove assignments of findcond
   - Rename variable z_1 into z_4, z_3
+yields
+
+Game 36 is
+      Ostart() :=
+      key_extr_11 <-R hash_key_t;
+      return();
+      ((
+        foreach i_1 <= N do
+        Osetup() :=
+        sk_1 <-R Z_t;
+        return();
+        ((
+          foreach ie_1 <= Qeperuser do
+          OAEncap(pk_R_1: G_t) :=
+          find i1_4 = i1 <= N suchthat defined(sk_1[i1]) && (pk_R_1 = exp(g, sk_1[i1])) then
+            z_4 <-R Z_t;
+            pkE_8: G_t <- exp(g, z_4);
+            enc_7: bitstring <- Serialize(pkE_8);
+            k' <-R eae_output_t;
+            return(AuthEncap_tuple(k', enc_7))
+          else
+            z_3 <-R Z_t;
+            pkE_7: G_t <- exp(g, z_3);
+            dh_7: GG_t <- concatDH(exp(pk_R_1, z_3), exp(pk_R_1, sk_1));
+            enc_6: bitstring <- Serialize(pkE_7);
+            pkS_2: G_t <- exp(g, sk_1);
+            kemContext_7: GGG_t <- concatContext(pkE_7, pk_R_1, pkS_2);
+            key_2: extract_key_t <- concatExtract(RFCXXXX, suite_id, label_eae_prk, dh_7);
+            info_2: expand_info_t <- concatExpand(I2OSP2(Nsecret), RFCXXXX, suite_id, label_shared_secret, kemContext_7);
+            zz_7: eae_output_t <- ExtractAndExpand_inner(key_extr_11, eae_input(lbytes_empty, key_2, info_2));
+            return(AuthEncap_tuple(zz_7, enc_6))
+        ) | (
+          foreach id_1 <= Qdperuser do
+          OADecap(pk_S_1: G_t, cd: bitstring) :=
+          find ie1_1 = ie1 <= Qeperuser, i1_5 = i1_2 <= N suchthat defined(k'[ie1, i1_2], enc_7[ie1, i1_2], sk_1[i1_2], i1_4[ie1, i1_2]) && (i_1 = i1_4[ie1, i1_2]) && (exp(g, sk_1[i1_2]) = pk_S_1) && (enc_7[ie1, i1_2] = cd) then
+            return(AuthDecap_Some(k'[ie1_1, i1_5]))
+          else
+            let Serialize(pkE_9: G_t) = cd in
+              dh_9: GG_t <- concatDH(exp(pkE_9, sk_1), exp(pk_S_1, sk_1));
+              pkR_4: G_t <- exp(g, sk_1);
+              kemContext_9: GGG_t <- concatContext(pkE_9, pkR_4, pk_S_1);
+              key_4: extract_key_t <- concatExtract(RFCXXXX, suite_id, label_eae_prk, dh_9);
+              info_4: expand_info_t <- concatExpand(I2OSP2(Nsecret), RFCXXXX, suite_id, label_shared_secret, kemContext_9);
+              zz_9: eae_output_t <- ExtractAndExpand_inner(key_extr_11, eae_input(lbytes_empty, key_4, info_4));
+              return(AuthDecap_Some(zz_9))
+            else
+              return(AuthDecap_None)
+        ) | (
+          Opk() :=
+          return(exp(g, sk_1))
+        ))
+      ) | (
+        foreach iH_1 <= Qh do
+        OH(x1_1: eae_input_t) :=
+ {280}  return(ExtractAndExpand_inner(key_extr_11, x1_1))
+      ))
+
+
+Applying insert instruction let eae_input(
+      salt: extract_salt_t,
+      concatExtract(
+        protocol1: label_protocol_t,
+        suite1: suite_id_t,
+        label1: label_extract_t,
+        concatDH(dh1: G_t, dh2: G_t)),
+      concatExpand(l: two_byte_t,
+        protocol2: label_protocol_t,
+        suite2: suite_id_t,
+        label2: label_expand_t,
+        concatContext(pkE'': G_t, pkR'': G_t, pkS'': G_t))) = x1_1 in at occurrence 280
 yields
 
 Game 37 is
@@ -2665,77 +2639,7 @@ Game 37 is
         ) | (
           foreach id_1 <= Qdperuser do
           OADecap(pk_S_1: G_t, cd: bitstring) :=
-          find ie1_1 = ie1 <= Qeperuser, i1_5 = i1_2 <= N suchthat defined(k'[ie1, i1_2], enc_7[ie1, i1_2], sk_1[i1_2], pk_R_1[ie1, i1_2]) && (exp(g, sk_1) = pk_R_1[ie1, i1_2]) && (exp(g, sk_1[i1_2]) = pk_S_1) && (enc_7[ie1, i1_2] = cd) then
-            return(AuthDecap_Some(k'[ie1_1, i1_5]))
-          else
-            let Serialize(pkE_9: G_t) = cd in
-              dh_9: GG_t <- concatDH(exp(pkE_9, sk_1), exp(pk_S_1, sk_1));
-              pkR_4: G_t <- exp(g, sk_1);
-              kemContext_9: GGG_t <- concatContext(pkE_9, pkR_4, pk_S_1);
-              key_4: extract_key_t <- concatExtract(RFCXXXX, suite_id, label_eae_prk, dh_9);
-              info_4: expand_info_t <- concatExpand(I2OSP2(Nsecret), RFCXXXX, suite_id, label_shared_secret, kemContext_9);
-              zz_9: eae_output_t <- ExtractAndExpand_inner(key_extr_11, eae_input(lbytes_empty, key_4, info_4));
-              return(AuthDecap_Some(zz_9))
-            else
-              return(AuthDecap_None)
-        ) | (
-          Opk() :=
-          return(exp(g, sk_1))
-        ))
-      ) | (
-        foreach iH_1 <= Qh do
-        OH(x1_1: eae_input_t) :=
- {283}  return(ExtractAndExpand_inner(key_extr_11, x1_1))
-      ))
-
-
-Applying insert instruction let eae_input(
-      salt: extract_salt_t,
-      concatExtract(
-        protocol1: label_protocol_t,
-        suite1: suite_id_t,
-        label1: label_extract_t,
-        concatDH(dh1: G_t, dh2: G_t)),
-      concatExpand(l: two_byte_t,
-        protocol2: label_protocol_t,
-        suite2: suite_id_t,
-        label2: label_expand_t,
-        concatContext(pkE'': G_t, pkR'': G_t, pkS'': G_t))) = x1_1 in at occurrence 283
-yields
-
-Game 38 is
-      Ostart() :=
-      key_extr_11 <-R hash_key_t;
-      return();
-      ((
-        foreach i_1 <= N do
-        Osetup() :=
-        sk_1 <-R Z_t;
-        return();
-        ((
-          foreach ie_1 <= Qeperuser do
-          OAEncap(pk_R_1: G_t) :=
-          find i1_4 = i1 <= N suchthat defined(sk_1[i1]) && (pk_R_1 = exp(g, sk_1[i1])) then
-            z_4 <-R Z_t;
-            pkE_8: G_t <- exp(g, z_4);
-            enc_7: bitstring <- Serialize(pkE_8);
-            k' <-R eae_output_t;
-            return(AuthEncap_tuple(k', enc_7))
-          else
-            z_3 <-R Z_t;
-            pkE_7: G_t <- exp(g, z_3);
-            dh_7: GG_t <- concatDH(exp(pk_R_1, z_3), exp(pk_R_1, sk_1));
-            enc_6: bitstring <- Serialize(pkE_7);
-            pkS_2: G_t <- exp(g, sk_1);
-            kemContext_7: GGG_t <- concatContext(pkE_7, pk_R_1, pkS_2);
-            key_2: extract_key_t <- concatExtract(RFCXXXX, suite_id, label_eae_prk, dh_7);
-            info_2: expand_info_t <- concatExpand(I2OSP2(Nsecret), RFCXXXX, suite_id, label_shared_secret, kemContext_7);
-            zz_7: eae_output_t <- ExtractAndExpand_inner(key_extr_11, eae_input(lbytes_empty, key_2, info_2));
-            return(AuthEncap_tuple(zz_7, enc_6))
-        ) | (
-          foreach id_1 <= Qdperuser do
-          OADecap(pk_S_1: G_t, cd: bitstring) :=
-          find ie1_1 = ie1 <= Qeperuser, i1_5 = i1_2 <= N suchthat defined(k'[ie1, i1_2], enc_7[ie1, i1_2], sk_1[i1_2], pk_R_1[ie1, i1_2]) && (exp(g, sk_1) = pk_R_1[ie1, i1_2]) && (exp(g, sk_1[i1_2]) = pk_S_1) && (enc_7[ie1, i1_2] = cd) then
+          find ie1_1 = ie1 <= Qeperuser, i1_5 = i1_2 <= N suchthat defined(k'[ie1, i1_2], enc_7[ie1, i1_2], sk_1[i1_2], i1_4[ie1, i1_2]) && (i_1 = i1_4[ie1, i1_2]) && (exp(g, sk_1[i1_2]) = pk_S_1) && (enc_7[ie1, i1_2] = cd) then
             return(AuthDecap_Some(k'[ie1_1, i1_5]))
           else
             let Serialize(pkE_9: G_t) = cd in
@@ -2766,7 +2670,7 @@ Applying equivalence rom(ExtractAndExpand_inner)
   - Equivalence rom(ExtractAndExpand_inner) with variables: key_extr_11 -> hk
 yields
 
-Game 39 is
+Game 38 is
       Ostart() :=
       return();
       ((
@@ -2797,7 +2701,7 @@ Game 39 is
         ) | (
           foreach id_1 <= Qdperuser do
           OADecap(pk_S_1: G_t, cd: bitstring) :=
-          find ie1_1 = ie1 <= Qeperuser, i1_5 = i1_2 <= N suchthat defined(k'[ie1, i1_2], enc_7[ie1, i1_2], sk_1[i1_2], pk_R_1[ie1, i1_2]) && (exp(g, sk_1) = pk_R_1[ie1, i1_2]) && (exp(g, sk_1[i1_2]) = pk_S_1) && (enc_7[ie1, i1_2] = cd) then
+          find ie1_1 = ie1 <= Qeperuser, i1_5 = i1_2 <= N suchthat defined(k'[ie1, i1_2], enc_7[ie1, i1_2], sk_1[i1_2], i1_4[ie1, i1_2]) && (i_1 = i1_4[ie1, i1_2]) && (exp(g, sk_1[i1_2]) = pk_S_1) && (enc_7[ie1, i1_2] = cd) then
             return(AuthDecap_Some(k'[ie1_1, i1_5]))
           else
             let Serialize(pkE_9: G_t) = cd in
@@ -2806,7 +2710,7 @@ Game 39 is
               kemContext_9: GGG_t <- concatContext(pkE_9, pkR_4, pk_S_1);
               key_4: extract_key_t <- concatExtract(RFCXXXX, suite_id, label_eae_prk, dh_9);
               info_4: expand_info_t <- concatExpand(I2OSP2(Nsecret), RFCXXXX, suite_id, label_shared_secret, kemContext_9);
-              zz_9: eae_output_t <- (x_O_6: eae_input_t <- eae_input(lbytes_empty, key_4, info_4); {316}find [unique] u_56 = ri_56 <= Qeperuser, u_57 = ri_57 <= N suchthat defined(x_O_5[ri_56, ri_57], r_5[ri_56, ri_57]) && (x_O_6 = x_O_5[ri_56, ri_57]) then r_5[u_56, u_57] orfind u_54 = ri_54 <= Qdperuser, u_55 = ri_55 <= N suchthat defined(x_O_6[ri_54, ri_55], r_6[ri_54, ri_55]) && (x_O_6 = x_O_6[ri_54, ri_55]) then r_6[u_54, u_55] orfind u_53 = ri_53 <= Qh suchthat defined(x_O_7[ri_53], r_7[ri_53]) && (x_O_6 = x_O_7[ri_53]) then r_7[u_53] orfind u_52 = ri_52 <= Qh suchthat defined(x_O_8[ri_52], r_8[ri_52]) && {367}(x_O_6 = x_O_8[ri_52]) then r_8[u_52] else r_6 <-R eae_output_t; r_6);
+              zz_9: eae_output_t <- (x_O_6: eae_input_t <- eae_input(lbytes_empty, key_4, info_4); {313}find [unique] u_56 = ri_56 <= Qeperuser, u_57 = ri_57 <= N suchthat defined(x_O_5[ri_56, ri_57], r_5[ri_56, ri_57]) && (x_O_6 = x_O_5[ri_56, ri_57]) then r_5[u_56, u_57] orfind u_54 = ri_54 <= Qdperuser, u_55 = ri_55 <= N suchthat defined(x_O_6[ri_54, ri_55], r_6[ri_54, ri_55]) && (x_O_6 = x_O_6[ri_54, ri_55]) then r_6[u_54, u_55] orfind u_53 = ri_53 <= Qh suchthat defined(x_O_7[ri_53], r_7[ri_53]) && (x_O_6 = x_O_7[ri_53]) then r_7[u_53] orfind u_52 = ri_52 <= Qh suchthat defined(x_O_8[ri_52], r_8[ri_52]) && {364}(x_O_6 = x_O_8[ri_52]) then r_8[u_52] else r_6 <-R eae_output_t; r_6);
               return(AuthDecap_Some(zz_9))
             else
               return(AuthDecap_None)
@@ -2818,29 +2722,29 @@ Game 39 is
         foreach iH_1 <= Qh do
         OH(x1_1: eae_input_t) :=
         let eae_input(salt_1: extract_salt_t, concatExtract(protocol1_1: label_protocol_t, suite1_1: suite_id_t, label1_1: label_extract_t, concatDH(dh1_1: G_t, dh2_1: G_t)), concatExpand(l_1: two_byte_t, protocol2_1: label_protocol_t, suite2_1: suite_id_t, label2_1: label_expand_t, concatContext(pkE'': G_t, pkR'': G_t, pkS'': G_t))) = x1_1 in
-          return((x_O_7: eae_input_t <- x1_1; {418}find [unique] u_50 = ri_50 <= Qeperuser, u_51 = ri_51 <= N suchthat defined(x_O_5[ri_50, ri_51], r_5[ri_50, ri_51]) && (x_O_7 = x_O_5[ri_50, ri_51]) then r_5[u_50, u_51] orfind u_48 = ri_48 <= Qdperuser, u_49 = ri_49 <= N suchthat defined(x_O_6[ri_48, ri_49], r_6[ri_48, ri_49]) && (x_O_7 = x_O_6[ri_48, ri_49]) then r_6[u_48, u_49] orfind u_47 = ri_47 <= Qh suchthat defined(x_O_7[ri_47], r_7[ri_47]) && (x_O_7 = x_O_7[ri_47]) then r_7[u_47] orfind u_46 = ri_46 <= Qh suchthat defined(x_O_8[ri_46], r_8[ri_46]) && {461}(x_O_7 = x_O_8[ri_46]) then r_8[u_46] else r_7 <-R eae_output_t; r_7))
+          return((x_O_7: eae_input_t <- x1_1; {415}find [unique] u_50 = ri_50 <= Qeperuser, u_51 = ri_51 <= N suchthat defined(x_O_5[ri_50, ri_51], r_5[ri_50, ri_51]) && (x_O_7 = x_O_5[ri_50, ri_51]) then r_5[u_50, u_51] orfind u_48 = ri_48 <= Qdperuser, u_49 = ri_49 <= N suchthat defined(x_O_6[ri_48, ri_49], r_6[ri_48, ri_49]) && (x_O_7 = x_O_6[ri_48, ri_49]) then r_6[u_48, u_49] orfind u_47 = ri_47 <= Qh suchthat defined(x_O_7[ri_47], r_7[ri_47]) && (x_O_7 = x_O_7[ri_47]) then r_7[u_47] orfind u_46 = ri_46 <= Qh suchthat defined(x_O_8[ri_46], r_8[ri_46]) && {458}(x_O_7 = x_O_8[ri_46]) then r_8[u_46] else r_7 <-R eae_output_t; r_7))
         else
-          return((x_O_8: eae_input_t <- x1_1; {478}find [unique] u_44 = ri_44 <= Qeperuser, u_45 = ri_45 <= N suchthat defined(x_O_5[ri_44, ri_45], r_5[ri_44, ri_45]) && {483}(x_O_8 = x_O_5[ri_44, ri_45]) then r_5[u_44, u_45] orfind u_42 = ri_42 <= Qdperuser, u_43 = ri_43 <= N suchthat defined(x_O_6[ri_42, ri_43], r_6[ri_42, ri_43]) && {498}(x_O_8 = x_O_6[ri_42, ri_43]) then r_6[u_42, u_43] orfind u_41 = ri_41 <= Qh suchthat defined(x_O_7[ri_41], r_7[ri_41]) && {511}(x_O_8 = x_O_7[ri_41]) then r_7[u_41] orfind u_40 = ri_40 <= Qh suchthat defined(x_O_8[ri_40], r_8[ri_40]) && (x_O_8 = x_O_8[ri_40]) then r_8[u_40] else r_8 <-R eae_output_t; r_8))
+          return((x_O_8: eae_input_t <- x1_1; {475}find [unique] u_44 = ri_44 <= Qeperuser, u_45 = ri_45 <= N suchthat defined(x_O_5[ri_44, ri_45], r_5[ri_44, ri_45]) && {480}(x_O_8 = x_O_5[ri_44, ri_45]) then r_5[u_44, u_45] orfind u_42 = ri_42 <= Qdperuser, u_43 = ri_43 <= N suchthat defined(x_O_6[ri_42, ri_43], r_6[ri_42, ri_43]) && {495}(x_O_8 = x_O_6[ri_42, ri_43]) then r_6[u_42, u_43] orfind u_41 = ri_41 <= Qh suchthat defined(x_O_7[ri_41], r_7[ri_41]) && {508}(x_O_8 = x_O_7[ri_41]) then r_7[u_41] orfind u_40 = ri_40 <= Qh suchthat defined(x_O_8[ri_40], r_8[ri_40]) && (x_O_8 = x_O_8[ri_40]) then r_8[u_40] else r_8 <-R eae_output_t; r_8))
       ))
 
 
-Applying simplify (non-expanded game) [probability N * N * PCollKey]
+Applying simplify (non-expanded game) [probability (N^2 + #OAEncap^2) * PCollKey]
   - Simplification pass
     - Replaced (x_O_5 = x_O_8[ri_58]) with false at 174
     - Remove branch 4 in find at 123
-    - Replaced (x_O_6 = x_O_8[ri_52]) with false at 367
-    - Remove branch 4 in find at 316
-    - Replaced (x_O_7 = x_O_8[ri_46]) with false at 461
-    - Remove branch 4 in find at 418
-    - Replaced (x_O_8 = x_O_7[ri_41]) with false at 511
-    - Remove branch 3 in find at 478
-    - Replaced (x_O_8 = x_O_6[ri_42, ri_43]) with false at 498
-    - Remove branch 2 in find at 478
-    - Replaced (x_O_8 = x_O_5[ri_44, ri_45]) with false at 483
-    - Remove branch 1 in find at 478
+    - Replaced (x_O_6 = x_O_8[ri_52]) with false at 364
+    - Remove branch 4 in find at 313
+    - Replaced (x_O_7 = x_O_8[ri_46]) with false at 458
+    - Remove branch 4 in find at 415
+    - Replaced (x_O_8 = x_O_7[ri_41]) with false at 508
+    - Remove branch 3 in find at 475
+    - Replaced (x_O_8 = x_O_6[ri_42, ri_43]) with false at 495
+    - Remove branch 2 in find at 475
+    - Replaced (x_O_8 = x_O_5[ri_44, ri_45]) with false at 480
+    - Remove branch 1 in find at 475
 yields
 
-Game 40 is
+Game 39 is
       Ostart() :=
       return();
       ((
@@ -2871,7 +2775,7 @@ Game 40 is
         ) | (
           foreach id_1 <= Qdperuser do
           OADecap(pk_S_1: G_t, cd: bitstring) :=
-          find ie1_1 = ie1 <= Qeperuser, i1_5 = i1_2 <= N suchthat defined(k'[ie1, i1_2], enc_7[ie1, i1_2], sk_1[i1_2], pk_R_1[ie1, i1_2]) && (exp(g, sk_1) = pk_R_1[ie1, i1_2]) && (exp(g, sk_1[i1_2]) = pk_S_1) && (enc_7[ie1, i1_2] = cd) then
+          find ie1_1 = ie1 <= Qeperuser, i1_5 = i1_2 <= N suchthat defined(k'[ie1, i1_2], enc_7[ie1, i1_2], sk_1[i1_2], i1_4[ie1, i1_2]) && (i_1 = i1_4[ie1, i1_2]) && (exp(g, sk_1[i1_2]) = pk_S_1) && (enc_7[ie1, i1_2] = cd) then
             return(AuthDecap_Some(k'[ie1_1, i1_5]))
           else
             let Serialize(pkE_9: G_t) = cd in
@@ -2880,7 +2784,7 @@ Game 40 is
               kemContext_9: GGG_t <- concatContext(pkE_9, pkR_4, pk_S_1);
               key_4: extract_key_t <- concatExtract(RFCXXXX, suite_id, label_eae_prk, dh_9);
               info_4: expand_info_t <- concatExpand(I2OSP2(Nsecret), RFCXXXX, suite_id, label_shared_secret, kemContext_9);
-              zz_9: eae_output_t <- (x_O_6: eae_input_t <- eae_input(lbytes_empty, key_4, info_4); {304}find [unique] u_56 = ri_56 <= Qeperuser, u_57 = ri_57 <= N suchthat defined(x_O_5[ri_56, ri_57], r_5[ri_56, ri_57]) && (x_O_6 = x_O_5[ri_56, ri_57]) then r_5[u_56, u_57] orfind u_54 = ri_54 <= Qdperuser, u_55 = ri_55 <= N suchthat defined(x_O_6[ri_54, ri_55], r_6[ri_54, ri_55]) && (x_O_6 = x_O_6[ri_54, ri_55]) then r_6[u_54, u_55] orfind u_53 = ri_53 <= Qh suchthat defined(x_O_7[ri_53], r_7[ri_53]) && (x_O_6 = x_O_7[ri_53]) then r_7[u_53] else r_6 <-R eae_output_t; r_6);
+              zz_9: eae_output_t <- (x_O_6: eae_input_t <- eae_input(lbytes_empty, key_4, info_4); {301}find [unique] u_56 = ri_56 <= Qeperuser, u_57 = ri_57 <= N suchthat defined(x_O_5[ri_56, ri_57], r_5[ri_56, ri_57]) && (x_O_6 = x_O_5[ri_56, ri_57]) then r_5[u_56, u_57] orfind u_54 = ri_54 <= Qdperuser, u_55 = ri_55 <= N suchthat defined(x_O_6[ri_54, ri_55], r_6[ri_54, ri_55]) && (x_O_6 = x_O_6[ri_54, ri_55]) then r_6[u_54, u_55] orfind u_53 = ri_53 <= Qh suchthat defined(x_O_7[ri_53], r_7[ri_53]) && (x_O_6 = x_O_7[ri_53]) then r_7[u_53] else r_6 <-R eae_output_t; r_6);
               return(AuthDecap_Some(zz_9))
             else
               return(AuthDecap_None)
@@ -2898,14 +2802,14 @@ Game 40 is
       ))
 
 
-Applying expand [probability (#OAEncap * Qeperuser + #OAEncap * N + N * N) * PCollKey]
+Applying expand [probability (#OAEncap^2 + #OAEncap * N + N^2) * PCollKey]
   - Expand if/find/let
-    - Remove branch 1 in find at 304
+    - Remove branch 1 in find at 301
     - Remove branch 2 in find at 123
     - Remove branch 1 in find at 123
 yields
 
-Game 41 is
+Game 40 is
       Ostart() :=
       return();
       ((
@@ -2942,7 +2846,7 @@ Game 41 is
         ) | (
           foreach id_1 <= Qdperuser do
           OADecap(pk_S_1: G_t, cd: bitstring) :=
-          find ie1_1 = ie1 <= Qeperuser, i1_5 = i1_2 <= N suchthat defined(k'[ie1, i1_2], enc_7[ie1, i1_2], sk_1[i1_2], pk_R_1[ie1, i1_2]) && (exp(g, sk_1) = pk_R_1[ie1, i1_2]) && (exp(g, sk_1[i1_2]) = pk_S_1) && (enc_7[ie1, i1_2] = cd) then
+          find ie1_1 = ie1 <= Qeperuser, i1_5 = i1_2 <= N suchthat defined(k'[ie1, i1_2], enc_7[ie1, i1_2], sk_1[i1_2], i1_4[ie1, i1_2]) && (i_1 = i1_4[ie1, i1_2]) && (exp(g, sk_1[i1_2]) = pk_S_1) && (enc_7[ie1, i1_2] = cd) then
             return(AuthDecap_Some(k'[ie1_1, i1_5]))
           else
             let Serialize(pkE_9: G_t) = cd in
@@ -3002,7 +2906,7 @@ Applying remove assignments of findcond
   - Remove assignments on zz_7 (definition removed, all usages removed)
 yields
 
-Game 42 is
+Game 41 is
       Ostart() :=
       return();
       ((
@@ -3037,7 +2941,7 @@ Game 42 is
         ) | (
           foreach id_1 <= Qdperuser do
           OADecap(pk_S_1: G_t, cd: bitstring) :=
- {166}    find ie1_1 = ie1 <= Qeperuser, i1_5 = i1_2 <= N suchthat defined(k'[ie1, i1_2], enc_7[ie1, i1_2], sk_1[i1_2], pk_R_1[ie1, i1_2]) && {174}((exp(g, sk_1) = pk_R_1[ie1, i1_2]) && (exp(g, sk_1[i1_2]) = pk_S_1) && (enc_7[ie1, i1_2] = cd)) then
+          find ie1_1 = ie1 <= Qeperuser, i1_5 = i1_2 <= N suchthat defined(k'[ie1, i1_2], enc_7[ie1, i1_2], sk_1[i1_2], i1_4[ie1, i1_2]) && (i_1 = i1_4[ie1, i1_2]) && (exp(g, sk_1[i1_2]) = pk_S_1) && (enc_7[ie1, i1_2] = cd) then
             return(AuthDecap_Some(k'[ie1_1, i1_5]))
           else
             let Serialize(pkE_9: G_t) = cd in
@@ -3047,9 +2951,9 @@ Game 42 is
               key_4: extract_key_t <- concatExtract(RFCXXXX, suite_id, label_eae_prk, dh_9);
               info_4: expand_info_t <- concatExpand(I2OSP2(Nsecret), RFCXXXX, suite_id, label_shared_secret, kemContext_9);
               x_O_6: eae_input_t <- eae_input(lbytes_empty, key_4, info_4);
- {271}        find [unique] u_54 = ri_54 <= Qdperuser, u_55 = ri_55 <= N suchthat defined(x_O_6[ri_54, ri_55], r_6[ri_54, ri_55]) && {276}(x_O_6 = x_O_6[ri_54, ri_55]) then
+ {268}        find [unique] u_54 = ri_54 <= Qdperuser, u_55 = ri_55 <= N suchthat defined(x_O_6[ri_54, ri_55], r_6[ri_54, ri_55]) && {273}(x_O_6 = x_O_6[ri_54, ri_55]) then
                 return(AuthDecap_Some(r_6[u_54, u_55]))
-              orfind u_53 = ri_53 <= Qh suchthat defined(x1_1[ri_53], x_O_7[ri_53], r_7[ri_53]) && {297}(x_O_6 = x1_1[ri_53]) then
+              orfind u_53 = ri_53 <= Qh suchthat defined(x1_1[ri_53], x_O_7[ri_53], r_7[ri_53]) && {294}(x_O_6 = x1_1[ri_53]) then
                 return(AuthDecap_Some(r_7[u_53]))
               else
                 r_6 <-R eae_output_t;
@@ -3065,18 +2969,18 @@ Game 42 is
         OH(x1_1: eae_input_t) :=
         let eae_input(salt_1: extract_salt_t, concatExtract(protocol1_1: label_protocol_t, suite1_1: suite_id_t, label1_1: label_extract_t, concatDH(dh1_1: G_t, dh2_1: G_t)), concatExpand(l_1: two_byte_t, protocol2_1: label_protocol_t, suite2_1: suite_id_t, label2_1: label_expand_t, concatContext(pkE'': G_t, pkR'': G_t, pkS'': G_t))) = x1_1 in
           x_O_7: eae_input_t <- cst_eae_input_t;
- {346}    find [unique] u_50 = ri_50 <= Qeperuser, u_51 = ri_51 <= N suchthat defined(x_O_5[ri_50, ri_51], r_5[ri_50, ri_51]) && {351}(x1_1 = x_O_5[ri_50, ri_51]) then
+ {343}    find [unique] u_50 = ri_50 <= Qeperuser, u_51 = ri_51 <= N suchthat defined(x_O_5[ri_50, ri_51], r_5[ri_50, ri_51]) && {348}(x1_1 = x_O_5[ri_50, ri_51]) then
             return(r_5[u_50, u_51])
-          orfind u_48 = ri_48 <= Qdperuser, u_49 = ri_49 <= N suchthat defined(x_O_6[ri_48, ri_49], r_6[ri_48, ri_49]) && {369}(x1_1 = x_O_6[ri_48, ri_49]) then
+          orfind u_48 = ri_48 <= Qdperuser, u_49 = ri_49 <= N suchthat defined(x_O_6[ri_48, ri_49], r_6[ri_48, ri_49]) && {366}(x1_1 = x_O_6[ri_48, ri_49]) then
             return(r_6[u_48, u_49])
-          orfind u_47 = ri_47 <= Qh suchthat defined(x1_1[ri_47], x_O_7[ri_47], r_7[ri_47]) && {386}(x1_1 = x1_1[ri_47]) then
+          orfind u_47 = ri_47 <= Qh suchthat defined(x1_1[ri_47], x_O_7[ri_47], r_7[ri_47]) && {383}(x1_1 = x1_1[ri_47]) then
             return(r_7[u_47])
           else
             r_7 <-R eae_output_t;
             return(r_7)
         else
           x_O_8: eae_input_t <- cst_eae_input_t;
- {406}    find [unique] u_40 = ri_40 <= Qh suchthat defined(x1_1[ri_40], x_O_8[ri_40], r_8[ri_40]) && (x1_1 = x1_1[ri_40]) then
+ {403}    find [unique] u_40 = ri_40 <= Qh suchthat defined(x1_1[ri_40], x_O_8[ri_40], r_8[ri_40]) && (x1_1 = x1_1[ri_40]) then
             return(r_8[u_40])
           else
             r_8 <-R eae_output_t;
@@ -3084,27 +2988,25 @@ Game 42 is
       ))
 
 
-Applying simplify [probability 2 * N * N * PCollKey]
+Applying simplify [probability N^2 * PCollKey]
   - Simplification pass
-    - Replaced defined condition x1_1[ri_40], x_O_8[ri_40], r_8[ri_40] with r_8[ri_40], x1_1[ri_40] in find at 406
-    - Replaced (x1_1 = x1_1[ri_47]) with ((pkS'' = pkS''[ri_47]) && (pkR'' = pkR''[ri_47]) && (pkE'' = pkE''[ri_47]) && (label2_1 = label2_1[ri_47]) && (suite2_1 = suite2_1[ri_47]) && (protocol2_1 = protocol2_1[ri_47]) && (l_1 = l_1[ri_47]) && (dh2_1 = dh2_1[ri_47]) && (dh1_1 = dh1_1[ri_47]) && (label1_1 = label1_1[ri_47]) && (suite1_1 = suite1_1[ri_47]) && (protocol1_1 = protocol1_1[ri_47]) && (salt_1 = salt_1[ri_47])) at 386
-    - Replaced defined condition x1_1[ri_47], x_O_7[ri_47], r_7[ri_47] with r_7[ri_47], salt_1[ri_47], protocol1_1[ri_47], suite1_1[ri_47], label1_1[ri_47], dh1_1[ri_47], dh2_1[ri_47], l_1[ri_47], protocol2_1[ri_47], suite2_1[ri_47], label2_1[ri_47], pkE''[ri_47], pkR''[ri_47], pkS''[ri_47] in find at 346
-    - Replaced (x1_1 = x_O_6[ri_48, ri_49]) with ((pkS'' = pk_S_1[ri_48, ri_49]) && (pkR'' = pkR_4[ri_48, ri_49]) && (pkE'' = pkE_9[ri_48, ri_49]) && (label2_1 = label_shared_secret) && (suite2_1 = suite_id) && (protocol2_1 = RFCXXXX) && (l_1 = I2OSP2(Nsecret)) && (dh2_1 = exp(pk_S_1[ri_48, ri_49], sk_1[ri_49])) && (dh1_1 = exp(pkE_9[ri_48, ri_49], sk_1[ri_49])) && (label1_1 = label_eae_prk) && (suite1_1 = suite_id) && (protocol1_1 = RFCXXXX) && (salt_1 = lbytes_empty)) at 369
-    - Replaced defined condition x_O_6[ri_48, ri_49], r_6[ri_48, ri_49] with r_6[ri_48, ri_49], sk_1[ri_49], pkE_9[ri_48, ri_49], pkR_4[ri_48, ri_49], pk_S_1[ri_48, ri_49] in find at 346
-    - Replaced (x1_1 = x_O_5[ri_50, ri_51]) with ((pkS'' = pkS_2[ri_50, ri_51]) && (pkR'' = pk_R_1[ri_50, ri_51]) && (pkE'' = pkE_7[ri_50, ri_51]) && (label2_1 = label_shared_secret) && (suite2_1 = suite_id) && (protocol2_1 = RFCXXXX) && (l_1 = I2OSP2(Nsecret)) && (dh2_1 = exp(pk_R_1[ri_50, ri_51], sk_1[ri_51])) && (dh1_1 = exp(pk_R_1[ri_50, ri_51], z_3[ri_50, ri_51])) && (label1_1 = label_eae_prk) && (suite1_1 = suite_id) && (protocol1_1 = RFCXXXX) && (salt_1 = lbytes_empty)) at 351
-    - Replaced defined condition x_O_5[ri_50, ri_51], r_5[ri_50, ri_51] with r_5[ri_50, ri_51], z_3[ri_50, ri_51], sk_1[ri_51], pkE_7[ri_50, ri_51], pk_R_1[ri_50, ri_51], pkS_2[ri_50, ri_51] in find at 346
-    - Replaced (x_O_6 = x1_1[ri_53]) with ((pk_S_1 = pkS''[ri_53]) && (pkR_4 = pkR''[ri_53]) && (pkE_9 = pkE''[ri_53]) && (label_shared_secret = label2_1[ri_53]) && (suite_id = suite2_1[ri_53]) && (RFCXXXX = protocol2_1[ri_53]) && (I2OSP2(Nsecret) = l_1[ri_53]) && (exp(pk_S_1, sk_1) = dh2_1[ri_53]) && (exp(pkE_9, sk_1) = dh1_1[ri_53]) && (label_eae_prk = label1_1[ri_53]) && (suite_id = suite1_1[ri_53]) && (RFCXXXX = protocol1_1[ri_53]) && (lbytes_empty = salt_1[ri_53])) at 297
-    - Replaced defined condition x1_1[ri_53], x_O_7[ri_53], r_7[ri_53] with r_7[ri_53], salt_1[ri_53], protocol1_1[ri_53], suite1_1[ri_53], label1_1[ri_53], dh1_1[ri_53], dh2_1[ri_53], l_1[ri_53], protocol2_1[ri_53], suite2_1[ri_53], label2_1[ri_53], pkE''[ri_53], pkR''[ri_53], pkS''[ri_53] in find at 271
-    - Replaced (x_O_6 = x_O_6[ri_54, ri_55]) with ((pk_S_1 = pk_S_1[ri_54, ri_55]) && (i_1 = ri_55) && (pkE_9 = pkE_9[ri_54, ri_55])) at 276
-    - In branch 1 of find at 271, substituting u_55 with i_1
-    - Replaced defined condition x_O_6[ri_54, ri_55], r_6[ri_54, ri_55] with r_6[ri_54], pkE_9[ri_54], pk_S_1[ri_54] in find at 271
-    - Replaced ((exp(g, sk_1) = pk_R_1[ie1, i1_2]) && (exp(g, sk_1[i1_2]) = pk_S_1) && (enc_7[ie1, i1_2] = cd)) with ((i_1 = i1_4[ie1, i1_2]) && (exp(g, sk_1[i1_2]) = pk_S_1) && (enc_7[ie1, i1_2] = cd)) at 174
-    - Replaced defined condition k'[ie1, i1_2], enc_7[ie1, i1_2], sk_1[i1_2], pk_R_1[ie1, i1_2] with k'[ie1, i1_2], enc_7[ie1, i1_2], sk_1[i1_2], i1_4[ie1, i1_2] in find at 166
+    - Replaced defined condition x1_1[ri_40], x_O_8[ri_40], r_8[ri_40] with r_8[ri_40], x1_1[ri_40] in find at 403
+    - Replaced (x1_1 = x1_1[ri_47]) with ((pkS'' = pkS''[ri_47]) && (pkR'' = pkR''[ri_47]) && (pkE'' = pkE''[ri_47]) && (label2_1 = label2_1[ri_47]) && (suite2_1 = suite2_1[ri_47]) && (protocol2_1 = protocol2_1[ri_47]) && (l_1 = l_1[ri_47]) && (dh2_1 = dh2_1[ri_47]) && (dh1_1 = dh1_1[ri_47]) && (label1_1 = label1_1[ri_47]) && (suite1_1 = suite1_1[ri_47]) && (protocol1_1 = protocol1_1[ri_47]) && (salt_1 = salt_1[ri_47])) at 383
+    - Replaced defined condition x1_1[ri_47], x_O_7[ri_47], r_7[ri_47] with r_7[ri_47], salt_1[ri_47], protocol1_1[ri_47], suite1_1[ri_47], label1_1[ri_47], dh1_1[ri_47], dh2_1[ri_47], l_1[ri_47], protocol2_1[ri_47], suite2_1[ri_47], label2_1[ri_47], pkE''[ri_47], pkR''[ri_47], pkS''[ri_47] in find at 343
+    - Replaced (x1_1 = x_O_6[ri_48, ri_49]) with ((pkS'' = pk_S_1[ri_48, ri_49]) && (pkR'' = pkR_4[ri_48, ri_49]) && (pkE'' = pkE_9[ri_48, ri_49]) && (label2_1 = label_shared_secret) && (suite2_1 = suite_id) && (protocol2_1 = RFCXXXX) && (l_1 = I2OSP2(Nsecret)) && (dh2_1 = exp(pk_S_1[ri_48, ri_49], sk_1[ri_49])) && (dh1_1 = exp(pkE_9[ri_48, ri_49], sk_1[ri_49])) && (label1_1 = label_eae_prk) && (suite1_1 = suite_id) && (protocol1_1 = RFCXXXX) && (salt_1 = lbytes_empty)) at 366
+    - Replaced defined condition x_O_6[ri_48, ri_49], r_6[ri_48, ri_49] with r_6[ri_48, ri_49], sk_1[ri_49], pkE_9[ri_48, ri_49], pkR_4[ri_48, ri_49], pk_S_1[ri_48, ri_49] in find at 343
+    - Replaced (x1_1 = x_O_5[ri_50, ri_51]) with ((pkS'' = pkS_2[ri_50, ri_51]) && (pkR'' = pk_R_1[ri_50, ri_51]) && (pkE'' = pkE_7[ri_50, ri_51]) && (label2_1 = label_shared_secret) && (suite2_1 = suite_id) && (protocol2_1 = RFCXXXX) && (l_1 = I2OSP2(Nsecret)) && (dh2_1 = exp(pk_R_1[ri_50, ri_51], sk_1[ri_51])) && (dh1_1 = exp(pk_R_1[ri_50, ri_51], z_3[ri_50, ri_51])) && (label1_1 = label_eae_prk) && (suite1_1 = suite_id) && (protocol1_1 = RFCXXXX) && (salt_1 = lbytes_empty)) at 348
+    - Replaced defined condition x_O_5[ri_50, ri_51], r_5[ri_50, ri_51] with r_5[ri_50, ri_51], z_3[ri_50, ri_51], sk_1[ri_51], pkE_7[ri_50, ri_51], pk_R_1[ri_50, ri_51], pkS_2[ri_50, ri_51] in find at 343
+    - Replaced (x_O_6 = x1_1[ri_53]) with ((pk_S_1 = pkS''[ri_53]) && (pkR_4 = pkR''[ri_53]) && (pkE_9 = pkE''[ri_53]) && (label_shared_secret = label2_1[ri_53]) && (suite_id = suite2_1[ri_53]) && (RFCXXXX = protocol2_1[ri_53]) && (I2OSP2(Nsecret) = l_1[ri_53]) && (exp(pk_S_1, sk_1) = dh2_1[ri_53]) && (exp(pkE_9, sk_1) = dh1_1[ri_53]) && (label_eae_prk = label1_1[ri_53]) && (suite_id = suite1_1[ri_53]) && (RFCXXXX = protocol1_1[ri_53]) && (lbytes_empty = salt_1[ri_53])) at 294
+    - Replaced defined condition x1_1[ri_53], x_O_7[ri_53], r_7[ri_53] with r_7[ri_53], salt_1[ri_53], protocol1_1[ri_53], suite1_1[ri_53], label1_1[ri_53], dh1_1[ri_53], dh2_1[ri_53], l_1[ri_53], protocol2_1[ri_53], suite2_1[ri_53], label2_1[ri_53], pkE''[ri_53], pkR''[ri_53], pkS''[ri_53] in find at 268
+    - Replaced (x_O_6 = x_O_6[ri_54, ri_55]) with ((pk_S_1 = pk_S_1[ri_54, ri_55]) && (i_1 = ri_55) && (pkE_9 = pkE_9[ri_54, ri_55])) at 273
+    - In branch 1 of find at 268, substituting u_55 with i_1
+    - Replaced defined condition x_O_6[ri_54, ri_55], r_6[ri_54, ri_55] with r_6[ri_54], pkE_9[ri_54], pk_S_1[ri_54] in find at 268
     - Replaced (x_O_5 = x1_1[ri_59]) with ((pkS_2 = pkS''[ri_59]) && (pk_R_1 = pkR''[ri_59]) && (pkE_7 = pkE''[ri_59]) && (label_shared_secret = label2_1[ri_59]) && (suite_id = suite2_1[ri_59]) && (RFCXXXX = protocol2_1[ri_59]) && (I2OSP2(Nsecret) = l_1[ri_59]) && (exp(pk_R_1, sk_1) = dh2_1[ri_59]) && (exp(pk_R_1, z_3) = dh1_1[ri_59]) && (label_eae_prk = label1_1[ri_59]) && (suite_id = suite1_1[ri_59]) && (RFCXXXX = protocol1_1[ri_59]) && (lbytes_empty = salt_1[ri_59])) at 126
     - Replaced defined condition x1_1[ri_59], x_O_7[ri_59], r_7[ri_59] with r_7[ri_59], salt_1[ri_59], protocol1_1[ri_59], suite1_1[ri_59], label1_1[ri_59], dh1_1[ri_59], dh2_1[ri_59], l_1[ri_59], protocol2_1[ri_59], suite2_1[ri_59], label2_1[ri_59], pkE''[ri_59], pkR''[ri_59], pkS''[ri_59] in find at 122
 yields
 
-Game 43 is
+Game 42 is
       Ostart() :=
       return();
       ((
@@ -3192,7 +3094,7 @@ Applying simplify
     - Replaced ((pk_S_1 = pk_S_1[ri_54]) && (i_1 = i_1) && (pkE_9 = pkE_9[ri_54])) with ((pk_S_1 = pk_S_1[ri_54]) && (pkE_9 = pkE_9[ri_54])) at 362
 yields
 
-Game 44 is
+Game 43 is
       Ostart() :=
       return();
       ((
@@ -3288,7 +3190,7 @@ Applying move all binders
   - Move assignment to kemContext_7
 yields
 
-Game 45 is
+Game 44 is
       Ostart() :=
       return();
       ((
@@ -3367,7 +3269,7 @@ Applying remove assignments of findcond
   - Remove assignments on dh_7 (definition removed, all usages removed)
 yields
 
-Game 46 is
+Game 45 is
       Ostart() :=
       return();
       ((
@@ -3437,13 +3339,12 @@ Game 46 is
       ))
 
 
-Proved indistinguishability between game 46 and game 1
-Game 46 is the same as game 32.
-Adv[Game 1: indistinguishability from game 32] <= Adv_GDH(time_1, 2 * Qh * Qdperuser + N * #OAEncap + N * #OADecap + 3 * Qh * N) + (N + #OAEncap) * PDistRerandom + (#OAEncap * Qdperuser + #OAEncap * N + 6 * #OAEncap * Qeperuser + 9 * N * N) * PCollKey + Adv[Game 32: indistinguishability from game 32]
-Adv[Game 32: indistinguishability from game 32] <= 0
-Adv[Game 33: indistinguishability from game 46] <= (#OAEncap * N + #OAEncap * Qeperuser + 4 * N * N) * PCollKey + Adv[Game 46: indistinguishability from game 46]
-Adv[Game 46: indistinguishability from game 46] <= 0
-RESULT Proved indistinguishability between game 33 and game 1 up to probability Adv_GDH(time_1, 2 * Qh * Qdperuser + N * #OAEncap + N * #OADecap + 3 * Qh * N) + (N + #OAEncap) * PDistRerandom + (#OAEncap * Qdperuser + 2 * #OAEncap * N + 7 * #OAEncap * Qeperuser + 13 * N * N) * PCollKey
-RESULT time_1 = time(context for game 28) + time + (1 + #OAEncap + N) * time(exp)
-RESULT time(context for game 28) = #OAEncap * time(AuthEncap_tuple, maxlength(game 28: enc_8)) + (#OAEncap + 2 * Qh * #OAEncap) * time(exp) + #OAEncap * time(Serialize) + #OAEncap * time(AuthEncap_tuple, maxlength(game 28: enc_9)) + #OADecap * #OAEncap * time(= bitstring, maxlength(game 28: enc_8), maxlength(game 28: enc_2)) + #OADecap * time(let Serialize) + #OADecap * time(AuthDecap_Some) + Qh * time(let eae_input) + Qh * time(let concatExpand) + Qh * time(let concatContext) + Qh * time(let concatExtract) + Qh * time(let concatDH) + (3 * Qh * #OAEncap + 2 * Qh * #OADecap) * time(I2OSP2)
+Proved indistinguishability between game 45 and game 1
+Game 45 is the same as game 31.
+Adv[Game 1: indistinguishability from game 31] <= Adv_GDH(time_1, 5 * Qh) + (N + #OAEncap) * PDistRerandom + (#OAEncap * #OADecap + #OAEncap * N + 8 * #OAEncap^2 + 6 * N^2) * PCollKey + Adv[Game 31: indistinguishability from game 31]
+Adv[Game 31: indistinguishability from game 31] <= 0
+Adv[Game 32: indistinguishability from game 45] <= (#OAEncap * N + 2 * #OAEncap^2 + 5 * N^2) * PCollKey + Adv[Game 45: indistinguishability from game 45]
+Adv[Game 45: indistinguishability from game 45] <= 0
+RESULT Proved indistinguishability between game 32 and game 1 up to probability Adv_GDH(time_1, 5 * Qh) + (N + #OAEncap) * PDistRerandom + (#OAEncap * #OADecap + 2 * #OAEncap * N + 10 * #OAEncap^2 + 11 * N^2) * PCollKey
+RESULT time_1 = #OAEncap * time(AuthEncap_tuple, maxlength(game 28: enc_8)) + #OAEncap * time(Serialize) + #OAEncap * time(AuthEncap_tuple, maxlength(game 28: enc_9)) + #OADecap * #OAEncap * time(= bitstring, maxlength(game 28: enc_8), maxlength(game 28: enc_2)) + #OADecap * time(let Serialize) + #OADecap * time(AuthDecap_Some) + Qh * time(let eae_input) + Qh * time(let concatExpand) + Qh * time(let concatContext) + Qh * time(let concatExtract) + Qh * time(let concatDH) + (3 * Qh * #OAEncap + 2 * Qh * #OADecap) * time(I2OSP2) + (2 * Qh * #OAEncap + 1 + 2 * #OAEncap + N) * time(exp) + time
 All queries proved.
