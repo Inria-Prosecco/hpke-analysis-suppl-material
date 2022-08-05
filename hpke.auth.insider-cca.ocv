@@ -1,3 +1,15 @@
+(* Analysing the HPKE Standard - Supplementary Material
+   Joël Alwen; Bruno Blanchet; Eduard Hauck; Eike Kiltz; Benjamin Lipp; 
+   Doreen Riepel
+
+This is supplementary material accompanying the paper:
+
+Joël Alwen, Bruno Blanchet, Eduard Hauck, Eike Kiltz, Benjamin Lipp,
+and Doreen Riepel. Analysing the HPKE Standard. In Anne Canteaut and
+Francois-Xavier Standaert, editors, Eurocrypt 2021, Lecture Notes in
+Computer Science, Zagreb, Croatia, October 2021. Springer. To appear.
+Long version: https://eprint.iacr.org/2020/1499 *)
+
 proof {
   out_game "g00.out.cv";
   remove_assign binder the_sk;
@@ -28,8 +40,20 @@ proba P_pk_coll.
 proba Adv_Insider_CCA.
 fun kemkey2bitstr(kemkey_t): bitstring [data].
 fun kemciph2bitstr(kemciph_t): bitstring [data].
-expand Insider_CCA_Secure_Authenticated_KEM(keypairseed_t, pkey_t, skey_t, kemseed_t, AuthEncap_res_t, AuthDecap_res_t, kemkey_t, kemciph_t, skgen, pkgen, GenerateKeyPair, AuthEncap, AuthEncap_r, AuthEncap_key_r, AuthEncap_enc_r, AuthEncap_tuple, AuthEncap_None, AuthDecap, AuthDecap_Some, AuthDecap_None, P_pk_coll, Adv_Insider_CCA).
+expand Authenticated_KEM(keypairseed_t, pkey_t, skey_t, kemseed_t, AuthEncap_res_t, AuthDecap_res_t, kemkey_t, kemciph_t, skgen, pkgen, GenerateKeyPair, AuthEncap, AuthEncap_r, AuthEncap_key_r, AuthEncap_enc_r, AuthEncap_tuple, AuthEncap_None, AuthDecap, AuthDecap_Some, AuthDecap_None, P_pk_coll).
+expand Insider_CCA_Secure_Authenticated_KEM(keypairseed_t, pkey_t, skey_t, kemseed_t, AuthEncap_res_t, AuthDecap_res_t, kemkey_t, kemciph_t, skgen, pkgen, GenerateKeyPair, AuthEncap, AuthEncap_r, AuthEncap_key_r, AuthEncap_enc_r, AuthEncap_tuple, AuthEncap_None, AuthDecap, AuthDecap_Some, AuthDecap_None, Adv_Insider_CCA).
 
+(* Analysing the HPKE Standard - Supplementary Material
+   Joël Alwen; Bruno Blanchet; Eduard Hauck; Eike Kiltz; Benjamin Lipp; 
+   Doreen Riepel
+
+This is supplementary material accompanying the paper:
+
+Joël Alwen, Bruno Blanchet, Eduard Hauck, Eike Kiltz, Benjamin Lipp,
+and Doreen Riepel. Analysing the HPKE Standard. In Anne Canteaut and
+Francois-Xavier Standaert, editors, Eurocrypt 2021, Lecture Notes in
+Computer Science, Zagreb, Croatia, October 2021. Springer. To appear.
+Long version: https://eprint.iacr.org/2020/1499 *)
 
 type key_t [large,fixed].
 
@@ -80,9 +104,9 @@ expand multikey_AEAD(
   Seal_inner,
   Open_inner,
   injbot, (* injection from plaintext to bitstringbot:
-          (* injbot(plaintext): bitstringbot *)
-  Length,   (* returns a plaintext of same length, consisting of zeros:
-          (* Length(plaintext): plaintext *)
+             injbot(plaintext): bitstringbot *)
+  Length, (* returns a plaintext of same length, consisting of zeros:
+             Length(plaintext): plaintext *)
   (* probabilities *)
   Adv_cpa,
   Adv_ctxt
@@ -256,13 +280,13 @@ process
   Ostart() := b <-R bool; return();
 
   (* The adversary can generate up to N honest keypairs/users by calling
-  (* the Osetup() oracle. The nested oracles Oaenc(), Oadec(), Ochall()
-  (* will be available for each keypair. *)
+     the Osetup() oracle. The nested oracles Oaenc(), Oadec(), Ochall()
+     will be available for each keypair. *)
   (foreach i <= N do
    Osetup() :=
      let (the_sk: skey_t, the_pk: pkey_t) = GenerateKeyPair() in
      (* The public key of each honest keypair is made available
-     (* to the adversary. *)
+        to the adversary. *)
      return(the_pk);
 
      (
@@ -292,10 +316,15 @@ process
               insert E(pkgen(s'), the_pk, enc_star, c_star, aad, info);
               return((enc_star, c_star))
             (* SealAuth does not fail, but CryptoVerif's language
-            (* requires we indicate the else branch. It will be
-            (* removed with the eliminate_failing step. *)
+               requires we indicate the else branch. It will be
+               removed with the eliminate_failing step. *)
             ) else return(bottom)
           ) else return(bottom) (* ends the condition on m0 and m1 lengths *)
        ) (* ends the definition of the Ocall() oracle *)
      ) (* This ends the block of oracles that are defined for each keypair *)
   ) (* This ends the definition of the Osetup() oracle and its nested oracles *)
+
+(* EXPECTED FILENAME: examples/hpke/hpke.auth.insider-cca.m4.ocv TAG: 1
+All queries proved.
+0.252s (user 0.252s + system 0.000s), max rss 24992K
+END *)

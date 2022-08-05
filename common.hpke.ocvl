@@ -1,3 +1,14 @@
+(* Analysing the HPKE Standard - Supplementary Material
+   Joël Alwen; Bruno Blanchet; Eduard Hauck; Eike Kiltz; Benjamin Lipp; 
+   Doreen Riepel
+
+This is supplementary material accompanying the paper:
+
+Joël Alwen, Bruno Blanchet, Eduard Hauck, Eike Kiltz, Benjamin Lipp,
+and Doreen Riepel. Analysing the HPKE Standard. In Anne Canteaut and
+Francois-Xavier Standaert, editors, Eurocrypt 2021, Lecture Notes in
+Computer Science, Zagreb, Croatia, October 2021. Springer. To appear.
+Long version: https://eprint.iacr.org/2020/1499 *)
 
 type key_t [large,fixed].
 
@@ -48,9 +59,9 @@ expand multikey_AEAD(
   Seal_inner,
   Open_inner,
   injbot, (* injection from plaintext to bitstringbot:
-          (* injbot(plaintext): bitstringbot *)
-  Length,   (* returns a plaintext of same length, consisting of zeros:
-          (* Length(plaintext): plaintext *)
+             injbot(plaintext): bitstringbot *)
+  Length, (* returns a plaintext of same length, consisting of zeros:
+             Length(plaintext): plaintext *)
   (* probabilities *)
   Adv_cpa,
   Adv_ctxt

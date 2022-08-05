@@ -1,3 +1,15 @@
+(* Analysing the HPKE Standard - Supplementary Material
+   Joël Alwen; Bruno Blanchet; Eduard Hauck; Eike Kiltz; Benjamin Lipp; 
+   Doreen Riepel
+
+This is supplementary material accompanying the paper:
+
+Joël Alwen, Bruno Blanchet, Eduard Hauck, Eike Kiltz, Benjamin Lipp,
+and Doreen Riepel. Analysing the HPKE Standard. In Anne Canteaut and
+Francois-Xavier Standaert, editors, Eurocrypt 2021, Lecture Notes in
+Computer Science, Zagreb, Croatia, October 2021. Springer. To appear.
+Long version: https://eprint.iacr.org/2020/1499 *)
+
 proof {
   out_game "g00.out.cv";
   remove_assign binder the_sk;
@@ -33,9 +45,11 @@ proba Adv_Outsider_CCA.
 proba Adv_Outsider_Auth.
 fun kemkey2bitstr(kemkey_t): bitstring [data].
 fun kemciph2bitstr(kemciph_t): bitstring [data].
-expand Outsider_Secure_Authenticated_KEM(keypairseed_t, pkey_t, skey_t, kemseed_t, AuthEncap_res_t, AuthDecap_res_t, kemkey_t, kemciph_t, skgen, pkgen, GenerateKeyPair, AuthEncap, AuthEncap_r, AuthEncap_key_r, AuthEncap_enc_r, AuthEncap_tuple, AuthEncap_None, AuthDecap, AuthDecap_Some, AuthDecap_None, P_pk_coll, Adv_Outsider_CCA, Adv_Outsider_Auth).
+expand Authenticated_KEM(keypairseed_t, pkey_t, skey_t, kemseed_t, AuthEncap_res_t, AuthDecap_res_t, kemkey_t, kemciph_t, skgen, pkgen, GenerateKeyPair, AuthEncap, AuthEncap_r, AuthEncap_key_r, AuthEncap_enc_r, AuthEncap_tuple, AuthEncap_None, AuthDecap, AuthDecap_Some, AuthDecap_None, P_pk_coll).
+expand Outsider_CCA_Secure_Authenticated_KEM(keypairseed_t, pkey_t, skey_t, kemseed_t, AuthEncap_res_t, AuthDecap_res_t, kemkey_t, kemciph_t, skgen, pkgen, GenerateKeyPair, AuthEncap, AuthEncap_r, AuthEncap_key_r, AuthEncap_enc_r, AuthEncap_tuple, AuthEncap_None, AuthDecap, AuthDecap_Some, AuthDecap_None, Adv_Outsider_CCA).
+expand Outsider_Auth_Secure_Authenticated_KEM(keypairseed_t, pkey_t, skey_t, kemseed_t, AuthEncap_res_t, AuthDecap_res_t, kemkey_t, kemciph_t, skgen, pkgen, GenerateKeyPair, AuthEncap, AuthEncap_r, AuthEncap_key_r, AuthEncap_enc_r, AuthEncap_tuple, AuthEncap_None, AuthDecap, AuthDecap_Some, AuthDecap_None, Adv_Outsider_Auth).
 
-include(`common.hpke.ocv')
+include(`common.hpke.ocvl')
 
 (* a set E used within the proof,
    containing 6-tuples of the following type: *)
@@ -61,17 +75,17 @@ query event(adv_wins).
 process
 
   (* The adversary can generate up to N honest keypairs/users by calling
-  (* the Osetup() oracle. The nested oracles Oaenc() and Oadec()
-  (* will be available for each honest keypair. *)
+     the Osetup() oracle. The nested oracles Oaenc() and Oadec()
+     will be available for each honest keypair. *)
   (foreach i <= N do
    Osetup() :=
      let (the_sk: skey_t, the_pk: pkey_t) = GenerateKeyPair() in
      (* The public key of each honest keypair is made available
-     (* to the adversary. *)
+        to the adversary. *)
      return(the_pk);
 
      (* This block defines the oracles Oaenc() and Oadec() which
-     (* are available for each honest keypair. *)
+        are available for each honest keypair. *)
      (
        (* This defines the Oaenc() oracle with up to Qeperuser calls per keypair *)
        (foreach iae <= Qeperuser do
@@ -113,3 +127,7 @@ process
       )
     ) else return(bottom)
 
+(* EXPECTED FILENAME: examples/hpke/hpke.auth.outsider-auth.m4.ocv TAG: 1
+All queries proved.
+0.696s (user 0.692s + system 0.004s), max rss 33280K
+END *)

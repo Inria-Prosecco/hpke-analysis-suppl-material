@@ -1,3 +1,15 @@
+(* Analysing the HPKE Standard - Supplementary Material
+   Joël Alwen; Bruno Blanchet; Eduard Hauck; Eike Kiltz; Benjamin Lipp; 
+   Doreen Riepel
+
+This is supplementary material accompanying the paper:
+
+Joël Alwen, Bruno Blanchet, Eduard Hauck, Eike Kiltz, Benjamin Lipp,
+and Doreen Riepel. Analysing the HPKE Standard. In Anne Canteaut and
+Francois-Xavier Standaert, editors, Eurocrypt 2021, Lecture Notes in
+Computer Science, Zagreb, Croatia, October 2021. Springer. To appear.
+Long version: https://eprint.iacr.org/2020/1499 *)
+
 (* This type denotes the two-byte indication of length used
    in LabeledExpand. *)
 type length_t [fixed].
@@ -253,3 +265,8 @@ equivalence
       (* The next oracle gives the key of the collision resistant hash function
 	 to the adversary *)
    run Extract_CR_oracle(cr_key))
+
+(* EXPECTED
+All queries proved.
+0.328s (user 0.312s + system 0.016s), max rss 20608K
+END *)

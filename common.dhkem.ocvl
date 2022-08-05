@@ -1,3 +1,68 @@
+(* Analysing the HPKE Standard - Supplementary Material
+   Joël Alwen; Bruno Blanchet; Eduard Hauck; Eike Kiltz; Benjamin Lipp; 
+   Doreen Riepel
+
+This is supplementary material accompanying the paper:
+
+Joël Alwen, Bruno Blanchet, Eduard Hauck, Eike Kiltz, Benjamin Lipp,
+and Doreen Riepel. Analysing the HPKE Standard. In Anne Canteaut and
+Francois-Xavier Standaert, editors, Eurocrypt 2021, Lecture Notes in
+Computer Science, Zagreb, Croatia, October 2021. Springer. To appear.
+Long version: https://eprint.iacr.org/2020/1499 *)
+
+
+type G_t [bounded].
+fun Serialize(G_t): bitstring [data].
+type Z_t [bounded,nonuniform].
+proba PCollKey.
+
+expand DH_proba_collision_minimal(
+  G_t,
+  Z_t,
+  g,
+  exp,
+  mult,
+  PCollKey
+).
+
+ifdef(`square',`
+
+proba Adv_sqGDH.
+proba PDistRerandom.
+expand square_GDH_RSR_minimal(
+  (* types *)
+  G_t,  (* Group elements *)
+  Z_t,  (* Exponents *)
+  (* variables *)
+  g,    (* a generator of the group *)
+  exp,  (* exponentiation function *)
+  mult, (* multiplication function for exponents *)
+  (* probabilities *)
+  Adv_sqGDH, (* probability of breaking the square GDH assumption *)
+  PDistRerandom (* probability of distinguishing a key that comes from
+       rerandomization from an honestly chosen key *)
+).
+
+',`
+
+proba Adv_GDH.
+proba PDistRerandom.
+expand GDH_RSR_minimal(
+  (* types *)
+  G_t,  (* Group elements *)
+  Z_t,  (* Exponents *)
+  (* variables *)
+  g,    (* a generator of the group *)
+  exp,  (* exponentiation function *)
+  mult, (* multiplication function for exponents *)
+  (* probabilities *)
+  Adv_GDH, (* probability of breaking the GDH assumption *)
+  PDistRerandom (* probability of distinguishing a key that comes from 
+       rerandomization from an honestly chosen key *)
+).
+
+')
+
 (* For a group of prime order q:
    PColl1Rand(Z_t) = PColl2Rand(Z_t) = 1/(q-1)
    PCollKey1 = PCollKey2 = 1/(q-1)
@@ -38,7 +103,7 @@ const lbytes_empty: extract_salt_t.
 fun eae_input(extract_salt_t, extract_key_t, expand_info_t): eae_input_t [data].
 
 (* The core of ExtractAndExpand, a.k.a. HKDF.
-(* Usage of the RO assumption is for example justified in Lemma 6 of
+Usage of the RO assumption is for example justified in Lemma 6 of
 Benjamin Lipp, Bruno Blanchet, Karthikeyan Bhargavan,
 A Mechanised Cryptographic Proof of the WireGuard Virtual Private Network Protocol,
 EuroSP2019 *)

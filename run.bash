@@ -6,8 +6,8 @@ set -e
 # Assumptions of this script:
 # - an environment variable CRYPTOVERIF is defined and points to the
 #   directory where the CryptoVerif folder is located. This is the
-#   folder that contains for example the files build, and after
-#   building CryptoVerif, the file default.ocvl
+#   folder that contains for example the file `build`, and after
+#   building CryptoVerif, the file `default.ocvl`
 #   If you do not have the environment variable CRYPTOVERIF defined,
 #   you can also uncomment the following line and adapt the path
 #   accordingly:
@@ -18,6 +18,26 @@ CV=${CRYPTOVERIF}/cryptoverif
 STDLIB=${CRYPTOVERIF}/default.ocvl
 LIB=lib.ocvl
 OUT=out
+
+# Usually no need to modify something after this line.
+
+file_exists_or_abort()
+{
+    filename=$1
+    if [ ! -f $filename ]
+    then
+	echo "File '$filename' not found. Did you execute this script in the directory in which it's stored?"
+	exit 2
+    fi
+}
+
+file_exists_or_abort lib.truncate.ocvl
+file_exists_or_abort lib.option.ocvl
+file_exists_or_abort lib.choice.ocvl
+file_exists_or_abort lib.gdh.ocvl
+file_exists_or_abort lib.authkem.ocvl
+file_exists_or_abort lib.aead.ocvl
+file_exists_or_abort lib.prf.ocvl
 
 # Check presence of standard library
 if [[ -f ${STDLIB} ]]; then

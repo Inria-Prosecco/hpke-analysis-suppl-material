@@ -1,3 +1,15 @@
+(* Analysing the HPKE Standard - Supplementary Material
+   Joël Alwen; Bruno Blanchet; Eduard Hauck; Eike Kiltz; Benjamin Lipp; 
+   Doreen Riepel
+
+This is supplementary material accompanying the paper:
+
+Joël Alwen, Bruno Blanchet, Eduard Hauck, Eike Kiltz, Benjamin Lipp,
+and Doreen Riepel. Analysing the HPKE Standard. In Anne Canteaut and
+Francois-Xavier Standaert, editors, Eurocrypt 2021, Lecture Notes in
+Computer Science, Zagreb, Croatia, October 2021. Springer. To appear.
+Long version: https://eprint.iacr.org/2020/1499 *)
+
 proof {
   allowed_collisions default^4/large;
    (* We allow eliminating collisions with probability in power 4 of 
@@ -101,9 +113,23 @@ proof {
   SArename z_5;
   SArename enc_8;
   SArename pkE_10;
+  remove_assign binder E_1;
   out_game "r3.out.cv";
   success
 }
+
+(* Analysing the HPKE Standard - Supplementary Material
+   Joël Alwen; Bruno Blanchet; Eduard Hauck; Eike Kiltz; Benjamin Lipp; 
+   Doreen Riepel
+
+This is supplementary material accompanying the paper:
+
+Joël Alwen, Bruno Blanchet, Eduard Hauck, Eike Kiltz, Benjamin Lipp,
+and Doreen Riepel. Analysing the HPKE Standard. In Anne Canteaut and
+Francois-Xavier Standaert, editors, Eurocrypt 2021, Lecture Notes in
+Computer Science, Zagreb, Croatia, October 2021. Springer. To appear.
+Long version: https://eprint.iacr.org/2020/1499 *)
+
 
 type G_t [bounded].
 fun Serialize(G_t): bitstring [data].
@@ -120,6 +146,7 @@ expand DH_proba_collision_minimal(
 ).
 
 
+
 proba Adv_GDH.
 proba PDistRerandom.
 expand GDH_RSR_minimal(
@@ -132,9 +159,11 @@ expand GDH_RSR_minimal(
   mult, (* multiplication function for exponents *)
   (* probabilities *)
   Adv_GDH, (* probability of breaking the GDH assumption *)
-  PDistRerandom (* probability of distinguishing a key that comes from
+  PDistRerandom (* probability of distinguishing a key that comes from 
        rerandomization from an honestly chosen key *)
 ).
+
+
 
 (* For a group of prime order q:
    PColl1Rand(Z_t) = PColl2Rand(Z_t) = 1/(q-1)
@@ -176,7 +205,7 @@ const lbytes_empty: extract_salt_t.
 fun eae_input(extract_salt_t, extract_key_t, expand_info_t): eae_input_t [data].
 
 (* The core of ExtractAndExpand, a.k.a. HKDF.
-(* Usage of the RO assumption is for example justified in Lemma 6 of
+Usage of the RO assumption is for example justified in Lemma 6 of
 Benjamin Lipp, Bruno Blanchet, Karthikeyan Bhargavan,
 A Mechanised Cryptographic Proof of the WireGuard Virtual Private Network Protocol,
 EuroSP2019 *)
@@ -293,6 +322,8 @@ letfun AuthDecap(key_extr: hash_key_t, enc: bitstring, skR: Z_t, pkS: G_t) =
 
 param N, Qeperuser, Qcperuser, Qdperuser.
 
+table E(G_t, G_t, bitstring, eae_output_t).
+
 equivalence
   Ostart() :=
     key_extr <-R hash_key_t;
@@ -324,6 +355,7 @@ equivalence
 	  Ochall(sk': Z_t) :=
             let AuthEncap_tuple(k: eae_output_t, ce: bitstring) = AuthEncap(key_extr, pkgen(sk), skgen(sk')) in (
               k' <-R eae_output_t;
+	      insert E(pkgen(sk'), pkgen(sk), ce, k');
               return(AuthEncap_tuple(k', ce))
             ) else (
               (* Never happens because AuthEncap always returns AuthEncap_tuple(...) *)
@@ -334,17 +366,8 @@ equivalence
             return(AuthEncap(key_extr, pk_R, skgen(sk)))) |
         foreach id <= Qdperuser do (
 	  OADecap(pk_S: G_t, cd: bitstring) :=
-	    (* This "find" implements a lookup in the set E of the paper.
-               The set is not built explicitly; we look for values in
-               Ochall queries using arrays -- all variables are implicitly
-               stored in arrays indexed by replication indices above their
-               definition. *)	  
-            find ic1 <= Qcperuser, i1 <= N suchthat
-                defined(ce[ic1, i1], k'[ic1, i1], sk'[ic1, i1], sk[i1])
-                && ce[ic1, i1] = cd
-                && pkgen(sk'[ic1, i1]) = pk_S
-                && pkgen(sk[i1]) = pkgen(sk) then (
-              return(AuthDecap_Some(k'[ic1, i1]))
+	    get E(=pk_S, =pkgen(sk), =cd, k'') in (
+              return(AuthDecap_Some(k''))
             ) else (
               return(AuthDecap(key_extr, cd, skgen(sk), pk_S))
             )) |
@@ -352,3 +375,8 @@ equivalence
       )) |
       run ExtractAndExpand_inner_orcl(key_extr)
     )
+
+(* EXPECTED FILENAME: examples/hpke/dhkem.auth.insider-cca-lr.m4.ocv TAG: 1
+All queries proved.
+0.988s (user 0.980s + system 0.008s), max rss 30224K
+END *)

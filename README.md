@@ -1,15 +1,17 @@
 # Analysing the HPKE Standard – Supplementary Material
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4297811.svg)](https://doi.org/10.5281/zenodo.4297811)
+The material in this directory is supplementary material accompanying the paper:
 
-This is supplementary material accompanying the paper
-“Analysing the HPKE Standard” by Joël Alwen, Bruno Blanchet, Eduard Hauck,
-Eike Kiltz, Benjamin Lipp, and Doreen Riepel.
+Joël Alwen, Bruno Blanchet, Eduard Hauck, Eike Kiltz, Benjamin Lipp,
+and Doreen Riepel. Analysing the HPKE Standard. In Anne Canteaut and
+Francois-Xavier Standaert, editors, Eurocrypt 2021, Lecture Notes in
+Computer Science, Zagreb, Croatia, October 2021. Springer. To appear.
+Long version: https://eprint.iacr.org/2020/1499 
 
 ## Preliminaries
 
 The “RFC” we are referring to in this README, is
-[the draft 6 of the RFC “Hybrid Public Key Encryption”](https://www.ietf.org/id/draft-irtf-cfrg-hpke-06.html).
+[the draft 8 of the RFC “Hybrid Public Key Encryption”](https://www.ietf.org/id/draft-irtf-cfrg-hpke-08.html).
 
 ### Installation of CryptoVerif
 
@@ -68,10 +70,10 @@ for CryptoVerif:
 The files with filenames starting by `common.*` contain definitions
 used in multiple models:
 
-- `common.dhkem.dh.ocv`: definition of the Diffie-Hellman group for
+- `common.dhkem.dh.ocvl`: definition of the Diffie-Hellman group for
   all DHKEM security notions
-- `common.dhkem.ocv`: definition of DHKEM as defined in the RFC
-- `common.hpke.ocv`: definition of HPKE (only everything after the KEM)
+- `common.dhkem.ocvl`: definition of DHKEM as defined in the RFC
+- `common.hpke.ocvl`: definition of HPKE (only everything after the KEM)
   as defined in the RFC
 
 These files are included by the `*.m4.ocv` files that generate the model files.
