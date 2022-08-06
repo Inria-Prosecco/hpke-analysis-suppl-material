@@ -5,7 +5,7 @@ The material in this directory is supplementary material accompanying the paper:
 Joël Alwen, Bruno Blanchet, Eduard Hauck, Eike Kiltz, Benjamin Lipp,
 and Doreen Riepel. Analysing the HPKE Standard. In Anne Canteaut and
 Francois-Xavier Standaert, editors, Eurocrypt 2021, Lecture Notes in
-Computer Science, Zagreb, Croatia, October 2021. Springer. To appear.
+Computer Science, pages 87-116, Zagreb, Croatia, October 2021. Springer.
 Long version: https://eprint.iacr.org/2020/1499 
 
 ## Preliminaries
